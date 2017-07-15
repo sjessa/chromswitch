@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.com/selinj/chromswitch.svg?token=ckZxkx4uN2RZSSwsdpLM&branch=master)](https://travis-ci.com/selinj/chromswitch)
