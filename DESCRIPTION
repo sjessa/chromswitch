@@ -1,0 +1,12 @@
+Package: chromswitch
+Title: An R package for detecting chromatin state switches
+Version: 0.0.0.9000
+Authors@R: person("Selin", "Jessa", email = "selinjessa@gmail.com", role = c("aut", "cre"))
+Description: An R implementation of a flexible method to detect chromatin state
+    switches between samples in two biological conditions in a specific genomic
+    region of interest given ChIP-seq data.
+Depends: R (>= 3.3.1)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
