@@ -5,16 +5,9 @@ sudo: false
 cache: packages
 warnings_are_errors: true
 
-install:
-  ## For installing all CRAN dependencies using rpack's DESCRIPTION
-  - ./travis-tool.sh install_deps
-  
-  ## For installing all Bioconductor dependencies using rpack's DESCRIPTION
-  - ./travis-tool.sh install_bioc_deps
-
 # Coveralls
-r_github_packages:
-  - jimhester/covr
+# r_github_packages:
+#   - jimhester/covr
 
-after_success:
-  - Rscript -e 'covr::coveralls()'
+# after_success:
+#   - Rscript -e 'covr::coveralls()'
