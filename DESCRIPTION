@@ -6,6 +6,9 @@ Description: An R implementation of a flexible method to detect chromatin state
     switches between samples in two biological conditions in a specific genomic
     region of interest given ChIP-seq data.
 Depends: R (>= 3.3.1)
+Imports:
+    GenomicRanges (>= 1.26.4),
+    methods
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
