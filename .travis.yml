@@ -10,5 +10,10 @@ warnings_are_errors: true
 r_github_packages:
   - jimhester/covr
 
+# BiocCheck
+bioc_packages:
+  - BiocCheck
+
 after_success:
   - Rscript -e 'covr::coveralls()'
+  - R CMD BiocCheck --new-package --no-check-vignettes chromswitch*.tar.gz
