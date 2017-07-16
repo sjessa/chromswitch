@@ -5,9 +5,14 @@ sudo: false
 cache: packages
 warnings_are_errors: true
 
+# Install dependencies
+install:
+    # Installs all packages in the DESCRIPTION file.
+    - ./travis-tool.sh install_bioc_deps
+
 # Coveralls
 r_github_packages:
   - jimhester/covr
 
-# after_success:
+after_success:
   - Rscript -e 'covr::coveralls()'
