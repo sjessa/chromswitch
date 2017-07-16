@@ -1,14 +1,10 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
+r: bioc-devel
 sudo: false
 cache: packages
 warnings_are_errors: true
-
-# Install dependencies
-install:
-    # Installs all packages in the DESCRIPTION file.
-    - ./travis-tool.sh install_bioc_deps
 
 # Coveralls
 r_github_packages:
