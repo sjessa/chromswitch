@@ -1,3 +1,9 @@
+# --------------------------------------------------------------------------- #
+#
+# Functions for dealing with genomic coordinates, simple manipulations
+# of GRanges objects, etc.
+#
+# --------------------------------------------------------------------------- #
 
 #' makeFriendlyCoord
 #'
@@ -9,10 +15,6 @@
 #'
 #' @return String with copy-pastable, genome browser-friendly version of
 #' coordinates.
-#' @export
-#'
-#' @examples
-#' makeFriendlyCoord("chr1", 1000, 2000)
 makeFriendlyCoord <- function(chr, start, end) {
 
     paste0(chr, ":", start, "-", end)

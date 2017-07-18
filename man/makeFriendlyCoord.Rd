@@ -20,6 +20,3 @@ coordinates.
 \description{
 Given coordinates for a genomic region, return a browser-friendly version.
 }
-\examples{
-makeFriendlyCoord("chr1", 1000, 2000)
-}
