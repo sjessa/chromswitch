@@ -39,3 +39,30 @@ test_that("retrievePeaks finds peaks in the query region", {
     expect_warning(retrievePeaks(pks, metadata, region2))
 
 })
+
+
+test_that("reducePeaks reduces nearby peaks within a gap", {
+
+    pks <- list(A = GRanges(seqnames = rep("chr1", 3),
+                            ranges = IRanges(start = c(100, 210, 500),
+                                             end = c(200, 250, 600))),
+                B = GRanges(seqnames = rep("chr1", 3),
+                            ranges = IRanges(start = c(100, 210, 500),
+                                             end = c(200, 250, 600))))
+
+    region <- GRanges(seqnames = "chr1",
+                      ranges = IRanges(start = 100, end = 1000))
+
+    lpk <- localPeaks(region, pks, c("A", "B"))
+
+    pks_red <- list(A = GRanges(seqnames = rep("chr1", 2),
+                            ranges = IRanges(start = c(100, 500),
+                                             end = c(250, 600))),
+                B = GRanges(seqnames = rep("chr1", 2),
+                            ranges = IRanges(start = c(100, 500),
+                                             end = c(250, 600))))
+
+    expect_equal(reducePeaks(lpk, 80), localPeaks(region, pks_red, c("A", "B")))
+    expect_equal(reducePeaks(lpk, 5), lpk)
+
+})

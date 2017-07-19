@@ -73,3 +73,48 @@ retrievePeaks <- function(peaks, metadata, region) {
                 samples = metadata$Sample)
 
 }
+
+
+#' reducePeaks
+#'
+#' Given a localPeaks object, merge peaks which are in the same sample and are
+#' separated by no more than \code{gap} base pairs. When two non-overlapping
+#' peaks are merged, a new peak is created which starts at the starting position
+#' of the first peak and ends at the ending position of the second peak,
+#' spanning the range of both peaks and the gap between them.
+#'
+#' @param localpeaks localPeaks object
+#' @param gap Numeric value, specifying the threshold distance for merging.
+#' Peaks in the same sample which are within this many bp of each other will
+#' be merged.
+#'
+#' @return The localPeaks object that was provided as input, with nearby peaks
+#' merged
+#'
+#' @examples
+#' samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+#' package = "chromswitch")
+#'
+#' metadata <- data.frame(Sample = samples,
+#'     H3K4me3 = outfiles,
+#'     stringsAsFactors = FALSE)
+#'
+#' lpk <- retrievePeaks(H3K4me3,
+#'     metadata = metadata,
+#'     region = GenomicRanges::GRanges(seqnames = "chr19",
+#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+#'
+#' reducePeaks(lpk, gap = 300)
+#'
+#' @export
+reducePeaks <- function(localpeaks, gap) {
+
+    if (gap <= 0) stop("The gap argument must be a positive integer.")
+
+    localpeaks@peaks <- lpkPeaks(localpeaks) %>% lapply(GenomicRanges::reduce,
+                                        min.gapwidth = gap + 1)
+    return(localpeaks)
+
+}
+
