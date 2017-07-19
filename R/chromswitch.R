@@ -18,5 +18,11 @@ NULL
 #' @import methods GenomicRanges IRanges
 NULL
 
+#' @importFrom magrittr %>%
+NULL
+
+#' @importFrom GenomeInfoDb seqinfo
+NULL
+
 #' @importClassesFrom GenomicRanges GRanges GRangesList
 NULL

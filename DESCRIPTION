@@ -8,8 +8,13 @@ Description: chromswitch implements a flexible method to detect chromatin state
     region of interest given peaks called from ChIP-seq data.
 Depends: R (>= 3.4)
 Imports:
+    DescTools (>= 0.99.19),
+    dplyr (>= 0.5.0),
+    GenomeInfoDb (>= 1.12.2),
     GenomicRanges (>= 1.28.2),
     IRanges (>= 2.4.8),
+    lazyeval (>= 0.2.0),
+    magrittr (>= 1.5),
     methods,
     readr(>= 1.1.1)
 License: MIT + file LICENSE

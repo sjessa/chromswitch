@@ -52,7 +52,7 @@ test_that("loadBed reads BED files for a mark for the cohort", {
                                         "../test_data/with_metadata.bed"),
                            stringsAsFactors = FALSE)
 
-    gr <- GenomicRanges::makeGRangesFromDataFrame(data.frame(
+    gr <- makeGRangesFromDataFrame(data.frame(
         seqnames = c("chr1", "chr2"),
         start = c(400, 300),
         end = c(417, 311),

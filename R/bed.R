@@ -43,7 +43,7 @@ loadSampleBed <- function(bed_file, metadata_cols = NULL) {
 #' they are dropped. If some are specified, it is assumed that they describe
 #' the columns which immediately follow "end".
 #'
-#' @return A list of GRanges objects storing peak calls for each samples.
+#' @return A list of GRanges objects storing peak calls for each sample.
 #' List elements are named using provided sample names.
 #'
 #' @examples
