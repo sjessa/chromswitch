@@ -5,7 +5,7 @@
 #
 # --------------------------------------------------------------------------- #
 
-#' makeFriendlyCoord
+#' makeBrowserCoord
 #'
 #' Given coordinates for a genomic region, return a browser-friendly version.
 #'
@@ -15,7 +15,7 @@
 #'
 #' @return String with copy-pastable, genome browser-friendly version of
 #' coordinates.
-makeFriendlyCoord <- function(chr, start, end) {
+makeBrowserCoord <- function(chr, start, end) {
 
     paste0(chr, ":", start, "-", end)
 
