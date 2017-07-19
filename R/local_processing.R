@@ -24,7 +24,7 @@ retrieveSamplePeaks <- function(peaks, region) {
     idx         <- olaps$subjectHits
     local_peaks <- peaks[idx, ] # Not a localPeaks object, just the peaks
 
-    # Add peak length as a metadata column using the GR width accessor for
+    # Add peak length as a metadata column using the GR width accessor
     mcols(local_peaks) <- c(mcols(local_peaks),
                             data.frame(length = width(local_peaks)))
 

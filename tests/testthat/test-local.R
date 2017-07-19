@@ -64,5 +64,7 @@ test_that("reducePeaks reduces nearby peaks within a gap", {
 
     expect_equal(reducePeaks(lpk, 80), localPeaks(region, pks_red, c("A", "B")))
     expect_equal(reducePeaks(lpk, 5), lpk)
+    expect_error(reducePeaks(lpk, -100), "must be a positive integer")
+    expect_error(reducePeaks(lpk, 0), "must be a positive integer")
 
 })
