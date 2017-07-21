@@ -62,12 +62,14 @@ peakOverlap <- function(region, peaks) {
 summarizeSamplePeaks <- function(peaks, region, mark, cols,
                                  length = FALSE, fraction = TRUE, n = FALSE) {
 
-    all_numeric <- stats %>% select_(.dots = vars) %>% lapply(is.numeric) %>%
-        unlist() %>% all()
+    cols_are_numeric <- mcols(peaks) %>%
+        dplyr::select_(.dots = cols) %>%
+        lapply(is.numeric) %>%
+        unlist()
 
-    if (!all_numeric) stop("One or more columns specified in 'cols' is not
-                           numeric. Summary statistics can only be computed on
-                           numeric data.")
+    if (!all(cols_are_numeric)) stop("One or more columns specified in 'cols' is
+                           not numeric. Summary statistics can only be computed
+                           on numeric data.")
 
     # Compute statistics summarizing the peaks located in the query region
     # for specified columns & length
