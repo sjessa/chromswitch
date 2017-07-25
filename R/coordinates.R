@@ -20,3 +20,37 @@ makeBrowserCoord <- function(chr, start, end) {
     paste0(chr, ":", start, "-", end)
 
 }
+
+
+#' coordToGRanges
+#'
+#' Convert a string of genomic coordinates to a GRanges object
+#'
+#' @param coord String coordinate in genome browser-friendly format to convert
+#' to a GRanges object
+#'
+#' @return GRanges object
+coordToGRanges <- function(coord) {
+    # String of coordinates to GRanges
+
+    split <- strsplit(coord, ":")
+    split2 <- strsplit(split[[1]][2], "-")
+    GRanges(seqnames = split[[1]][1],
+            ranges = IRanges::IRanges(as.numeric(gsub(",", "", split2[[1]][1])),
+                                    as.numeric(gsub(",", "", split2[[1]][2]))))
+
+}
+
+
+#' GRangesToCoord
+#'
+#' Convert a GRanges object for one region to a genome browser-friendly string
+#'
+#' @param gr GRanges object specifying region to convert to a string
+#'
+#' @return String
+GRangesToCoord <- function(gr) {
+
+    makeBrowserCoord(seqnames(gr), start(gr), end(gr))
+
+}

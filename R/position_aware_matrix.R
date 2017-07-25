@@ -91,4 +91,102 @@ getUniquePeaks <- function(loc_union, p) {
 }
 
 
+#' getSamplePeakProfile
+#'
+#' For a set of peaks in one sample and a set of windows, which could correspond
+#' to bins of a region, or unique peaks, model presence or absence of peaks in
+#' each window by calling peaks present in a window if peaks in the sample have
+#' a p-reciprocal overlap with the window. Alternatively, the windows can be
+#' viewed as unique peaks, and this function calls the presence or absence of
+#' each peak in the sample.
+#'
+#' @param peaks GRanges object containing peaks for one sample
+#' @param windows GRanges object containing windows in which to model presence/
+#' absence of peaks, these become the features or columns of the output
+#' or columns
+#' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
+#' to require.
+#'
+#' @return A one-row dataframe with a logical value TRUE/FALSE in each column
+#' (window) indicating whether any peaks overlap the window
+getSamplePeakProfile <- function(peaks, windows, p) {
+
+    overlaps <- lapply(windows, pReciprocalOverlap, peaks, p) %>%
+        unlist() %>%
+        t() %>%
+        data.frame()
+
+    return(overlaps)
+
+}
+
+
+#' positionAware
+#'
+#' Given peaks for a set of samples in a query region, construct a sample-by-
+#' feature matrix where each row is a binary vector which models the presence
+#' or absence of unqiue peaks in the region.
+#'
+#' @param lpks localPeaks object storing peaks for all samples in the query
+#' region
+#' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
+#' to require.
+#'
+#' @examples
+#' samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+#' package = "chromswitch")
+#'
+#' metadata <- data.frame(Sample = samples,
+#'     H3K4me3 = outfiles,
+#'     stringsAsFactors = FALSE)
+#'
+#' lpk <- retrievePeaks(H3K4me3,
+#'     metadata = metadata,
+#'     region = GenomicRanges::GRanges(seqnames = "chr19",
+#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+#'
+#' # Get feature matrix
+#' ft_matrix <- positionAware(lpk, 0.5)
+#'
+#' # See features
+#' attr(ft_matrix, "features")
+#'
+#' @return A data frame where rows are samples and columns are features. The
+#' genomic ranges which give the features are returned as the \code{features}
+#' attribute of the data frame.
+#'
+#' @export
+positionAware <- function(lpks, p) {
+
+    # Get the union of all peaks
+    loc_union <- Reduce("c", lpkPeaks(lpks))
+
+    # From the union, extract unique peaks to serve as features
+    uniq_pks <- getUniquePeaks(loc_union, p)
+
+    # Model presence/absence of each feature peak in each sample
+    ft_matrix <- lapply(lpkPeaks(lpks), getSamplePeakProfile, uniq_pks, p) %>%
+        dplyr::bind_rows()
+
+    uniq_pks_coords <- uniq_pks %>% lapply(GRangesToCoord) %>% unlist()
+    colnames(ft_matrix) <- uniq_pks_coords
+    rownames(ft_matrix) <- lpkSamples(lpks)
+
+    # This is not necessary if the features are unique peaks rather than
+    # arbitrary bins
+    # # Remove columns (features) which are all FALSE i.e. no pks in region
+    # ft_matrix <- as.matrix(ft_matrix) * 1
+    # ft_matrix <- ft_matrix[, which(!apply(ft_matrix, 2,
+    #                                       FUN = function(x){all(x == 0)}))]
+
+    # Return the feature regions as an attribute
+    attr(ft_matrix, "features") <- uniq_pks
+
+    return(ft_matrix)
+
+}
+
+
+
 
