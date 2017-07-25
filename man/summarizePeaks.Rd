@@ -24,7 +24,7 @@ peaks?}
 \item{n}{Logical: compute the number of peaks in the region?}
 }
 \value{
-A dataframe where rows are samples and columns are features
+A matrix where rows are samples and columns are features
 }
 \description{
 Given peaks for a set of samples in a query region, construct a sample-by-

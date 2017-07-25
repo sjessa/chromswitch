@@ -1,4 +1,4 @@
-context("Local processing functions")
+context("Feature matrix construction functions")
 
 test_that("summarizePeaks generates summary-stats feature matrices", {
 
@@ -40,5 +40,42 @@ test_that("summarizePeaks generates summary-stats feature matrices", {
     expect_error(summarizePeaks(lpk, "H3K4me3", cols = "name"), "not numeric")
     expect_error(summarizePeaks(lpk, "H3K4me3", cols = c("name", "qValue")),
                                 "not numeric")
+
+})
+
+
+test_that("Position-aware strategy accomodates regions with no peaks", {
+
+    empty_pks <- GRanges(seqnames = c(), ranges = IRanges(start = c(), end = c()))
+    region <- GRanges(seqnames = "chr2",
+                        ranges = IRanges(start = 100, end = 300))
+
+    expect_equal(suppressWarnings(peakOverlap(region, empty_pks)), 0)
+
+    metadata <- data.frame(Sample = c("A", "B"),
+                           TestMark = c("../test_data/basic.bed",
+                                        "../test_data/basic.bed"),
+                           stringsAsFactors = FALSE)
+
+    pks <- list(A = GRanges(seqnames = rep("chr1", 3),
+                            ranges = IRanges(start = c(100, 150, 500),
+                                             end = c(200, 250, 600))),
+                B = GRanges(seqnames = rep("chr1", 3),
+                            ranges = IRanges(start = c(100, 150, 500),
+                                             end = c(200, 250, 600))))
+    mcols(pks$A)$signalValue <- c(5, 10, 15)
+    mcols(pks$B)$signalValue <- c(8, 3, 10)
+
+    nopk <- suppressWarnings(retrievePeaks(pks, metadata, region))
+    nopk_summary <- data.frame("signalValue_mean" = c(0, 0),
+                               "signalValue_median" = c(0, 0),
+                               "signalValue_max" = c(0, 0),
+                               "fraction_region_in_peaks" = c(0, 0))
+
+    rownames(nopk_summary) <- c("A", "B")
+    names(nopk_summary) <- paste0("H3K4me3_", names(nopk_summary))
+
+    expect_equal(summarizePeaks(nopk, "H3K4me3", cols = "signalValue"),
+                as.matrix(nopk_summary))
 
 })

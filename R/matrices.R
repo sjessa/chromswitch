@@ -139,7 +139,7 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols,
 #' peaks?
 #' @param n Logical: compute the number of peaks in the region?
 #'
-#' @return A dataframe where rows are samples and columns are features
+#' @return A matrix where rows are samples and columns are features
 #'
 #' @examples
 #' samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
