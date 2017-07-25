@@ -63,10 +63,8 @@ peakOverlap <- function(region, peaks) {
 #' @param n Logical: compute the number of peaks in the region?
 #'
 #' @return data.frame
-summarizeSamplePeaks <- function(peaks, region, mark, cols,
-                                length = FALSE,
-                                fraction = TRUE,
-                                n = FALSE) {
+summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
+                                fraction = TRUE, n = FALSE) {
 
     cols_are_numeric <- mcols(peaks) %>%
         as.data.frame %>%
@@ -158,10 +156,8 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols,
 #' summarizePeaks(lpk, mark = "H3K4me3", cols = c("qValue", "signalValue"))
 #'
 #' @export
-summarizePeaks <- function(localpeaks, mark, cols,
-                            length = FALSE,
-                            fraction = TRUE,
-                            n = FALSE) {
+summarizePeaks <- function(localpeaks, mark, cols, length = FALSE,
+                            fraction = TRUE, n = FALSE) {
 
 
     ft_matrix <- lpkPeaks(localpeaks) %>%

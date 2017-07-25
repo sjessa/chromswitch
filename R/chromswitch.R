@@ -21,6 +21,9 @@ NULL
 #' @importFrom magrittr %>%
 NULL
 
+#' @importFrom stats hclust dist cutree
+NULL
+
 #' @importFrom GenomeInfoDb seqinfo
 NULL
 
