@@ -10,9 +10,9 @@
 #' peakOverlap
 #'
 #' Compute the fraction of the query region of interest which is overlapped
-#' by peaks. This value will be at most 1, since we only consider the overlapping
-#' portion of each peak, and peaks do not overlap with each other. This value
-#' will be 0 in the case that there are no peaks in the query region.
+#' by peaks. This value will be at most 1, since we only consider the
+#' overlapping portion of each peak, and peaks do not overlap with each other.
+#' This value will be 0 in the case that there are no peaks in the query region.
 #'
 #' @param region GRanges object defining query region
 #' @param peaks GRanges object storing peak calls for a sample in the
@@ -31,8 +31,12 @@ peakOverlap <- function(region, peaks) {
         # region, trim its start/endpoints to match the region exactly
         contained_regions <- peaks %>%
             as.data.frame %>%
-            dplyr::mutate(start = ifelse(start < start(region), start(region), start)) %>%
-            dplyr::mutate(end = ifelse(end > end(region), end(region), end)) %>%
+            dplyr::mutate(start = ifelse(start < start(region),
+                                        start(region),
+                                        start)) %>%
+            dplyr::mutate(end = ifelse(end > end(region),
+                                        end(region),
+                                        end)) %>%
             makeGRangesFromDataFrame(keep.extra.columns = TRUE)
 
         fraction <- sum(width(contained_regions))/width(region)
@@ -60,16 +64,19 @@ peakOverlap <- function(region, peaks) {
 #'
 #' @return data.frame
 summarizeSamplePeaks <- function(peaks, region, mark, cols,
-                                 length = FALSE, fraction = TRUE, n = FALSE) {
+                                length = FALSE,
+                                fraction = TRUE,
+                                n = FALSE) {
 
     cols_are_numeric <- mcols(peaks) %>%
+        as.data.frame %>%
         dplyr::select_(.dots = cols) %>%
         lapply(is.numeric) %>%
         unlist()
 
     if (!all(cols_are_numeric)) stop("One or more columns specified in 'cols' is
-                           not numeric. Summary statistics can only be computed
-                           on numeric data.")
+                            not numeric. Summary statistics can only be computed
+                            on numeric data.")
 
     # Compute statistics summarizing the peaks located in the query region
     # for specified columns & length
@@ -77,38 +84,39 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols,
 
         stats <- mcols(peaks) %>%
             as.data.frame %>%
-            dplyr::summarise_at(.vars = c(length, cols),
+            dplyr::summarise_at(.vars = c("length", cols),
                                 # Summary stats to calculate
-                                funs(mean(.,   na.rm = FALSE),
-                                     median(., na.rm = FALSE),
-                                     max(.,    na.rm = FALSE))) %>%
+                                dplyr::funs(mean, median, max)) %>%
             # Compute fraction of the region which is overlapped by peaks
-            dplyr::mutate(fraction_region_in_peaks = peakOverlap(region, peaks)) %>%
+            dplyr::mutate(fraction_region_in_peaks = peakOverlap(region,
+                                                                peaks)) %>%
             # Compute number of peaks in region
             dplyr::mutate(n_peaks = length(peaks))
 
     } else if (length(peaks) == 0) {
 
-        stats <- rep(0, length(cols))
-        names(stats) <- cols
+        stats <- rep(0, length(c("length", cols)))
+        names(stats) <- c("length", cols)
 
         # No peaks in the query region, set all values to 0
         stats <- stats %>%
             t() %>%
             magrittr::set_rownames(NULL) %>%
             as.data.frame %>%
-            dplyr::mutate_all(funs(mean, median, max)) %>%
+            dplyr::mutate_all(dplyr::funs(mean, median, max)) %>%
             dplyr::select_(.dots = paste("-", c("length", cols))) %>%
-            dplyr::mutate(fraction_region_in_peaks = peakOverlap(region, peaks)) %>%
+            dplyr::mutate(fraction_region_in_peaks = peakOverlap(region,
+                                                                peaks)) %>%
             dplyr::mutate(n_peaks = length(peaks))
     }
 
-    names(stats) <- paste0(mark, "_", names(stats))
-
     # Optional additional summary statistics
-    if (!length)   stats <- stats %>% dplyr::select(-matches("length"))
-    if (!fraction) stats <- stats %>% dplyr::select(-fraction_region_in_peaks)
-    if (!n)        stats <- stats %>% dplyr::select(-n_peaks)
+    if (!length)   stats <- stats %>% dplyr::select(-dplyr::matches("length"))
+    if (!n)        stats <- stats %>% dplyr::select_("-n_peaks")
+    if (!fraction) stats <- stats %>%
+            dplyr::select_("-fraction_region_in_peaks")
+
+    names(stats) <- paste0(mark, "_", names(stats))
 
     return(stats)
 
@@ -151,11 +159,14 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols,
 #'
 #' @export
 summarizePeaks <- function(localpeaks, mark, cols,
-                           length = FALSE, fraction = TRUE, n = FALSE) {
+                            length = FALSE,
+                            fraction = TRUE,
+                            n = FALSE) {
+
 
     ft_matrix <- lpkPeaks(localpeaks) %>%
         lapply(summarizeSamplePeaks,
-               lpkRegion(localpeaks), mark, cols, length, fraction, n) %>%
+                lpkRegion(localpeaks), mark, cols, length, fraction, n) %>%
         dplyr::bind_rows()
 
     rownames(ft_matrix) <- lpkSamples(localpeaks)

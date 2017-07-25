@@ -17,7 +17,7 @@ double, a number in [0,1].
 }
 \description{
 Compute the fraction of the query region of interest which is overlapped
-by peaks. This value will be at most 1, since we only consider the overlapping
-portion of each peak, and peaks do not overlap with each other. This value
-will be 0 in the case that there are no peaks in the query region.
+by peaks. This value will be at most 1, since we only consider the
+overlapping portion of each peak, and peaks do not overlap with each other.
+This value will be 0 in the case that there are no peaks in the query region.
 }
