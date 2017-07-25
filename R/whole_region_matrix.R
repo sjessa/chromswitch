@@ -1,8 +1,8 @@
 # ---------------------------------------------------------------------------- #
 #
-# Feature matrix construction functions:
+# Feature matrix construction functions for the whole-region strategy:
 # Functions which take in a localPeaks object or a sample-by-feature matrix,
-# and return a feature matrix
+# and return a feature matrix, and their helpers
 #
 # ---------------------------------------------------------------------------- #
 
@@ -173,3 +173,4 @@ summarizePeaks <- function(localpeaks, mark, cols,
     return(data.matrix(ft_matrix))
 
 }
+

@@ -1,4 +1,4 @@
-context("Feature matrix construction functions")
+context("Whole-region strategy for feature matrix construction")
 
 test_that("summarizePeaks generates summary-stats feature matrices", {
 
@@ -44,7 +44,7 @@ test_that("summarizePeaks generates summary-stats feature matrices", {
 })
 
 
-test_that("Position-aware strategy accomodates regions with no peaks", {
+test_that("Whole-region strategy accomodates regions with no peaks", {
 
     empty_pks <- GRanges(seqnames = c(), ranges = IRanges(start = c(), end = c()))
     region <- GRanges(seqnames = "chr2",
@@ -77,5 +77,13 @@ test_that("Position-aware strategy accomodates regions with no peaks", {
 
     expect_equal(summarizePeaks(nopk, "H3K4me3", cols = "signalValue"),
                 as.matrix(nopk_summary))
+
+    nopk_summary2 <- nopk_summary %>%
+        dplyr::select_("-H3K4me3_fraction_region_in_peaks")
+
+    expect_equal(summarizePeaks(nopk, "H3K4me3",
+                                cols = "signalValue",
+                                fraction = FALSE),
+                 as.matrix(nopk_summary2))
 
 })
