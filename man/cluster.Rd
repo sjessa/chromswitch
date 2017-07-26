@@ -4,11 +4,12 @@
 \alias{cluster}
 \title{cluster}
 \usage{
-cluster(ft_mat, metadata, region, heatmap = TRUE, title = NULL)
+cluster(ft_mat, metadata, region, heatmap = TRUE, title = NULL,
+  outdir = NULL)
 }
 \arguments{
 \item{ft_mat}{matrix where columns are features and rows are samples as
-returned by \code{\link{summarizePeaks}} or \code{\link{positionAware}}}
+returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}}
 
 \item{metadata}{A dataframe with a column "Sample" which stores
 the sample identifiers, and at least one column, "Group", which stores
@@ -21,11 +22,13 @@ the heatmap for hierarchical clustering}
 
 \item{title}{(Optional) If \code{heatmap} is TRUE, specify the title of the
 plot, which will also be used for the output file name in PDF format}
+
+\item{outdir}{Optional, the name of the directory where heatmaps should
+be saved}
 }
 \value{
-List with two elements: "stats" is a one-row dataframe with cluster
-validity statistics for the clustering result, "clusters" is a character
-vector where names are sample IDs and values are cluster labels
+A dataframe with the region, the number of clusters inferred,
+the cluster validity statistics, and the cluster assignments for each sample
 }
 \description{
 cluster

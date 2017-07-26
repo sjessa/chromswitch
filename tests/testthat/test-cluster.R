@@ -27,7 +27,8 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
                                     ranges = IRanges::IRanges(start = 54924104,
                                                             end = 54929104))
 
-    cluster_out <- list(stats = data.frame(
+    cluster_out <- data.frame(
+        region = GRangesToCoord(region),
         k = 2,
         Average_Silhouette = 0.6883056,
         Purity = 1,
@@ -37,9 +38,9 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         Homogeneity = 1,
         Completeness = 1,
         V_measure = 1,
-        Consensus_top = 1),
-        clusters = c(brain1 = 1, brain2 = 1, brain3 = 1,
-                     other1 = 2, other2 = 2, other3 = 2))
+        Consensus_top = 1,
+        brain1 = 1, brain2 = 1, brain3 = 1,
+        other1 = 2, other2 = 2, other3 = 2, stringsAsFactors = FALSE)
 
     expect_equal(cluster(ft_mat, metadata, region, heatmap = FALSE),
                 cluster_out)

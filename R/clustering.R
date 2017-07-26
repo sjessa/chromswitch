@@ -9,7 +9,7 @@
 #' cluster
 #'
 #' @param ft_mat matrix where columns are features and rows are samples as
-#' returned by \code{\link{summarizePeaks}} or \code{\link{positionAware}}
+#' returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}
 #' @param metadata A dataframe with a column "Sample" which stores
 #' the sample identifiers, and at least one column, "Group", which stores
 #' the biological condition labels of the samples
@@ -18,6 +18,8 @@
 #' the heatmap for hierarchical clustering
 #' @param title (Optional) If \code{heatmap} is TRUE, specify the title of the
 #' plot, which will also be used for the output file name in PDF format
+#' @param outdir Optional, the name of the directory where heatmaps should
+#' be saved
 #'
 #' @examples
 #' samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
@@ -42,13 +44,12 @@
 #'
 #' cluster(ft_mat, metadata, region)
 #'
-#' @return List with two elements: "stats" is a one-row dataframe with cluster
-#' validity statistics for the clustering result, "clusters" is a character
-#' vector where names are sample IDs and values are cluster labels
+#' @return A dataframe with the region, the number of clusters inferred,
+#' the cluster validity statistics, and the cluster assignments for each sample
 #'
 #' @export
 cluster <- function(ft_mat, metadata, region,
-                    heatmap = TRUE, title = NULL) {
+                    heatmap = TRUE, title = NULL, outdir = NULL) {
 
     ft_mat <- data.matrix(ft_mat)
 
@@ -66,7 +67,11 @@ cluster <- function(ft_mat, metadata, region,
 
         if (is.null(title)) title <- GRangesToCoord(region)
 
-        grDevices::pdf(paste0(title, ".pdf"))
+        outfile <- ifelse(!is.null(outdir),
+                        paste0(outdir, "/", title, ".pdf"),
+                        paste0(title, ".pdf"))
+
+        grDevices::pdf(outfile)
         results <- gplots::heatmap.2(ft_mat,
                             dendrogram = "row",
                             trace = "none",
@@ -117,6 +122,16 @@ cluster <- function(ft_mat, metadata, region,
     stats$V_measure    <- vMeasure(contingency)
     stats$Consensus_top <- mean(x = c(stats$ARI, stats$NMI, stats$V_measure))
 
-    return(list(stats = as.data.frame(stats), clusters = clusters))
+    clusters_df <- clusters %>%
+        as.list() %>%
+        as.data.frame(stringsAsFactors = FALSE)
+    names(clusters_df) <- names(clusters)
+
+    region_df <- data.frame(region = GRangesToCoord(region),
+                            stringsAsFactors = FALSE)
+
+    results <- dplyr::bind_cols(region_df, stats, clusters_df)
+
+    return(as.data.frame(results))
 
 }

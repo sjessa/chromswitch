@@ -109,6 +109,6 @@ test_that("position-aware feature matrix construction works", {
     rownames(position_matrix) = lpkSamples(lp)
     attr(position_matrix, "features") <- getUniquePeaks(Reduce("c", pks), 0.5)
 
-    expect_equal(positionAware(lp, 0.5), position_matrix)
+    expect_equal(binarizePeaks(lp, 0.5), position_matrix)
 
 })

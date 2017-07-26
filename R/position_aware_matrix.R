@@ -121,7 +121,7 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 }
 
 
-#' positionAware
+#' binarizePeaks
 #'
 #' Given peaks for a set of samples in a query region, construct a sample-by-
 #' feature matrix where each row is a binary vector which models the presence
@@ -147,7 +147,7 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 #'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
 #'
 #' # Get feature matrix
-#' ft_matrix <- positionAware(lpk, 0.5)
+#' ft_matrix <- binarizePeaks(lpk, 0.5)
 #'
 #' # See features
 #' attr(ft_matrix, "features")
@@ -157,7 +157,7 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 #' attribute of the data frame.
 #'
 #' @export
-positionAware <- function(lpks, p) {
+binarizePeaks <- function(lpks, p) {
 
     # Get the union of all peaks
     loc_union <- Reduce("c", lpkPeaks(lpks))

@@ -65,6 +65,7 @@ normalizePeaks <- function(peaks, columns, tail = 0.005) {
     if (!all(columns %in% names(mcols(peaks[[1]])))) stop("One or more columns
                                     was not found in the metadata columns for
                                     the provided peaks.")
+
     if (tail < 0 || tail > 1) stop("Please provide a value for 'tail'
                                     between 0 and 1.")
 
@@ -133,8 +134,22 @@ filterSamplePeaks <- function(sample_peaks, columns, thresholds) {
 #' @export
 filterPeaks <- function(peaks, columns, thresholds) {
 
-    if (length(columns) != length(thresholds)) stop("Please provide one
-                                                    threshold per column.")
+    if (length(columns) != length(thresholds))
+    stop("Please provide one threshold per column in order to filter peaks.")
+
+    if (!all(columns %in% names(mcols(peaks[[1]])))) stop("One or more columns
+                                    was not found in the metadata columns for
+                                    the provided peaks.")
+
+    cols_are_numeric <- mcols(peaks[[1]]) %>%
+        as.data.frame %>%
+        dplyr::select_(.dots = columns) %>%
+        lapply(is.numeric) %>%
+        unlist()
+
+    if (!all(cols_are_numeric)) stop("One or more columns specified in 'columns'
+                            is not numeric. Only numeric columns can
+                            be filtered.")
 
     peaks %>% lapply(filterSamplePeaks, columns, thresholds)
 
