@@ -93,12 +93,20 @@ test_that("filterPeaks filters peaks according to specified thresholds", {
                  list(A = gr_filt, B = gr_filt))
 
     expect_error(filterPeaks(list(A = gr, B = gr),
-                                 columns = c("signalValue", "qValue"),
-                                 thresholds = 5), "threshold per column")
+                                columns = c("signalValue", "qValue"),
+                                thresholds = 5), "threshold per column")
 
     expect_error(filterPeaks(list(A = gr, B = gr),
-                             columns = c("signalValue", "qValue"),
-                             thresholds = c(5, 6, 7)), "threshold per column")
+                            columns = c("signalValue", "qValue"),
+                            thresholds = c(5, 6, 7)), "threshold per column")
+
+    expect_error(filterPeaks(list(A = gr, B = gr),
+                            columns = c("name", "qValue"),
+                            thresholds = c(5, 6)), "not numeric")
+
+    expect_error(filterPeaks(list(A = gr, B = gr),
+                            columns = c("nonexistent", "qValue"),
+                            thresholds = c(5, 6)), "not found")
 
 })
 
