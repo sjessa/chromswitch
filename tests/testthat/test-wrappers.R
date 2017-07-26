@@ -93,6 +93,15 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
                       heatmap = FALSE),
                  output_nonorm, tolerance = 1e-2)
 
+    expect_equal(call(normalize = FALSE,
+                      mark = "H3K4me3",
+                      summarize_columns = c("pValue", "qValue", "signalValue"),
+                      heatmap = TRUE),
+                 output_nonorm, tolerance = 1e-2)
+
+    file.remove(paste0(GRangesToCoord(regions[1]), ".pdf"))
+    file.remove(paste0(GRangesToCoord(regions[2]), ".pdf"))
+
     expect_error(call(normalize = FALSE,
                       mark = "H3K4me3",
                       summarize_columns = c("pValue", "qValue", "signalValue"),

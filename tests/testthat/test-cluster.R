@@ -42,10 +42,14 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         brain1 = 1, brain2 = 1, brain3 = 1,
         other1 = 2, other2 = 2, other3 = 2, stringsAsFactors = FALSE)
 
-    expect_equal(cluster(ft_mat, metadata, region, heatmap = FALSE),
+    expect_equal(cluster(ft_mat, metadata, region),
                 cluster_out)
 
-    expect_equal(cluster(ft_mat, metadata, region),
+    expect_equal(cluster(ft_mat, metadata, region, heatmap = TRUE),
+                 cluster_out)
+
+    expect_equal(cluster(ft_mat, metadata, region, heatmap = TRUE,
+                        outdir = "."),
                  cluster_out)
 
     # Clean up
