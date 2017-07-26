@@ -15,7 +15,7 @@
 #' the biological condition labels of the samples
 #' @param region GRanges object specifying the query region
 #' @param heatmap (Optional) Logical value indicating whether or not to plot
-#' the heatmap for hierarchical clustering
+#' the heatmap for hierarchical clustering. Default: FALSE
 #' @param title (Optional) If \code{heatmap} is TRUE, specify the title of the
 #' plot, which will also be used for the output file name in PDF format
 #' @param outdir Optional, the name of the directory where heatmaps should
@@ -49,7 +49,10 @@
 #'
 #' @export
 cluster <- function(ft_mat, metadata, region,
-                    heatmap = TRUE, title = NULL, outdir = NULL) {
+                    heatmap = FALSE, title = NULL, outdir = NULL) {
+
+    # If only one feature, can't draw a heatmap
+    if (ncol(ft_mat) == 1) heatmap = FALSE
 
     ft_mat <- data.matrix(ft_mat)
 

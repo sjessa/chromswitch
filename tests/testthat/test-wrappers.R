@@ -99,3 +99,50 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
                       titles = "test"), "one title per query")
 
 })
+
+
+test_that("The position-aware strategy properly executes the analysis", {
+
+    samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+    outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+                            package = "chromswitch")
+    groups <- c(rep("Brain", 3), rep("Other", 3))
+
+    metadata <- data.frame(Sample = samples,
+                           H3K4me3 = outfiles,
+                           Group = groups,
+                           stringsAsFactors = FALSE)
+
+    regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
+                    ranges = IRanges::IRanges(start = c(54924104, 54892830),
+                                                end = c(54929104, 54897288)))
+
+    call <- pryr::partial(callPositionAware,
+                          query = regions,
+                          peaks = H3K4me3,
+                          metadata = metadata)
+
+    output <- data.frame(region = c("chr19:54924104-54929104",
+                                    "chr19:54892830-54897288"),
+                        k = c(2, 2),
+                        Average_Silhouette = c(1, 0),
+                        Purity = c(1, 0.6666667),
+                        Entropy = c(0, 0.4591479),
+                        ARI = c(1, 0),
+                        NMI = c(1, 0.2367466),
+                        Homogeneity = c(1, 0.1908745),
+                        Completeness = c(1, 0.293643),
+                        V_measure = c(1, 0.2313599),
+                        Consensus_top = c(1.0000000, 0.1560355),
+                        brain1 = c(1, 1),
+                        brain2 = c(1, 1),
+                        brain3 = c(1, 1),
+                        other1 = c(2, 1),
+                        other2 = c(2, 1),
+                        other3 = c(2, 2), stringsAsFactors = FALSE)
+
+    expect_equal(suppressWarnings(call(filter = FALSE, reduce = TRUE)),
+                output, tolerance = 1e-4)
+
+
+})

@@ -111,4 +111,12 @@ test_that("position-aware feature matrix construction works", {
 
     expect_equal(binarizePeaks(lp, 0.5), position_matrix)
 
+    region2 <- GRanges(seqnames = "chr1",
+                      ranges = IRanges(start = 100, end = 300))
+
+    pks2 <- GRanges(seqnames = c(), ranges = IRanges(start = c(), end = c()))
+    lp2 <- localPeaks(region2, list(A = pks2, B = pks2), c("A", "B"))
+
+    expect_warning(binarizePeaks(lp2, 0.5), "No peaks found")
+
 })

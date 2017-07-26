@@ -159,6 +159,17 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 #' @export
 binarizePeaks <- function(lpks, p) {
 
+    # Empty peaks scenario: make a dummy feature, set to TRUE for all samples
+    if (is.empty(lpks)) {
+
+        warning("No peaks found in region")
+
+        ft_matrix <- data.frame(no_peak = rep(TRUE, length(lpkPeaks(lpks))))
+        rownames(ft_matrix) <- lpkSamples(lpks)
+
+        return(ft_matrix)
+    }
+
     # Get the union of all peaks
     loc_union <- Reduce("c", lpkPeaks(lpks))
 

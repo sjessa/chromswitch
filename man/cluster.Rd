@@ -4,7 +4,7 @@
 \alias{cluster}
 \title{cluster}
 \usage{
-cluster(ft_mat, metadata, region, heatmap = TRUE, title = NULL,
+cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
   outdir = NULL)
 }
 \arguments{
@@ -18,7 +18,7 @@ the biological condition labels of the samples}
 \item{region}{GRanges object specifying the query region}
 
 \item{heatmap}{(Optional) Logical value indicating whether or not to plot
-the heatmap for hierarchical clustering}
+the heatmap for hierarchical clustering. Default: FALSE}
 
 \item{title}{(Optional) If \code{heatmap} is TRUE, specify the title of the
 plot, which will also be used for the output file name in PDF format}
