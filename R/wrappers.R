@@ -62,10 +62,11 @@
 #' compute the number of peaks in the region? Default: FALSE
 #' @param heatmap Optional: Logical value, plot the heatmap corresponding to
 #' the hierarchical clustering result? Default: TRUE
-#' @param title Optional:  if \code{heatmap} is TRUE, character string
-#' specifying the title to use when plotting heatmaps, also reused as the prefix
-#' of the name of the file where the heatmap is saved. By default, the title
-#' is the genomic coordinates of the region in the form "chrN:start-end"
+#' @param titles Optional:  if \code{heatmap} is TRUE, a character vector
+#' of the same length as \code{query}, specifying the title to use when plotting
+#' each heatmap (e.g. a gene name), also reused as the
+#' prefix of the name of the file where the heatmap is saved. By default, the
+#' title is the genomic coordinates of the region in the form "chrN:start-end"
 #' @param outdir Optional: if \code{heatmap} is TRUE, the name of the directory
 #' where heatmaps should be saved
 #'
@@ -104,7 +105,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                             normalize_columns = NULL, tail = 0.005,
                             summarize_columns,
                             length = FALSE, fraction = TRUE, n = FALSE,
-                            heatmap = TRUE, title = NULL, outdir = NULL) {
+                            heatmap = TRUE, titles = NULL, outdir = NULL) {
 
     # Preprocessing
     if (filter) {
@@ -128,6 +129,10 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                                 tail = tail)
     }
 
+    # Check titles
+    if ((!is.null(titles)) && length(query) != length(titles))
+        stop("Please provide one title per query region.")
+
     # Retrieve peaks: get a localPeaks object for each query region
     lpks      <- lapply(query, function(region)
                         retrievePeaks(peaks, metadata, region))
@@ -139,10 +144,24 @@ callWholeRegion <- function(query, peaks, metadata, mark,
     # Convert the queries into a GRangesList in order to be able to Map over
     queries <- lapply(query, GRangesList)
 
+
+    if (is.null(titles)) titles <- rep(NULL, length(query))
+
     # Cluster the feature matrices
-    results <- Map(f = function(ft_mat, region)
-        cluster(ft_mat, metadata, region, heatmap, title, outdir),
-        matrices, queries)
+    if (!heatmap) {
+
+        results <- Map(f = function(ft_mat, region)
+            cluster(ft_mat, metadata, region, heatmap, title, outdir),
+            matrices, queries)
+
+    } else {
+
+        if (is.null(titles)) titles <- unlist(lapply(regions, GRangesToCoord))
+
+        results <- Map(f = function(ft_mat, region, title)
+            cluster(ft_mat, metadata, region, heatmap, title, outdir),
+            matrices, queries, titles)
+    }
 
     return(data.frame(dplyr::bind_rows(results)))
 

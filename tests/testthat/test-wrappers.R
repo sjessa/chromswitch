@@ -93,4 +93,9 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
                       heatmap = FALSE),
                  output_nonorm, tolerance = 1e-2)
 
+    expect_error(call(normalize = FALSE,
+                      mark = "H3K4me3",
+                      summarize_columns = c("pValue", "qValue", "signalValue"),
+                      titles = "test"), "one title per query")
+
 })

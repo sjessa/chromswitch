@@ -8,7 +8,7 @@ callWholeRegion(query, peaks, metadata, mark, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, normalize = TRUE,
   normalize_columns = NULL, tail = 0.005, summarize_columns,
   length = FALSE, fraction = TRUE, n = FALSE, heatmap = TRUE,
-  title = NULL, outdir = NULL)
+  titles = NULL, outdir = NULL)
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
@@ -66,10 +66,11 @@ compute the number of peaks in the region? Default: FALSE}
 \item{heatmap}{Optional: Logical value, plot the heatmap corresponding to
 the hierarchical clustering result? Default: TRUE}
 
-\item{title}{Optional:  if \code{heatmap} is TRUE, character string
-specifying the title to use when plotting heatmaps, also reused as the prefix
-of the name of the file where the heatmap is saved. By default, the title
-is the genomic coordinates of the region in the form "chrN:start-end"}
+\item{titles}{Optional:  if \code{heatmap} is TRUE, a character vector
+of the same length as \code{query}, specifying the title to use when plotting
+each heatmap (e.g. a gene name), also reused as the
+prefix of the name of the file where the heatmap is saved. By default, the
+title is the genomic coordinates of the region in the form "chrN:start-end"}
 
 \item{outdir}{Optional: if \code{heatmap} is TRUE, the name of the directory
 where heatmaps should be saved}
