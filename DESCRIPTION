@@ -11,7 +11,6 @@ Imports:
     cluster (>= 2.0.6),
     DescTools (>= 0.99.19),
     dplyr (>= 0.5.0),
-    GenomeInfoDb (>= 1.12.2),
     GenomicRanges (>= 1.28.2),
     gplots(>= 3.0.1),
     graphics,

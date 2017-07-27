@@ -24,8 +24,5 @@ NULL
 #' @importFrom stats hclust dist cutree
 NULL
 
-#' @importFrom GenomeInfoDb seqinfo
-NULL
-
 #' @importClassesFrom GenomicRanges GRanges GRangesList
 NULL
