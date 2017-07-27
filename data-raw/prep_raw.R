@@ -6,7 +6,7 @@
 library(tidyverse)
 
 raw <- list.files(pattern = "*chr19.nPk.bed",
-                  full.names = TRUE) %>%
+                  full.names = TRUE, recursive = TRUE) %>%
     map(read_tsv,
         col_names = c("chr", "start", "end", "name", "score","strand",
                       "signalValue", "pValue", "qValue", "peak"))
@@ -17,7 +17,7 @@ tidy <- raw %>%
     map(filter, end <= 55074918)
 
 # Write to BED
-samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 outfiles <- paste0("inst/extdata/", samples, ".H3K4me3.bed")
 
 lapply(seq_along(tidy), function(i)

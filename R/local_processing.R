@@ -53,7 +53,7 @@ retrieveSamplePeaks <- function(peaks, region) {
 #'
 #' @examples
 #'
-#' samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 #' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
 #'
@@ -94,7 +94,7 @@ retrievePeaks <- function(peaks, metadata, region) {
 #' merged
 #'
 #' @examples
-#' samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 #' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
 #'

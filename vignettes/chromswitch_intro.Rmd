@@ -1,0 +1,50 @@
+---
+title: "An introduction to `chromswitch` for detecting chromatin state switches"
+author:
+- Selin Jessa
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document2:
+        toc: true
+        toc_float: true
+vignette: >
+    %\VignetteIndexEntry{An introduction to `chromswitch` for detecting chromatin state switches}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+<!-- Notes about the package, and explanation of 
+what this document will cover -->
+
+<!-- This package provides two convenience wrappers
+which run the analysis for one -->
+<!-- histone mark on one or more genomic regions
+of interest. -->
+
+# Overview of the method
+
+
+# Applying the whole-region strategy to detect brain-specific switches
+```{r setup}
+library(chromswitch)
+```
+
+
+```{r }
+
+
+
+```
+
+
+# Applying the position-aware strategy to detect brain-specific switches
+
+
+# Leveraging the modularity of `chromswitch` to incorporate multiple marks
+
+
+# Session Info
+```{r session}
+sessionInfo()
+```

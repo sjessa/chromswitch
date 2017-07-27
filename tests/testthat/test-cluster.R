@@ -3,7 +3,7 @@ context("Hierarchical clustering over the feature-by-sample matrix")
 
 test_that("Hierarchical clustering finds clusters from feature matrix", {
 
-    samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+    samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
     outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
     package = "chromswitch")
     groups <- c(rep("Brain", 3), rep("Other", 3))
@@ -39,8 +39,8 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         Completeness = 1,
         V_measure = 1,
         Consensus_top = 1,
-        brain1 = 1, brain2 = 1, brain3 = 1,
-        other1 = 2, other2 = 2, other3 = 2, stringsAsFactors = FALSE)
+        E068 = 1, E071 = 1, E074 = 1,
+        E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
     expect_equal(cluster(ft_mat, metadata, region),
                 cluster_out)

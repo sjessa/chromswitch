@@ -3,7 +3,7 @@ context("Chromswitch wrapper functions")
 
 test_that("The whole-region strategy wrapper properly executes the analysis", {
 
-    samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+    samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
     outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
     package = "chromswitch")
     groups <- c(rep("Brain", 3), rep("Other", 3))
@@ -29,12 +29,12 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
         Completeness = c(1, 0),
         V_measure = c(1, 0),
         Consensus_top = c(1, -0.0721),
-        brain1 = as.integer(c(1, 1)),
-        brain2 = as.integer(c(1, 1)),
-        brain3 = as.integer(c(1, 2)),
-        other1 = as.integer(c(2, 1)),
-        other2 = as.integer(c(2, 1)),
-        other3 = as.integer(c(2, 2)), stringsAsFactors = FALSE
+        E068 = as.integer(c(1, 1)),
+        E071 = as.integer(c(1, 1)),
+        E074 = as.integer(c(1, 2)),
+        E101 = as.integer(c(2, 1)),
+        E102 = as.integer(c(2, 1)),
+        E110 = as.integer(c(2, 2)), stringsAsFactors = FALSE
     )
 
     call <- function(...) {
@@ -82,12 +82,12 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
         Completeness = c(1, 0.08170417),
         V_measure = c(1, 0.08170417),
         Consensus_top = c(1, 0.01743241),
-        brain1 = as.integer(c(1, 1)),
-        brain2 = as.integer(c(1, 2)),
-        brain3 = as.integer(c(1, 1)),
-        other1 = as.integer(c(2, 2)),
-        other2 = as.integer(c(2, 2)),
-        other3 = as.integer(c(2, 1)), stringsAsFactors = FALSE
+        E068 = as.integer(c(1, 1)),
+        E071 = as.integer(c(1, 2)),
+        E074 = as.integer(c(1, 1)),
+        E101 = as.integer(c(2, 2)),
+        E102 = as.integer(c(2, 2)),
+        E110 = as.integer(c(2, 1)), stringsAsFactors = FALSE
     )
 
     expect_equal(call(normalize = FALSE,
@@ -115,7 +115,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
 
 test_that("The position-aware strategy properly executes the analysis", {
 
-    samples <- c("brain1", "brain2", "brain3", "other1", "other2", "other3")
+    samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
     outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
                             package = "chromswitch")
     groups <- c(rep("Brain", 3), rep("Other", 3))
@@ -141,12 +141,12 @@ test_that("The position-aware strategy properly executes the analysis", {
                         Completeness = c(1, 0.293643),
                         V_measure = c(1, 0.2313599),
                         Consensus_top = c(1.0000000, 0.1560355),
-                        brain1 = c(1, 1),
-                        brain2 = c(1, 1),
-                        brain3 = c(1, 1),
-                        other1 = c(2, 1),
-                        other2 = c(2, 1),
-                        other3 = c(2, 2), stringsAsFactors = FALSE)
+                        E068 = c(1, 1),
+                        E071 = c(1, 1),
+                        E074 = c(1, 1),
+                        E101 = c(2, 1),
+                        E102 = c(2, 1),
+                        E110 = c(2, 2), stringsAsFactors = FALSE)
 
     expect_equal(suppressWarnings(callPositionAware(query = regions,
                                                     peaks = H3K4me3,
