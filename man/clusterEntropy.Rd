@@ -21,3 +21,4 @@ Numeric
 Computes the entropy of a set of clusters, as defined in
 https://aclweb.org/anthology/D/D07/D07-1043.pdf
 }
+\keyword{internal}

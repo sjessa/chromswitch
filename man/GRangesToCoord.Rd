@@ -15,3 +15,4 @@ String
 \description{
 Convert a GRanges object for one region to a genome browser-friendly string
 }
+\keyword{internal}

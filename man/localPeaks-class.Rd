@@ -7,3 +7,4 @@
 \description{
 An S4 class to aggregate and summarize peaks located in an input region
 }
+\keyword{internal}

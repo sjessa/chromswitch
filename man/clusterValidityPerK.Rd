@@ -19,3 +19,4 @@ matrix, cut the tree at every possible height \code{k} and compute internal
 measures of cluster validity. For now, we compute only the Average Silhouette
 width of the partition.
 }
+\keyword{internal}

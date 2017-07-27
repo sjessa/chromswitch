@@ -10,6 +10,8 @@
 #' localPeaks
 #'
 #' An S4 class to aggregate and summarize peaks located in an input region
+#'
+#' @keywords internal
 setClass("localPeaks",
 
         # Define slot contents
@@ -37,6 +39,8 @@ setClass("localPeaks",
 #' @param samples Character vector with sample identifiers.
 #'
 #' @return localPeaks object
+#'
+#' @keywords internal
 localPeaks <- function(region, peaks, samples) {
 
     new("localPeaks",
@@ -139,11 +143,15 @@ lpkPeaks <- function(lpks) lpks@peaks
 #' @return Logical value indicating if the object is empty (TRUE) or not (FALSE)
 #'
 #' @param object The object to check for emptiness
+#'
+#' @keywords internal
 setGeneric("is.empty", function(object) {standardGeneric("is.empty")})
 
 
 #' @describeIn is.empty Returns TRUE if the localPeaks object has no peaks in
 #' any of the samples in \code{object@peaks}, i.e. if no peaks were found in
 #' the query region.
+#'
+#' @keywords internal
 setMethod("is.empty", signature(object = "localPeaks"),
         function(object) {sum(unlist(lapply(lpkPeaks(object), length))) == 0})

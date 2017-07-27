@@ -26,3 +26,4 @@ any of the samples in \code{object@peaks}, i.e. if no peaks were found in
 the query region.
 }}
 
+\keyword{internal}

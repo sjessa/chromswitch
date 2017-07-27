@@ -21,3 +21,4 @@ Numeric
 Computes the purity of a partition as defined in
 https://www.ncbi.nlm.nih.gov/pubmed/17483501
 }
+\keyword{internal}

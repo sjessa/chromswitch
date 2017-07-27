@@ -21,3 +21,4 @@ by peaks. This value will be at most 1, since we only consider the
 overlapping portion of each peak, and peaks do not overlap with each other.
 This value will be 0 in the case that there are no peaks in the query region.
 }
+\keyword{internal}

@@ -19,11 +19,10 @@
 #' @param trim Numeric, a fraction in [0, 1] specifying how much of the data
 #' to bound to 0 (for the lower tail) or 1 (for the upper tail)
 #'
-#' @examples
-#' winsorNorm(x = seq(0, 10), trim = 0.1)
+#' @example chromswitch::winsorNorm(x = seq(0, 10), trim = 0.1)
 #'
 #' @return Numeric vector
-#' @export
+#' @keywords internal
 winsorNorm <- function(x, trim) {
 
     trimmed    <- DescTools::Trim(x, trim = trim)
@@ -95,6 +94,7 @@ normalizePeaks <- function(peaks, columns, tail = 0.005) {
 #' according to the thresholds and columns specified.
 #'
 #' @seealso filterPeaks
+#' @keywords internal
 filterSamplePeaks <- function(sample_peaks, columns, thresholds) {
 
     pk <- as.data.frame(sample_peaks)

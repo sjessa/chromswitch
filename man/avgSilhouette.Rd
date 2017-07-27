@@ -19,3 +19,4 @@ Numeric value
 For a clustering solution for any k, compute the average silhouette
 width as an internal measure of cluster validity
 }
+\keyword{internal}

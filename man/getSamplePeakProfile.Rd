@@ -28,3 +28,4 @@ a p-reciprocal overlap with the window. Alternatively, the windows can be
 viewed as unique peaks, and this function calls the presence or absence of
 each peak in the sample.
 }
+\keyword{internal}

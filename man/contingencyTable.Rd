@@ -23,3 +23,4 @@ function exists to create the contingencyTable from the metadata, to
 ensure that the clusters & conditions for the classes are associated
 correctly based on sample IDs.
 }
+\keyword{internal}

@@ -17,6 +17,8 @@
 #' for peaks
 #'
 #' @return GRanges object. Contains all peaks overlapping query region.
+#'
+#' @keywords internal
 retrieveSamplePeaks <- function(peaks, region) {
 
     # Retrieve peaks and associated metadata columns in query region

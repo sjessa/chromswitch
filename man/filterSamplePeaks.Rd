@@ -25,3 +25,4 @@ filterSamplePeaks
 \seealso{
 filterPeaks
 }
+\keyword{internal}

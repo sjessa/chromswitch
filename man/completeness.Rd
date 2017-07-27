@@ -22,3 +22,4 @@ Computes the completeness of a set of clusters given ground-truth
 classes, as defined in
 https://aclweb.org/anthology/D/D07/D07-1043.pdf
 }
+\keyword{internal}

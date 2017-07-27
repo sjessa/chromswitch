@@ -21,3 +21,4 @@ A GRanges object
 \description{
 Given a path, read a BED file into a dataframe
 }
+\keyword{internal}

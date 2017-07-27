@@ -33,3 +33,4 @@ For one sample, given peaks in the query region, compute several summary
 statistics of peaks in that region, including the mean, median, and max of
 any specified
 }
+\keyword{internal}

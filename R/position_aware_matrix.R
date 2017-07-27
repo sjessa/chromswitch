@@ -21,22 +21,23 @@
 #' by having a p-reciprocal overlap, FALSE otherwise
 #'
 #' @examples
-#' a <- GenomicRanges::GRanges(seqnames = "chr11",
-#'             ranges = IRanges::IRanges(start = 112829468, end = 112834468))
+# # Examples not run
+# a <- GenomicRanges::GRanges(seqnames = "chr11",
+#             ranges = IRanges::IRanges(start = 112829468, end = 112834468))
+#
+# b <- GenomicRanges::GRanges(seqnames = "chr11",
+#             ranges = IRanges::IRanges(start = 112829468, end = 113834468))
+#
+# c <- GenomicRanges::GRanges(seqnames = "chr11",
+#             ranges = IRanges::IRanges(start = 112829968, end = 112834968))
+#
+# # Expect FALSE
+# chromswitch::pReciprocalOverlap(a, b, 0.9)
+#
+# # Expect TRUE
+# chromswitch::pReciprocalOverlap(a, c, 0.9)
 #'
-#' b <- GenomicRanges::GRanges(seqnames = "chr11",
-#'             ranges = IRanges::IRanges(start = 112829468, end = 113834468))
-#'
-#' c <- GenomicRanges::GRanges(seqnames = "chr11",
-#'             ranges = IRanges::IRanges(start = 112829968, end = 112834968))
-#'
-#' # Expect FALSE
-#' pReciprocalOverlap(a, b, 0.9)
-#'
-#' # Expect TRUE
-#' pReciprocalOverlap(a, c, 0.9)
-#'
-#' @export
+#' @keywords internal
 pReciprocalOverlap <- function(a, b, p) {
 
     isOlap <- function(b_i, a, p) {
@@ -68,6 +69,8 @@ pReciprocalOverlap <- function(a, b, p) {
 #'
 #' @return GRanges objects with a list of unique peaks as determined by
 #' the p-reciprocal overlap rule
+#'
+#' @keywords internal
 getUniquePeaks <- function(loc_union, p) {
 
     unique_peaks <- GRanges()
@@ -109,6 +112,8 @@ getUniquePeaks <- function(loc_union, p) {
 #'
 #' @return A one-row dataframe with a logical value TRUE/FALSE in each column
 #' (window) indicating whether any peaks overlap the window
+#'
+#' @keywords internal
 getSamplePeakProfile <- function(peaks, windows, p) {
 
     overlaps <- lapply(windows, pReciprocalOverlap, peaks, p) %>%

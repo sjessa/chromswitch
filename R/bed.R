@@ -16,6 +16,7 @@
 #' the columns which immediately follow "end".
 #'
 #' @return A GRanges object
+#' @keywords internal
 loadSampleBed <- function(bed_file, metadata_cols = NULL) {
 
     if (missing(metadata_cols)) columns <- c(c("chr", "start", "end"))

@@ -19,6 +19,7 @@
 #' sample IDs and "Group" storing biological conditions of each samples
 #'
 #' @return table
+#' @keywords internal
 contingencyTable <- function(clusters, metadata) {
 
     # For one cluster, how many samples in each class?
@@ -45,6 +46,7 @@ contingencyTable <- function(clusters, metadata) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 purity <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -68,6 +70,7 @@ purity <- function(contingency, c, k) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 classEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -92,6 +95,7 @@ classEntropy <- function(contingency, c, k) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 clusterEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -117,6 +121,7 @@ clusterEntropy <- function(contingency, c, k) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 conditionalClassEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -146,6 +151,7 @@ conditionalClassEntropy <- function(contingency, c, k) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 conditionalClusterEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -175,6 +181,7 @@ conditionalClusterEntropy <- function(contingency, c, k) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 homogeneity <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -200,6 +207,7 @@ homogeneity <- function(contingency, c, k) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 completeness <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -225,6 +233,7 @@ completeness <- function(contingency, c, k) {
 #' @param k Vector of clusters
 #'
 #' @return Numeric
+#' @keywords internal
 vMeasure <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -257,6 +266,7 @@ vMeasure <- function(contingency, c, k) {
 #' @param classes A vector giving the true classes of the objects
 #'
 #' @return Numeric
+#' @keywords internal
 NMI <- function(clusters, classes) {
 
     x <- table(clusters, classes)

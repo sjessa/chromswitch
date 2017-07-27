@@ -25,3 +25,4 @@ they're provided, and growing a list of unique peaks. For every peak visited,
 add it to the list of unique peaks if it doesn't have a p-reciprocal overlap
 with any peak already in the list;E otherwise, discard it.
 }
+\keyword{internal}

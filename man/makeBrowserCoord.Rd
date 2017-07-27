@@ -20,3 +20,4 @@ coordinates.
 \description{
 Given coordinates for a genomic region, return a browser-friendly version.
 }
+\keyword{internal}

@@ -22,3 +22,4 @@ Computes the conditional entropy of a set of clusters, given the
 true classes, as defined in
 https://aclweb.org/anthology/D/D07/D07-1043.pdf
 }
+\keyword{internal}

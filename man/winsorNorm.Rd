@@ -22,7 +22,4 @@ lower tail to 0, effectively replacing a fixed amount of extreme values in
 each tail. Similar to trimming the tails except instead of discarding
 the tails entirely they're bounded.
 }
-\examples{
-winsorNorm(x = seq(0, 10), trim = 0.1)
-
-}
+\keyword{internal}

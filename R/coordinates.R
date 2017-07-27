@@ -15,6 +15,8 @@
 #'
 #' @return String with copy-pastable, genome browser-friendly version of
 #' coordinates.
+#'
+#' @keywords internal
 makeBrowserCoord <- function(chr, start, end) {
 
     paste0(chr, ":", start, "-", end)
@@ -30,6 +32,7 @@ makeBrowserCoord <- function(chr, start, end) {
 #' to a GRanges object
 #'
 #' @return GRanges object
+#' @keywords internal
 coordToGRanges <- function(coord) {
     # String of coordinates to GRanges
 
@@ -49,6 +52,7 @@ coordToGRanges <- function(coord) {
 #' @param gr GRanges object specifying region to convert to a string
 #'
 #' @return String
+#' @keywords internal
 GRangesToCoord <- function(gr) {
 
     makeBrowserCoord(seqnames(gr), start(gr), end(gr))

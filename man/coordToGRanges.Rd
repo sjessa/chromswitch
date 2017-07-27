@@ -16,3 +16,4 @@ GRanges object
 \description{
 Convert a string of genomic coordinates to a GRanges object
 }
+\keyword{internal}

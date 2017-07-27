@@ -27,3 +27,4 @@ can then use for downstream analysis - and in particular, as input to a
 clustering algorithm in order to call a chromatin state switch. This function
 is a constructor for a localPeaks object.
 }
+\keyword{internal}

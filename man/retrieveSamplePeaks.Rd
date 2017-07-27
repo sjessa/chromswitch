@@ -19,3 +19,4 @@ GRanges object. Contains all peaks overlapping query region.
 Given a set of peaks for one sample and a region of interest,
 retrieve peaks overlapping query region
 }
+\keyword{internal}

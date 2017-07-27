@@ -37,10 +37,13 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
         other3 = as.integer(c(2, 2)), stringsAsFactors = FALSE
     )
 
-    call <- pryr::partial(callWholeRegion,
-                  query = regions,
-                  peaks = H3K4me3,
-                  metadata = metadata)
+    call <- function(...) {
+
+        callWholeRegion(query = regions,
+                       peaks = H3K4me3,
+                       metadata = metadata, ...)
+
+    }
 
     expect_equal(call(normalize_columns = c("qValue", "pValue", "signalValue"),
                     mark = "H3K4me3",
@@ -126,11 +129,6 @@ test_that("The position-aware strategy properly executes the analysis", {
                     ranges = IRanges::IRanges(start = c(54924104, 54892830),
                                                 end = c(54929104, 54897288)))
 
-    call <- pryr::partial(callPositionAware,
-                          query = regions,
-                          peaks = H3K4me3,
-                          metadata = metadata)
-
     output <- data.frame(region = c("chr19:54924104-54929104",
                                     "chr19:54892830-54897288"),
                         k = c(2, 2),
@@ -150,7 +148,11 @@ test_that("The position-aware strategy properly executes the analysis", {
                         other2 = c(2, 1),
                         other3 = c(2, 2), stringsAsFactors = FALSE)
 
-    expect_equal(suppressWarnings(call(filter = FALSE, reduce = TRUE)),
+    expect_equal(suppressWarnings(callPositionAware(query = regions,
+                                                    peaks = H3K4me3,
+                                                    metadata = metadata,
+                                                    filter = FALSE,
+                                                    reduce = TRUE)),
                 output, tolerance = 1e-4)
 
 

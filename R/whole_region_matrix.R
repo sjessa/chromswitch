@@ -19,6 +19,7 @@
 #' query region
 #'
 #' @return double, a number in [0,1].
+#' @keywords internal
 peakOverlap <- function(region, peaks) {
 
     # If no peaks found to be overlapping, return 0
@@ -63,6 +64,7 @@ peakOverlap <- function(region, peaks) {
 #' @param n Logical: compute the number of peaks in the region?
 #'
 #' @return data.frame
+#' @keywords internal
 summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
                                 fraction = TRUE, n = FALSE) {
 

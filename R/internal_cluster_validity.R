@@ -17,6 +17,7 @@
 #' @return Numeric value
 #'
 #' @importFrom cluster silhouette
+#' @keywords internal
 avgSilhouette <- function(clusters, dmatrix) {
 
     stats <- summary(cluster::silhouette(clusters, dmatrix))
@@ -37,6 +38,7 @@ avgSilhouette <- function(clusters, dmatrix) {
 #' @param dmatrix Dissimilarity matrix as produced by the \code{dist} function
 #'
 #' @return Data frame with one row
+#' @keywords internal
 internalClusterValidity <- function(k, hclust_obj, dmatrix) {
 
     clusters <- cutree(hclust_obj, k)
@@ -56,6 +58,7 @@ internalClusterValidity <- function(k, hclust_obj, dmatrix) {
 #' \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}
 #'
 #' @return Data frame with one row per value of k
+#' @keywords internal
 clusterValidityPerK <- function(ft_mat) {
 
     dmatrix <- dist(ft_mat)
