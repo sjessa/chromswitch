@@ -20,23 +20,6 @@
 #' @return Logical value, TRUE if \code{a} and \code{b} are the same
 #' by having a p-reciprocal overlap, FALSE otherwise
 #'
-#' @examples
-# # Examples not run
-# a <- GenomicRanges::GRanges(seqnames = "chr11",
-#             ranges = IRanges::IRanges(start = 112829468, end = 112834468))
-#
-# b <- GenomicRanges::GRanges(seqnames = "chr11",
-#             ranges = IRanges::IRanges(start = 112829468, end = 113834468))
-#
-# c <- GenomicRanges::GRanges(seqnames = "chr11",
-#             ranges = IRanges::IRanges(start = 112829968, end = 112834968))
-#
-# # Expect FALSE
-# chromswitch::pReciprocalOverlap(a, b, 0.9)
-#
-# # Expect TRUE
-# chromswitch::pReciprocalOverlap(a, c, 0.9)
-#'
 #' @keywords internal
 pReciprocalOverlap <- function(a, b, p) {
 

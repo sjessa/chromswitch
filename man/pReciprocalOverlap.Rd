@@ -22,7 +22,4 @@ by having a p-reciprocal overlap, FALSE otherwise
 If a and b denote two genomic regions, check whether they overlap
 reciprocally by \code{p}*100% of their lengths
 }
-\examples{
-
-}
 \keyword{internal}

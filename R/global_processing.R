@@ -19,8 +19,6 @@
 #' @param trim Numeric, a fraction in [0, 1] specifying how much of the data
 #' to bound to 0 (for the lower tail) or 1 (for the upper tail)
 #'
-#' @example chromswitch::winsorNorm(x = seq(0, 10), trim = 0.1)
-#'
 #' @return Numeric vector
 #' @keywords internal
 winsorNorm <- function(x, trim) {
