@@ -54,6 +54,5 @@ lpk <- retrievePeaks(H3K4me3,
 ft_mat <- summarizePeaks(lpk, mark = "H3K4me3",
 cols = c("qValue", "signalValue"))
 
-cluster(ft_mat, metadata, region)
 
 }

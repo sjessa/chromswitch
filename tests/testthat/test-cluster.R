@@ -55,4 +55,29 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
     # Clean up
     file.remove(paste0(GRangesToCoord(region), ".pdf"))
 
+    region2 <- GenomicRanges::GRanges(seqnames = "chr19",
+                                    ranges = IRanges::IRanges(start = 54924104,
+                                                              end = 54929104))
+
+    mcols(region2)$name <- "Test"
+
+    cluster_out2 <- data.frame(
+        region = GRangesToCoord(region),
+        name = "Test",
+        k = 2,
+        Average_Silhouette = 0.6883056,
+        Purity = 1,
+        Entropy = 0,
+        ARI = 1,
+        NMI = 1,
+        Homogeneity = 1,
+        Completeness = 1,
+        V_measure = 1,
+        Consensus_top = 1,
+        E068 = 1, E071 = 1, E074 = 1,
+        E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
+
+    expect_equal(cluster(ft_mat, metadata, region2, heatmap = FALSE),
+                 cluster_out2)
+
 })

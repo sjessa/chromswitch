@@ -17,8 +17,11 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
         ranges = IRanges::IRanges(start = c(54924104, 54874318),
                                   end = c(54929104, 54877536)))
 
+    mcols(regions)$name <- c("test1", "test2")
+
     output <- data.frame(
         region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.911, 0.457),
         Purity = c(1, 0.5),
@@ -72,6 +75,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
 
     output_nonorm <- data.frame(
         region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.6949372, 0.4614938),
         Purity = c(1.0000000, 0.6666667),
