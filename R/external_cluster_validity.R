@@ -16,7 +16,7 @@
 #' @param clusters A vector where values are the cluster assignments for each
 #' sample
 #' @param metadata Data frame with at least two columns: "Sample" storing
-#' sample IDs and "Group" storing biological conditions of each samples
+#' sample IDs and "Condition" storing biological conditions of each samples
 #'
 #' @return table
 #' @keywords internal
@@ -26,10 +26,10 @@ contingencyTable <- function(clusters, metadata) {
     df <- dplyr::inner_join(data.frame(Sample = as.character(names(clusters)),
                                         Cluster = clusters,
                                         stringsAsFactors = FALSE),
-                            metadata[, c("Sample", "Group")],
+                            metadata[, c("Sample", "Condition")],
                             by = "Sample")
 
-    contingency <- table(df$Group, df$Cluster)
+    contingency <- table(df$Condition, df$Cluster)
     return(contingency)
 
 }

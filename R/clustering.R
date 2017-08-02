@@ -11,7 +11,7 @@
 #' @param ft_mat matrix where columns are features and rows are samples as
 #' returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}
 #' @param metadata A dataframe with a column "Sample" which stores
-#' the sample identifiers, and at least one column, "Group", which stores
+#' the sample identifiers, and at least one column, "Condition", which stores
 #' the biological condition labels of the samples
 #' @param region GRanges object specifying the query region
 #' @param heatmap (Optional) Logical value indicating whether or not to plot
@@ -25,11 +25,11 @@
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 #' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
-#' groups <- c(rep("Brain", 3), rep("Other", 3))
+#' Conditions <- c(rep("Brain", 3), rep("Other", 3))
 #'
 #' metadata <- data.frame(Sample = samples,
 #'     H3K4me3 = outfiles,
-#'     Group = groups,
+#'     Condition = Conditions,
 #'     stringsAsFactors = FALSE)
 #'
 #' region <- GenomicRanges::GRanges(seqnames = "chr19",
@@ -60,8 +60,8 @@ cluster <- function(ft_mat, metadata, region,
                                             "white", "red"))(n = 100)
     hclust.fun <- function(i) hclust(i, method = "complete")
 
-    conditions <- unique(metadata$Group)
-    conditions_colours <- metadata$Group
+    conditions <- unique(metadata$Condition)
+    conditions_colours <- metadata$Condition
 
     conditions_colours[conditions_colours == conditions[1]] <- "mediumorchid"
     conditions_colours[conditions_colours == conditions[2]] <- "limegreen"
@@ -118,8 +118,8 @@ cluster <- function(ft_mat, metadata, region,
     contingency        <- contingencyTable(clusters, metadata)
     stats$Purity       <- purity(contingency)
     stats$Entropy      <- NMF::entropy(contingency)
-    stats$ARI          <- mclust::adjustedRandIndex(clusters, metadata$Group)
-    stats$NMI          <- NMI(clusters, metadata$Group)
+    stats$ARI          <- mclust::adjustedRandIndex(clusters, metadata$Condition)
+    stats$NMI          <- NMI(clusters, metadata$Condition)
     stats$Homogeneity  <- homogeneity(contingency)
     stats$Completeness <- completeness(contingency)
     stats$V_measure    <- vMeasure(contingency)

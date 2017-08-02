@@ -12,7 +12,7 @@ cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
 returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}}
 
 \item{metadata}{A dataframe with a column "Sample" which stores
-the sample identifiers, and at least one column, "Group", which stores
+the sample identifiers, and at least one column, "Condition", which stores
 the biological condition labels of the samples}
 
 \item{region}{GRanges object specifying the query region}
@@ -37,11 +37,11 @@ cluster
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 package = "chromswitch")
-groups <- c(rep("Brain", 3), rep("Other", 3))
+Conditions <- c(rep("Brain", 3), rep("Other", 3))
 
 metadata <- data.frame(Sample = samples,
     H3K4me3 = outfiles,
-    Group = groups,
+    Condition = Conditions,
     stringsAsFactors = FALSE)
 
 region <- GenomicRanges::GRanges(seqnames = "chr19",

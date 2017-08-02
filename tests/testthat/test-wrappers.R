@@ -10,7 +10,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
 
     metadata <- data.frame(Sample = samples,
         H3K4me3 = outfiles,
-        Group = groups,
+    Condition = groups,
         stringsAsFactors = FALSE)
 
     regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
@@ -122,7 +122,7 @@ test_that("The position-aware strategy properly executes the analysis", {
 
     metadata <- data.frame(Sample = samples,
                            H3K4me3 = outfiles,
-                           Group = groups,
+                           Condition = groups,
                            stringsAsFactors = FALSE)
 
     regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),

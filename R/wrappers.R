@@ -28,7 +28,7 @@
 #' @param peaks List of GRanges objects storing peak calls for each sample,
 #' where element names correspond to sample IDs
 #' @param metadata A dataframe with at least two columns: "Sample" which stores
-#' the sample IDs, "Group", which stores the biological condition labels
+#' the sample IDs, "Condition", which stores the biological condition labels
 #' of the samples
 #' @param mark Character specifying the histone mark or ChIP-target,
 #' for example, "H3K4me3"
@@ -79,11 +79,11 @@
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 #' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
-#' groups <- c(rep("Brain", 3), rep("Other", 3))
+#' Conditions <- c(rep("Brain", 3), rep("Other", 3))
 #'
 #' metadata <- data.frame(Sample = samples,
 #'     H3K4me3 = outfiles,
-#'     Group = groups,
+#'     Condition = Conditions,
 #'     stringsAsFactors = FALSE)
 #'
 #' regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
@@ -186,7 +186,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #' @param peaks List of GRanges objects storing peak calls for each sample,
 #' where element names correspond to sample IDs
 #' @param metadata A dataframe with at least two columns: "Sample" which stores
-#' the sample IDs, "Group", which stores the biological condition labels
+#' the sample IDs, "Condition", which stores the biological condition labels
 #' of the samples
 #' @param filter Optional: logical value, filter peaks based on thresholds on
 #' peak statistics? Default: FALSE. The filter step is described in
@@ -225,11 +225,11 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 #' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
-#' groups <- c(rep("Brain", 3), rep("Other", 3))
+#' Conditions <- c(rep("Brain", 3), rep("Other", 3))
 #'
 #' metadata <- data.frame(Sample = samples,
 #'     H3K4me3 = outfiles,
-#'     Group = groups,
+#'     Condition = Conditions,
 #'     stringsAsFactors = FALSE)
 #'
 #' regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),

@@ -4,7 +4,7 @@ context("External cluster validity functions")
 test_that("External cluster validity indices are correct", {
 
     metadata <- data.frame(Sample = c("A", "B", "C", "D"),
-                           Group = c(1, 1, 2, 2),
+                           Condition = c(1, 1, 2, 2),
                            stringsAsFactors = FALSE)
 
     clusters <- c(A = 1, B = 1, C = 0, D = 0)

@@ -10,7 +10,7 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
 
     metadata <- data.frame(Sample = samples,
         H3K4me3 = outfiles,
-        Group = groups,
+        Condition = groups,
         stringsAsFactors = FALSE)
 
     ft_mat <- data.frame(

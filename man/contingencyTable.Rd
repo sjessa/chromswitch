@@ -11,7 +11,7 @@ contingencyTable(clusters, metadata)
 sample}
 
 \item{metadata}{Data frame with at least two columns: "Sample" storing
-sample IDs and "Group" storing biological conditions of each samples}
+sample IDs and "Condition" storing biological conditions of each samples}
 }
 \value{
 table
