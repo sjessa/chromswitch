@@ -22,27 +22,27 @@
 #' be saved
 #'
 #' @examples
-#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
-#' package = "chromswitch")
-#' Conditions <- c(rep("Brain", 3), rep("Other", 3))
-#'
-#' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = outfiles,
-#'     Condition = Conditions,
-#'     stringsAsFactors = FALSE)
-#'
-#' region <- GenomicRanges::GRanges(seqnames = "chr19",
-#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104))
-#'
-#' lpk <- retrievePeaks(H3K4me3,
-#'     metadata = metadata,
-#'     region = region)
-#'
-#' ft_mat <- summarizePeaks(lpk, mark = "H3K4me3",
-#' cols = c("qValue", "signalValue"))
-#'
-#' cluster(ft_mat, metadata, region)
+# samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
+# outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+# package = "chromswitch")
+# Conditions <- c(rep("Brain", 3), rep("Other", 3))
+#
+# metadata <- data.frame(Sample = samples,
+#     H3K4me3 = outfiles,
+#     Condition = Conditions,
+#     stringsAsFactors = FALSE)
+#
+# region <- GenomicRanges::GRanges(seqnames = "chr19",
+#     ranges = IRanges::IRanges(start = 54924104, end = 54929104))
+#
+# lpk <- retrievePeaks(H3K4me3,
+#     metadata = metadata,
+#     region = region)
+#
+# ft_mat <- summarizePeaks(lpk, mark = "H3K4me3",
+# cols = c("qValue", "signalValue"))
+#
+# cluster(ft_mat, metadata, region)
 #'
 #' @return A dataframe with the region, the number of clusters inferred,
 #' the cluster validity statistics, and the cluster assignments for each sample
@@ -131,6 +131,7 @@ cluster <- function(ft_mat, metadata, region,
     names(clusters_df) <- names(clusters)
 
     region_df <- data.frame(region = GRangesToCoord(region),
+                            mcols(region), # Include additional region metadata
                             stringsAsFactors = FALSE)
 
     results <- dplyr::bind_cols(region_df, stats, clusters_df)
