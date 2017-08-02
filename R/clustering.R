@@ -126,7 +126,7 @@ cluster <- function(ft_mat, metadata, region,
     stats$Homogeneity  <- homogeneity(contingency)
     stats$Completeness <- completeness(contingency)
     stats$V_measure    <- vMeasure(contingency)
-    stats$Consensus_top <- mean(x = c(stats$ARI, stats$NMI, stats$V_measure))
+    stats$Consensus    <- mean(x = c(stats$ARI, stats$NMI, stats$V_measure))
 
     clusters_df <- clusters %>%
         as.list() %>%

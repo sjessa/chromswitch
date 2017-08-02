@@ -38,7 +38,7 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         Homogeneity = 1,
         Completeness = 1,
         V_measure = 1,
-        Consensus_top = 1,
+        Consensus = 1,
         E068 = 1, E071 = 1, E074 = 1,
         E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
@@ -73,7 +73,7 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         Homogeneity = 1,
         Completeness = 1,
         V_measure = 1,
-        Consensus_top = 1,
+        Consensus = 1,
         E068 = 1, E071 = 1, E074 = 1,
         E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
