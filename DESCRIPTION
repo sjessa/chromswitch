@@ -9,6 +9,7 @@ Description: chromswitch implements a flexible method to detect chromatin state
 Depends: R (>= 3.4)
 Imports:
     cluster (>= 2.0.6),
+    BiocParallel (>= 1.10.1),
     DescTools (>= 0.99.19),
     dplyr (>= 0.5.0),
     GenomicRanges (>= 1.28.2),

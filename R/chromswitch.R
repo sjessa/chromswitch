@@ -18,6 +18,9 @@ NULL
 #' @import methods GenomicRanges IRanges
 NULL
 
+#' @importFrom BiocParallel bplapply bpmapply bpparam
+NULL
+
 #' @importFrom magrittr %>%
 NULL
 

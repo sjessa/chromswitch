@@ -6,7 +6,8 @@
 \usage{
 callPositionAware(query, peaks, metadata, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, reduce = TRUE,
-  gap = 300, p = 0.4, heatmap = TRUE, titles = NULL, outdir = NULL)
+  gap = 300, p = 0.4, heatmap = TRUE, titles = NULL, outdir = NULL,
+  BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
@@ -55,6 +56,10 @@ title is the genomic coordinates of the region in the form "chrN:start-end"}
 
 \item{outdir}{Optional: if \code{heatmap} is TRUE, the name of the directory
 where heatmaps should be saved}
+
+\item{BPPARAM}{Optional: instance of \code{BiocParallel:BiocParallelParam}
+used to determine the back-end used for parallel computations when performing
+the analysis on more than one region.}
 }
 \value{
 Data frame with one row per region in \code{query}. Contains the

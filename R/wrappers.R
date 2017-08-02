@@ -69,6 +69,9 @@
 #' title is the genomic coordinates of the region in the form "chrN:start-end"
 #' @param outdir Optional: if \code{heatmap} is TRUE, the name of the directory
 #' where heatmaps should be saved
+#' @param BPPARAM Optional: instance of \code{BiocParallel:BiocParallelParam}
+#' used to determine the back-end used for parallel computations when performing
+#' the analysis on more than one region.
 #'
 #' @return Data frame with one row per region in \code{query}. Contains the
 #' coordinates of the region, the number of inferred clusters, the computed
@@ -105,7 +108,8 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                             normalize_columns = NULL, tail = 0.005,
                             summarize_columns,
                             length = FALSE, fraction = TRUE, n = FALSE,
-                            heatmap = TRUE, titles = NULL, outdir = NULL) {
+                            heatmap = TRUE, titles = NULL, outdir = NULL,
+                            BPPARAM = bpparam()) {
 
     # Preprocessing
     if (filter) {
@@ -134,12 +138,14 @@ callWholeRegion <- function(query, peaks, metadata, mark,
         stop("Please provide one title per query region.")
 
     # Retrieve peaks: get a localPeaks object for each query region
-    lpks      <- lapply(query, function(region)
-                        retrievePeaks(peaks, metadata, region))
+    lpks      <- bplapply(query, function(region)
+                        retrievePeaks(peaks, metadata, region),
+                        BPPARAM = BPPARAM)
 
     # Construct feature matrices for each query region
-    matrices  <- lapply(lpks, summarizePeaks, mark,
-                        summarize_columns, length, fraction, n)
+    matrices  <- bplapply(lpks, summarizePeaks, mark,
+                        summarize_columns, length, fraction, n,
+                        BPPARAM = BPPARAM)
 
     # Convert the queries into a GRangesList in order to be able to Map over
     queries <- lapply(query, GRangesList)
@@ -155,9 +161,10 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
-        results <- Map(f = function(ft_mat, region, title)
+        results <- bpmapply(FUN = function(ft_mat, region, title)
             cluster(ft_mat, metadata, region, heatmap, title, outdir),
-            matrices, queries, titles)
+            matrices, queries, titles,
+            SIMPLIFY = FALSE, BPPARAM = BPPARAM)
     }
 
     return(data.frame(dplyr::bind_rows(results)))
@@ -215,6 +222,9 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #' title is the genomic coordinates of the region in the form "chrN:start-end"
 #' @param outdir Optional: if \code{heatmap} is TRUE, the name of the directory
 #' where heatmaps should be saved
+#' @param BPPARAM Optional: instance of \code{BiocParallel:BiocParallelParam}
+#' used to determine the back-end used for parallel computations when performing
+#' the analysis on more than one region.
 #'
 #' @return Data frame with one row per region in \code{query}. Contains the
 #' coordinates of the region, the number of inferred clusters, the computed
@@ -243,7 +253,8 @@ callPositionAware <- function(query, peaks, metadata,
                             filter = FALSE, filter_columns = NULL,
                             filter_thresholds = NULL, reduce = TRUE,
                             gap = 300, p = 0.4,
-                            heatmap = TRUE, titles = NULL, outdir = NULL) {
+                            heatmap = TRUE, titles = NULL, outdir = NULL,
+                            BPPARAM = bpparam()) {
 
     # Preprocessing
     if (filter) {
@@ -258,17 +269,17 @@ callPositionAware <- function(query, peaks, metadata,
     }
 
     # Retrieve peaks: get a localPeaks object for each query region
-    lpks <- lapply(query, function(region)
-        retrievePeaks(peaks, metadata, region))
+    lpks <- bplapply(query, function(region)
+        retrievePeaks(peaks, metadata, region), BPPARAM = BPPARAM)
 
     if (reduce) {
 
-        lpks <- lapply(lpks, reducePeaks, gap)
+        lpks <- bplapply(lpks, reducePeaks, gap, BPPARAM = BPPARAM)
 
     }
 
     # Construct feature matrices for each query region
-    matrices  <- lapply(lpks, binarizePeaks, p)
+    matrices  <- bplapply(lpks, binarizePeaks, p, BPPARAM = BPPARAM)
 
     # Convert the queries into a GRangesList in order to be able to Map over
     queries <- lapply(query, GRangesList)
@@ -276,17 +287,19 @@ callPositionAware <- function(query, peaks, metadata,
     # Cluster the feature matrices
     if (!heatmap) {
 
-        results <- Map(f = function(ft_mat, region)
+        results <- bpmapply(FUN = function(ft_mat, region)
             cluster(ft_mat, metadata, region, heatmap, titles, outdir),
-            matrices, queries)
+            matrices, queries,
+            SIMPLIFY = FALSE, BPPARAM = BPPARAM)
 
     } else {
 
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
-        results <- Map(f = function(ft_mat, region, title)
+        results <- bpmapply(FUN = function(ft_mat, region, title)
             cluster(ft_mat, metadata, region, heatmap, title, outdir),
-            matrices, queries, titles)
+            matrices, queries, titles,
+            SIMPLIFY = FALSE, BPPARAM = BPPARAM)
     }
 
     return(data.frame(dplyr::bind_rows(results)))
