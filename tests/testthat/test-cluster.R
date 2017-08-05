@@ -1,5 +1,26 @@
 context("Hierarchical clustering over the feature-by-sample matrix")
 
+test_that("Guessing trajectory makes correct calls", {
+
+
+    a <- data.frame(Condition = c("C1", "C1", "C2"),
+                    fc = c(10, 9, 8))
+
+    b <- data.frame(Condition = c("C2", "C1", "C2"),
+                    fc = c(10, 9, 8))
+
+    c <- data.frame(Condition = c("C1", "C2", "C1"),
+                    fc = c(10, 9, 8))
+
+    d <- data.frame(Condition = c("C2", "C1", "C1"),
+                    fc = c(10, 9, 8))
+
+    expect_equal(estimateState(a), "ON")
+    expect_equal(estimateState(b), NA)
+    expect_equal(estimateState(c), NA)
+    expect_equal(estimateState(d), "OFF")
+
+})
 
 test_that("Hierarchical clustering finds clusters from feature matrix", {
 
@@ -79,5 +100,27 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
 
     expect_equal(cluster(ft_mat, metadata, region2, heatmap = FALSE),
                  cluster_out2)
+
+    cluster_out3 <- data.frame(
+        region = GRangesToCoord(region),
+        k = 2,
+        Average_Silhouette = 0.6883056,
+        Purity = 1,
+        Entropy = 0,
+        ARI = 1,
+        NMI = 1,
+        Homogeneity = 1,
+        Completeness = 1,
+        V_measure = 1,
+        Consensus = 1,
+        state = "ON",
+        E068 = 1, E071 = 1, E074 = 1,
+        E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
+
+    expect_equal(cluster(ft_mat, metadata, region,
+                         estimate_state = TRUE,
+                         signal_col = "signalValue_mean",
+                         test_condition = "Brain"),
+                 cluster_out3)
 
 })

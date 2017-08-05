@@ -42,14 +42,17 @@
 #' ft_mat <- summarizePeaks(lpk, mark = "H3K4me3",
 #' cols = c("qValue", "signalValue"))
 #'
-# cluster(ft_mat, metadata, region)
+#' cluster(ft_mat, metadata, region)
 #'
 #' @return A dataframe with the region, the number of clusters inferred,
 #' the cluster validity statistics, and the cluster assignments for each sample
 #'
 #' @export
 cluster <- function(ft_mat, metadata, region,
-                    heatmap = FALSE, title = NULL, outdir = NULL) {
+                    heatmap = FALSE, title = NULL, outdir = NULL,
+                    estimate_state = FALSE,
+                    signal_col = NULL,
+                    test_condition = NULL) {
 
     if (is(region, "GRangesList")) region <- unlist(region)
 
@@ -141,8 +144,89 @@ cluster <- function(ft_mat, metadata, region,
                             meta_cols,
                             stringsAsFactors = FALSE)
 
+    # Experimental: assign each cluster to a condition and return
+    # mean signal (e.g. fold change) in each condition according to the clusters
+    # which allows for an estimation of the "trajectory" of the switch
+    if (estimate_state) {
+
+        if (is.null(signal_col))
+            stop("If estimate_trajectory = TRUE, please specify the name
+                 of the column corresponding to the signal value.")
+
+        if (is.null(test_condition))
+            stop("If estimate_trajectory = TRUE, please specify the name
+                 of the condition for which to call chromatin state.")
+
+        # 1. Assign each cluster to one of the two conditions
+        clust_id <- clusters_df %>%
+            t() %>%
+            as.data.frame() %>%
+            dplyr::mutate(Sample = rownames(.)) %>%
+            dplyr::rename(Cluster = V1) %>%
+            dplyr::inner_join(metadata, by = "Sample") %>%
+            dplyr::select(Sample, Condition, Cluster) %>%
+            dplyr::mutate(Condition = ifelse(Condition == test_condition,
+                                             "C1", "C2"))
+
+        cluster_table <- table(clust_id$Cluster, clust_id$Condition) %>%
+            as.data.frame %>%
+            tidyr::spread(Var2, Freq) %>%
+            dplyr::rename(Cluster = Var1) %>%
+            dplyr::mutate(Condition = ifelse(C1 >= C2, "C1", "C2")) %>%
+            dplyr::select(Cluster, Condition)
+
+        # 2. Get the mean signal of each cluster
+        clust_ft_mat <- ft_mat %>% as.data.frame %>%
+            dplyr::select_(signal_col) %>%
+            dplyr::mutate(Sample = rownames(.)) %>%
+            dplyr::inner_join(clust_id, by = "Sample") %>%
+            dplyr::group_by(Cluster, Condition) %>%
+            dplyr::summarize_at(signal_col, mean, na.rm = TRUE) %>%
+            dplyr::arrange_(paste0("desc(", signal_col, ")"))
+
+        # 3. Guess the state of the test condition in the region
+        stats$state <- estimateState(clust_ft_mat)
+
+    }
+
     results <- dplyr::bind_cols(region_df, stats, clusters_df)
 
     return(as.data.frame(results))
 
 }
+
+isC1AtTop <- function(clust_ft_mat) {
+
+    state = TRUE
+    i = 1
+    cond = clust_ft_mat[i, "Condition"]
+
+    # Keep going down the list while the condition is brain
+    while(cond == "C1") {
+        state = TRUE
+        i <- i + 1
+        cond <- clust_ft_mat[i, "Condition"]
+    }
+
+    # When it's not brain anymore, check if there are
+    leftover <- clust_ft_mat[i:nrow(clust_ft_mat), "Condition"] %>% unlist()
+    if ("C1" %in% leftover) state = FALSE
+
+    return(state)
+}
+
+isC1AtBottom <- function(clust_ft_mat) {
+
+    isC1AtTop(clust_ft_mat[order(nrow(clust_ft_mat):1),])
+}
+
+estimateState <- function(clust_ft_mat) {
+
+    on <- isC1AtTop(clust_ft_mat)
+    off <- isC1AtBottom(clust_ft_mat)
+
+    if (on) return("ON")
+    else if (off) return("OFF")
+    else if (!on && !off) return(NA)
+}
+
