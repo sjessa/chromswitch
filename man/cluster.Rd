@@ -5,7 +5,8 @@
 \title{cluster}
 \usage{
 cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
-  outdir = NULL)
+  outdir = NULL, n_features = FALSE, estimate_state = FALSE,
+  signal_col = NULL, mark = NULL, test_condition = NULL)
 }
 \arguments{
 \item{ft_mat}{matrix where columns are features and rows are samples as
@@ -17,14 +18,39 @@ the biological condition labels of the samples}
 
 \item{region}{GRanges object specifying the query region}
 
-\item{heatmap}{(Optional) Logical value indicating whether or not to plot
+\item{heatmap}{(Optional) Logical value indicating whether to plot
 the heatmap for hierarchical clustering. Default: FALSE}
 
 \item{title}{(Optional) If \code{heatmap} is TRUE, specify the title of the
 plot, which will also be used for the output file name in PDF format}
 
-\item{outdir}{Optional, the name of the directory where heatmaps should
-be saved}
+\item{outdir}{(Optional) String specifying the name of the directory where
+PDF of heatmaps should be saved}
+
+\item{n_features}{(Optional) Logical value indicating whether to include
+a column "n_features" in the output storing the number of features in the
+feature matrix constructed for the region, which may be useful for
+understanding the behaviour of the position-aware strategy for constructing
+feature matrices. Default: FALSE}
+
+\item{estimate_state}{(Optional) Logical value indicating whether to include
+a column "state" in the output specifying the estimated chromatin state of
+a test condition. The state will be on of "ON", "OFF", or NA, where the
+latter results if a binary switch between the conditions is unclear.
+This is only possible when the feature matrix was constructed by the whole-
+region strategy (\code{\link{summarizePeaks}}).
+Default: FALSE.}
+
+\item{signal_col}{(Optional) If \code{estimate_state} is TRUE, string
+specifying the name of the column in the original peak files which
+corresponds to the level of enrichment in the region, e.g. fold change}
+
+\item{mark}{(Optional) If \code{estimate_state} is TRUE, string specifying
+the name of the mark for which \code{ft_mat} was constructed}
+
+\item{test_condition}{(Optional) If \code{estimate_state} is TRUE, string
+specifying one of the two biological condtions in \code{metadata$Condition}
+for which to estimate chromatin state.}
 }
 \value{
 A dataframe with the region, the number of clusters inferred,
@@ -54,5 +80,13 @@ lpk <- retrievePeaks(H3K4me3,
 ft_mat <- summarizePeaks(lpk, mark = "H3K4me3",
 cols = c("qValue", "signalValue"))
 
+cluster(ft_mat, metadata, region)
+
+# Estimate the state of the test condition, "Brain"
+cluster(ft_mat, metadata, region,
+    estimate_state = TRUE,
+    signal_col = "signalValue",
+    mark = "H3K4me3",
+    test_condition = "Brain")
 
 }

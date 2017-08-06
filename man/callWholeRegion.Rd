@@ -8,7 +8,8 @@ callWholeRegion(query, peaks, metadata, mark, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, normalize = TRUE,
   normalize_columns = NULL, tail = 0.005, summarize_columns,
   length = FALSE, fraction = TRUE, n = FALSE, heatmap = TRUE,
-  titles = NULL, outdir = NULL, BPPARAM = bpparam())
+  titles = NULL, outdir = NULL, estimate_state = FALSE,
+  signal_col = NULL, test_condition = NULL, BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
@@ -25,7 +26,7 @@ of the samples}
 \item{mark}{Character specifying the histone mark or ChIP-target,
 for example, "H3K4me3"}
 
-\item{filter}{Optional: logical value, filter peaks based on thresholds on
+\item{filter}{(Optional) logical value, filter peaks based on thresholds on
 peak statistics? Default: FALSE. The filter step is described in
 \code{\link{filterPeaks}}.}
 
@@ -38,7 +39,7 @@ corresponding to lower cutoffs applied to metadata columns in order to filter
 peaks. Provide one per column specified in \code{filter_columns}, in the same
 order. If \code{filter} is FALSE, not used.}
 
-\item{normalize}{Optional: logical value, normalize peak statistics
+\item{normalize}{(Optional) logical value, normalize peak statistics
 genome-wide for each sample? Default: TRUE. The normalization step is
 described in \code{\link{normalizePeaks}}.}
 
@@ -46,7 +47,7 @@ described in \code{\link{normalizePeaks}}.}
 corresponding to names of columns in the peak metadata to normalize
 genome-wide for each sample. If \code{normalize} is FALSE, not used.}
 
-\item{tail}{Optional: if \code{normalize} is TRUE, specifies the fraction
+\item{tail}{(Optional) if \code{normalize} is TRUE, specifies the fraction
 of extreme values in each tail to bound during normalization. More details at
 \code{\link{normalizePeaks}}.}
 
@@ -54,28 +55,42 @@ of extreme values in each tail to bound during normalization. More details at
 summary statistics during feature matrix construction. These statistics
 become the features of the matrix.}
 
-\item{length}{Optional: Logical value, during feature matrix construction,
+\item{length}{(Optional) Logical value, during feature matrix construction,
 compute the mean, median, and max of peak length? Default: FALSE}
 
-\item{fraction}{Optional: Logical value, during feature matrix construction,
+\item{fraction}{(Optional) Logical value, during feature matrix construction,
 compute the fraction of the region overlapped by peaks? Default: TRUE}
 
-\item{n}{Optional: Logical value, during feature matrix construction,
+\item{n}{(Optional) Logical value, during feature matrix construction,
 compute the number of peaks in the region? Default: FALSE}
 
-\item{heatmap}{Optional: Logical value, plot the heatmap corresponding to
+\item{heatmap}{(Optional) Logical value, plot the heatmap corresponding to
 the hierarchical clustering result? Default: TRUE}
 
-\item{titles}{Optional:  if \code{heatmap} is TRUE, a character vector
+\item{titles}{(Optional)  if \code{heatmap} is TRUE, a character vector
 of the same length as \code{query}, specifying the title to use when plotting
 each heatmap (e.g. a gene name), also reused as the
 prefix of the name of the file where the heatmap is saved. By default, the
 title is the genomic coordinates of the region in the form "chrN:start-end"}
 
-\item{outdir}{Optional: if \code{heatmap} is TRUE, the name of the directory
+\item{outdir}{(Optional) if \code{heatmap} is TRUE, the name of the directory
 where heatmaps should be saved}
 
-\item{BPPARAM}{Optional: instance of \code{BiocParallel:BiocParallelParam}
+\item{estimate_state}{(Optional) Logical value indicating whether to include
+a column "state" in the output specifying the estimated chromatin state of
+a test condition. The state will be on of "ON", "OFF", or NA, where the
+latter results if a binary switch between the conditions is unclear.
+Default: FALSE.}
+
+\item{signal_col}{(Optional) If \code{estimate_state} is TRUE, string
+specifying the name of the column in the original peak files which
+corresponds to the level of enrichment in the region, e.g. fold change}
+
+\item{test_condition}{(Optional) If \code{estimate_state} is TRUE, string
+specifying one of the two biological condtions in \code{metadata$Condition}
+for which to estimate chromatin state.}
+
+\item{BPPARAM}{(Optional) instance of \code{BiocParallel:BiocParallelParam}
 used to determine the back-end used for parallel computations when performing
 the analysis on more than one region.}
 }

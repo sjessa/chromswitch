@@ -29,3 +29,11 @@ NULL
 
 #' @importClassesFrom GenomicRanges GRanges GRangesList
 NULL
+
+## Handle R CMD check NOTE re: the .'s that appear in pipelines
+## and other undefined variables in tidyr/dplyr functions
+## as per https://stackoverflow.com/a/12429344
+if(getRversion() >= "2.15.1") utils::globalVariables(c(".", "Var1", "Var2",
+                                                        "Freq", "Cluster",
+                                                        "Condition", "Sample",
+                                                        "C1", "C2"))

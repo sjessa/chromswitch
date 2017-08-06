@@ -32,7 +32,7 @@
 #' of the samples
 #' @param mark Character specifying the histone mark or ChIP-target,
 #' for example, "H3K4me3"
-#' @param filter Optional: logical value, filter peaks based on thresholds on
+#' @param filter (Optional) logical value, filter peaks based on thresholds on
 #' peak statistics? Default: FALSE. The filter step is described in
 #' \code{\link{filterPeaks}}.
 #' @param filter_columns If \code{filter} is TRUE, a chracter vector
@@ -42,34 +42,45 @@
 #' corresponding to lower cutoffs applied to metadata columns in order to filter
 #' peaks. Provide one per column specified in \code{filter_columns}, in the same
 #' order. If \code{filter} is FALSE, not used.
-#' @param normalize Optional: logical value, normalize peak statistics
+#' @param normalize (Optional) logical value, normalize peak statistics
 #' genome-wide for each sample? Default: TRUE. The normalization step is
 #' described in \code{\link{normalizePeaks}}.
 #' @param normalize_columns If \code{normalize} is TRUE, a character vector
 #' corresponding to names of columns in the peak metadata to normalize
 #' genome-wide for each sample. If \code{normalize} is FALSE, not used.
-#' @param tail Optional: if \code{normalize} is TRUE, specifies the fraction
+#' @param tail (Optional) if \code{normalize} is TRUE, specifies the fraction
 #' of extreme values in each tail to bound during normalization. More details at
 #' \code{\link{normalizePeaks}}.
 #' @param summarize_columns Character vector of column names on which to compute
 #' summary statistics during feature matrix construction. These statistics
 #' become the features of the matrix.
-#' @param length Optional: Logical value, during feature matrix construction,
+#' @param length (Optional) Logical value, during feature matrix construction,
 #' compute the mean, median, and max of peak length? Default: FALSE
-#' @param fraction Optional: Logical value, during feature matrix construction,
+#' @param fraction (Optional) Logical value, during feature matrix construction,
 #' compute the fraction of the region overlapped by peaks? Default: TRUE
-#' @param n Optional: Logical value, during feature matrix construction,
+#' @param n (Optional) Logical value, during feature matrix construction,
 #' compute the number of peaks in the region? Default: FALSE
-#' @param heatmap Optional: Logical value, plot the heatmap corresponding to
+#' @param heatmap (Optional) Logical value, plot the heatmap corresponding to
 #' the hierarchical clustering result? Default: TRUE
-#' @param titles Optional:  if \code{heatmap} is TRUE, a character vector
+#' @param titles (Optional)  if \code{heatmap} is TRUE, a character vector
 #' of the same length as \code{query}, specifying the title to use when plotting
 #' each heatmap (e.g. a gene name), also reused as the
 #' prefix of the name of the file where the heatmap is saved. By default, the
 #' title is the genomic coordinates of the region in the form "chrN:start-end"
-#' @param outdir Optional: if \code{heatmap} is TRUE, the name of the directory
+#' @param outdir (Optional) if \code{heatmap} is TRUE, the name of the directory
 #' where heatmaps should be saved
-#' @param BPPARAM Optional: instance of \code{BiocParallel:BiocParallelParam}
+#' @param estimate_state (Optional) Logical value indicating whether to include
+#' a column "state" in the output specifying the estimated chromatin state of
+#' a test condition. The state will be on of "ON", "OFF", or NA, where the
+#' latter results if a binary switch between the conditions is unclear.
+#' Default: FALSE.
+#' @param signal_col (Optional) If \code{estimate_state} is TRUE, string
+#' specifying the name of the column in the original peak files which
+#' corresponds to the level of enrichment in the region, e.g. fold change
+#' @param test_condition (Optional) If \code{estimate_state} is TRUE, string
+#' specifying one of the two biological condtions in \code{metadata$Condition}
+#' for which to estimate chromatin state.
+#' @param BPPARAM (Optional) instance of \code{BiocParallel:BiocParallelParam}
 #' used to determine the back-end used for parallel computations when performing
 #' the analysis on more than one region.
 #'
@@ -109,6 +120,9 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                             summarize_columns,
                             length = FALSE, fraction = TRUE, n = FALSE,
                             heatmap = TRUE, titles = NULL, outdir = NULL,
+                            estimate_state = FALSE,
+                            signal_col = NULL,
+                            test_condition = NULL,
                             BPPARAM = bpparam()) {
 
     # Preprocessing
@@ -154,7 +168,15 @@ callWholeRegion <- function(query, peaks, metadata, mark,
     if (!heatmap) {
 
         results <- Map(f = function(ft_mat, region)
-            cluster(ft_mat, metadata, region, heatmap, titles, outdir),
+            cluster(ft_mat, metadata, region,
+                    heatmap = FALSE,
+                    title = NULL,
+                    outdir = NULL,
+                    n_features = FALSE,
+                    estimate_state = estimate_state,
+                    signal_col = signal_col,
+                    test_condition = test_condition,
+                    mark = mark),
             matrices, queries)
 
     } else {
@@ -162,7 +184,15 @@ callWholeRegion <- function(query, peaks, metadata, mark,
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
         results <- bpmapply(FUN = function(ft_mat, region, title)
-            cluster(ft_mat, metadata, region, heatmap, title, outdir),
+            cluster(ft_mat, metadata, region,
+                    heatmap = heatmap,
+                    title = title,
+                    outdir = outdir,
+                    n_features = FALSE,
+                    estimate_state = estimate_state,
+                    signal_col = signal_col,
+                    test_condition = test_condition,
+                    mark = mark),
             matrices, queries, titles,
             SIMPLIFY = FALSE, BPPARAM = BPPARAM)
     }
@@ -195,7 +225,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #' @param metadata A dataframe with at least two columns: "Sample" which stores
 #' the sample IDs, "Condition", which stores the biological condition labels
 #' of the samples
-#' @param filter Optional: logical value, filter peaks based on thresholds on
+#' @param filter (Optional) logical value, filter peaks based on thresholds on
 #' peak statistics? Default: FALSE. The filter step is described in
 #' \code{\link{filterPeaks}}.
 #' @param filter_columns If \code{filter} is TRUE, a chracter vector
@@ -205,24 +235,30 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #' corresponding to lower cutoffs applied to metadata columns in order to filter
 #' peaks. Provide one per column specified in \code{filter_columns}, in the same
 #' order. If \code{filter} is FALSE, not used.
-#' @param reduce Optional: logical value, if TRUE, reduce gaps between nearby
+#' @param reduce (Optional) logical value, if TRUE, reduce gaps between nearby
 #' peaks in the same sample. See more at \code{\link{reducePeaks}}.
 #' Default: TRUE
-#' @param gap Numeric value, specifying the threshold distance for merging.
+#' @param gap (Optional) If \code{reduce} is TRUE, numeric value,
+#' specifying the threshold distance for merging.
 #' Peaks in the same sample which are within this many bp of each other will
 #' be merged. Default: 300
 #' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
 #' to require. Default: 0.4
-#' @param heatmap Optional: Logical value, plot the heatmap corresponding to
+#' @param n_features (Optional) Logical value indicating whether to include
+#' a column "n_features" in the output storing the number of features in the
+#' feature matrix constructed for the region, which may be useful for
+#' understanding the behaviour of the position-aware strategy for constructing
+#' feature matrices. Default: FALSE
+#' @param heatmap (Optional) Logical value, plot the heatmap corresponding to
 #' the hierarchical clustering result? Default: TRUE
-#' @param titles Optional:  if \code{heatmap} is TRUE, a character vector
+#' @param titles (Optional)  if \code{heatmap} is TRUE, a character vector
 #' of the same length as \code{query}, specifying the title to use when plotting
 #' each heatmap (e.g. a gene name), also reused as the
 #' prefix of the name of the file where the heatmap is saved. By default, the
 #' title is the genomic coordinates of the region in the form "chrN:start-end"
-#' @param outdir Optional: if \code{heatmap} is TRUE, the name of the directory
+#' @param outdir (Optional) if \code{heatmap} is TRUE, the name of the directory
 #' where heatmaps should be saved
-#' @param BPPARAM Optional: instance of \code{BiocParallel:BiocParallelParam}
+#' @param BPPARAM (Optional) instance of \code{BiocParallel:BiocParallelParam}
 #' used to determine the back-end used for parallel computations when performing
 #' the analysis on more than one region.
 #'
@@ -252,7 +288,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 callPositionAware <- function(query, peaks, metadata,
                             filter = FALSE, filter_columns = NULL,
                             filter_thresholds = NULL, reduce = TRUE,
-                            gap = 300, p = 0.4,
+                            gap = 300, p = 0.4, n_features = FALSE,
                             heatmap = TRUE, titles = NULL, outdir = NULL,
                             BPPARAM = bpparam()) {
 
@@ -288,7 +324,11 @@ callPositionAware <- function(query, peaks, metadata,
     if (!heatmap) {
 
         results <- bpmapply(FUN = function(ft_mat, region)
-            cluster(ft_mat, metadata, region, heatmap, titles, outdir),
+            cluster(ft_mat, metadata, region,
+                    heatmap = FALSE,
+                    title = NULL,
+                    outdir = NULL,
+                    n_features = n_features),
             matrices, queries,
             SIMPLIFY = FALSE, BPPARAM = BPPARAM)
 
@@ -297,7 +337,11 @@ callPositionAware <- function(query, peaks, metadata,
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
         results <- bpmapply(FUN = function(ft_mat, region, title)
-            cluster(ft_mat, metadata, region, heatmap, title, outdir),
+            cluster(ft_mat, metadata, region,
+                    heatmap = heatmap,
+                    title = title,
+                    outdir = outdir,
+                    n_features = n_features),
             matrices, queries, titles,
             SIMPLIFY = FALSE, BPPARAM = BPPARAM)
     }

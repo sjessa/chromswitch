@@ -35,11 +35,11 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         stringsAsFactors = FALSE)
 
     ft_mat <- data.frame(
-        qValue_mean = c(46, 66, 27, 0, 0, 0),
-        signalValue_mean = c(15, 17, 11, 0, 0, 0),
-        qValue_max = c(73, 115, 47, 0, 0, 0),
-        signalValue_max = c(22, 26, 17, 0, 0, 0),
-        fraction_region_in_peaks = c(0.5, 0.5, 0.5, 0, 0, 0)
+        H3K4me3_qValue_mean = c(46, 66, 27, 0, 0, 0),
+        H3K4me3_signalValue_mean = c(15, 17, 11, 0, 0, 0),
+        H3K4me3_qValue_max = c(73, 115, 47, 0, 0, 0),
+        H3K4me3_signalValue_max = c(22, 26, 17, 0, 0, 0),
+        H3K4me3_fraction_region_in_peaks = c(0.5, 0.5, 0.5, 0, 0, 0)
     )
 
     rownames(ft_mat) <- metadata$Sample
@@ -114,13 +114,32 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         V_measure = 1,
         Consensus = 1,
         state = "ON",
+        n_features = 5,
         E068 = 1, E071 = 1, E074 = 1,
         E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
     expect_equal(cluster(ft_mat, metadata, region,
+                         n_features = TRUE,
                          estimate_state = TRUE,
-                         signal_col = "signalValue_mean",
+                         signal_col = "signalValue",
+                         mark = "H3K4me3",
                          test_condition = "Brain"),
                  cluster_out3)
+
+    expect_error(cluster(ft_mat, metadata, region,
+                         n_features = TRUE,
+                         estimate_state = TRUE), "signal value")
+
+
+    expect_error(cluster(ft_mat, metadata, region,
+                         n_features = TRUE,
+                         estimate_state = TRUE,
+                         signal_col = "H3K4me3"), "condition")
+
+    expect_error(cluster(ft_mat, metadata, region,
+                         n_features = TRUE,
+                         estimate_state = TRUE,
+                         signal_col = "H3K4me3",
+                         test_condition = "Brain"), "mark")
 
 })

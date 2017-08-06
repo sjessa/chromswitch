@@ -23,7 +23,8 @@ Imports:
     methods,
     NMF (>= 0.20.6),
     readr(>= 1.1.1),
-    stats
+    stats,
+    tidyr (>= 0.6.3)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

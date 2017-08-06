@@ -15,7 +15,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
 
     regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
         ranges = IRanges::IRanges(start = c(54924104, 54874318),
-                                  end = c(54929104, 54877536)))
+                                    end = c(54929104, 54877536)))
 
     mcols(regions)$name <- c("test1", "test2")
 
@@ -43,8 +43,8 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
     call <- function(...) {
 
         callWholeRegion(query = regions,
-                       peaks = H3K4me3,
-                       metadata = metadata, ...)
+                        peaks = H3K4me3,
+                        metadata = metadata, ...)
 
     }
 
@@ -53,6 +53,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
                     summarize_columns = c("pValue", "qValue", "signalValue"),
                     heatmap = FALSE),
                 output, tolerance = 1e-2)
+
 
     expect_error(call(mark = "H3K4me3",
                     summarize_columns = c("pValue", "qValue", "signalValue"),
@@ -66,11 +67,11 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
                  "provide names of columns to filter")
 
     expect_error(call(mark = "H3K4me3", normalize = FALSE,
-                      filter = TRUE,
-                      filter_columns = "pValue",
-                      filter_thresholds = c(5, 6),
-                      summarize_columns = c("pValue", "qValue", "signalValue"),
-                      heatmap = FALSE),
+                        filter = TRUE,
+                        filter_columns = "pValue",
+                        filter_thresholds = c(5, 6),
+                        summarize_columns = c("pValue", "qValue", "signalValue"),
+                        heatmap = FALSE),
                  "one threshold per column")
 
     output_nonorm <- data.frame(
@@ -95,24 +96,61 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
     )
 
     expect_equal(call(normalize = FALSE,
-                      mark = "H3K4me3",
-                      summarize_columns = c("pValue", "qValue", "signalValue"),
-                      heatmap = FALSE),
+                        mark = "H3K4me3",
+                        summarize_columns = c("pValue", "qValue", "signalValue"),
+                        heatmap = FALSE),
                  output_nonorm, tolerance = 1e-2)
 
     expect_equal(call(normalize = FALSE,
-                      mark = "H3K4me3",
-                      summarize_columns = c("pValue", "qValue", "signalValue"),
-                      heatmap = TRUE),
+                        mark = "H3K4me3",
+                        summarize_columns = c("pValue", "qValue", "signalValue"),
+                        heatmap = TRUE),
                  output_nonorm, tolerance = 1e-2)
 
     file.remove(paste0(GRangesToCoord(regions[1]), ".pdf"))
     file.remove(paste0(GRangesToCoord(regions[2]), ".pdf"))
 
     expect_error(call(normalize = FALSE,
-                      mark = "H3K4me3",
-                      summarize_columns = c("pValue", "qValue", "signalValue"),
-                      titles = "test"), "one title per query")
+                        mark = "H3K4me3",
+                        summarize_columns = c("pValue", "qValue", "signalValue"),
+                        titles = "test"), "one title per query")
+
+    output_state <- data.frame(
+        region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        name = c("test1", "test2"),
+        k = c(2, 2),
+        Average_Silhouette = c(0.911, 0.457),
+        Purity = c(1, 0.5),
+        Entropy = c(0, 0.918),
+        ARI = c(1, -0.216),
+        NMI = c(1, 0),
+        Homogeneity = c(1, 0),
+        Completeness = c(1, 0),
+        V_measure = c(1, 0),
+        Consensus = c(1, -0.0721),
+        state = c("ON", NA),
+        E068 = as.integer(c(1, 1)),
+        E071 = as.integer(c(1, 1)),
+        E074 = as.integer(c(1, 2)),
+        E101 = as.integer(c(2, 1)),
+        E102 = as.integer(c(2, 1)),
+        E110 = as.integer(c(2, 2)), stringsAsFactors = FALSE
+    )
+
+    expect_equal(call(normalize_columns = c("qValue", "pValue", "signalValue"),
+                    mark = "H3K4me3",
+                    summarize_columns = c("pValue", "qValue", "signalValue"),
+                    heatmap = FALSE,
+                    estimate_state = TRUE,
+                    signal_col = "signalValue",
+                    test_condition = "Brain"),
+                output_state, tolerance = 1e-2)
+
+    expect_error(call(normalize_columns = c("qValue", "pValue", "signalValue"),
+                        mark = "H3K4me3",
+                        summarize_columns = c("pValue", "qValue", "signalValue"),
+                        heatmap = FALSE,
+                        estimate_state = TRUE), "signal")
 
 })
 
@@ -125,9 +163,9 @@ test_that("The position-aware strategy properly executes the analysis", {
     groups <- c(rep("Brain", 3), rep("Other", 3))
 
     metadata <- data.frame(Sample = samples,
-                           H3K4me3 = outfiles,
-                           Condition = groups,
-                           stringsAsFactors = FALSE)
+                            H3K4me3 = outfiles,
+                            Condition = groups,
+                            stringsAsFactors = FALSE)
 
     regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
                     ranges = IRanges::IRanges(start = c(54924104, 54892830),
@@ -159,5 +197,23 @@ test_that("The position-aware strategy properly executes the analysis", {
                                                     reduce = TRUE)),
                 output, tolerance = 1e-4)
 
-
+    output_n <- data.frame(region = c("chr19:54924104-54929104",
+                                    "chr19:54892830-54897288"),
+                        k = c(2, 2),
+                        Average_Silhouette = c(1, 0),
+                        Purity = c(1, 0.6666667),
+                        Entropy = c(0, 0.4591479),
+                        ARI = c(1, 0),
+                        NMI = c(1, 0.2367466),
+                        Homogeneity = c(1, 0.1908745),
+                        Completeness = c(1, 0.293643),
+                        V_measure = c(1, 0.2313599),
+                        Consensus = c(1.0000000, 0.1560355),
+                        n_features = c(1, 0),
+                        E068 = c(1, 1),
+                        E071 = c(1, 1),
+                        E074 = c(1, 1),
+                        E101 = c(2, 1),
+                        E102 = c(2, 1),
+                        E110 = c(2, 2), stringsAsFactors = FALSE)
 })

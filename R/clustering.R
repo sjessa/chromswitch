@@ -14,12 +14,32 @@
 #' the sample identifiers, and at least one column, "Condition", which stores
 #' the biological condition labels of the samples
 #' @param region GRanges object specifying the query region
-#' @param heatmap (Optional) Logical value indicating whether or not to plot
+#' @param heatmap (Optional) Logical value indicating whether to plot
 #' the heatmap for hierarchical clustering. Default: FALSE
 #' @param title (Optional) If \code{heatmap} is TRUE, specify the title of the
 #' plot, which will also be used for the output file name in PDF format
-#' @param outdir Optional, the name of the directory where heatmaps should
-#' be saved
+#' @param outdir (Optional) String specifying the name of the directory where
+#' PDF of heatmaps should be saved
+#' @param n_features (Optional) Logical value indicating whether to include
+#' a column "n_features" in the output storing the number of features in the
+#' feature matrix constructed for the region, which may be useful for
+#' understanding the behaviour of the position-aware strategy for constructing
+#' feature matrices. Default: FALSE
+#' @param estimate_state (Optional) Logical value indicating whether to include
+#' a column "state" in the output specifying the estimated chromatin state of
+#' a test condition. The state will be on of "ON", "OFF", or NA, where the
+#' latter results if a binary switch between the conditions is unclear.
+#' This is only possible when the feature matrix was constructed by the whole-
+#' region strategy (\code{\link{summarizePeaks}}).
+#' Default: FALSE.
+#' @param signal_col (Optional) If \code{estimate_state} is TRUE, string
+#' specifying the name of the column in the original peak files which
+#' corresponds to the level of enrichment in the region, e.g. fold change
+#' @param mark (Optional) If \code{estimate_state} is TRUE, string specifying
+#' the name of the mark for which \code{ft_mat} was constructed
+#' @param test_condition (Optional) If \code{estimate_state} is TRUE, string
+#' specifying one of the two biological condtions in \code{metadata$Condition}
+#' for which to estimate chromatin state.
 #'
 #' @examples
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
@@ -44,14 +64,23 @@
 #'
 #' cluster(ft_mat, metadata, region)
 #'
+#' # Estimate the state of the test condition, "Brain"
+#' cluster(ft_mat, metadata, region,
+#'     estimate_state = TRUE,
+#'     signal_col = "signalValue",
+#'     mark = "H3K4me3",
+#'     test_condition = "Brain")
+#'
 #' @return A dataframe with the region, the number of clusters inferred,
 #' the cluster validity statistics, and the cluster assignments for each sample
 #'
 #' @export
 cluster <- function(ft_mat, metadata, region,
                     heatmap = FALSE, title = NULL, outdir = NULL,
+                    n_features = FALSE,
                     estimate_state = FALSE,
                     signal_col = NULL,
+                    mark = NULL,
                     test_condition = NULL) {
 
     if (is(region, "GRangesList")) region <- unlist(region)
@@ -151,18 +180,24 @@ cluster <- function(ft_mat, metadata, region,
 
         if (is.null(signal_col))
             stop("If estimate_trajectory = TRUE, please specify the name
-                 of the column corresponding to the signal value.")
+                of the column corresponding to the signal value.")
 
         if (is.null(test_condition))
             stop("If estimate_trajectory = TRUE, please specify the name
-                 of the condition for which to call chromatin state.")
+                of the condition for which to call chromatin state.")
+
+        if (is.null(mark))
+            stop("If estimate_trajectory = TRUE, please specify the name
+                of the mark corresponding to the data in ft_mat.")
+
+        col <- paste0(mark, "_", signal_col, "_mean")
 
         # 1. Assign each cluster to one of the two conditions
         clust_id <- clusters_df %>%
             t() %>%
             as.data.frame() %>%
             dplyr::mutate(Sample = rownames(.)) %>%
-            dplyr::rename(Cluster = V1) %>%
+            dplyr::rename_(Cluster = "V1") %>%
             dplyr::inner_join(metadata, by = "Sample") %>%
             dplyr::select(Sample, Condition, Cluster) %>%
             dplyr::mutate(Condition = ifelse(Condition == test_condition,
@@ -177,17 +212,21 @@ cluster <- function(ft_mat, metadata, region,
 
         # 2. Get the mean signal of each cluster
         clust_ft_mat <- ft_mat %>% as.data.frame %>%
-            dplyr::select_(signal_col) %>%
+            dplyr::select_(col) %>%
             dplyr::mutate(Sample = rownames(.)) %>%
             dplyr::inner_join(clust_id, by = "Sample") %>%
             dplyr::group_by(Cluster, Condition) %>%
-            dplyr::summarize_at(signal_col, mean, na.rm = TRUE) %>%
-            dplyr::arrange_(paste0("desc(", signal_col, ")"))
+            dplyr::summarize_at(col, mean, na.rm = TRUE) %>%
+            dplyr::arrange_(paste0("desc(", col, ")"))
 
         # 3. Guess the state of the test condition in the region
         stats$state <- estimateState(clust_ft_mat)
 
     }
+
+    if (n_features) stats$n_features <- ifelse("no_peak" %in% names(ft_mat),
+                                                0,
+                                                ncol(ft_mat))
 
     results <- dplyr::bind_cols(region_df, stats, clusters_df)
 
@@ -197,18 +236,18 @@ cluster <- function(ft_mat, metadata, region,
 
 isC1AtTop <- function(clust_ft_mat) {
 
-    state = TRUE
+    state = FALSE
     i = 1
-    cond = clust_ft_mat[i, "Condition"]
+    current = clust_ft_mat[i, "Condition"]
 
     # Keep going down the list while the condition is brain
-    while(cond == "C1") {
+    while(current == "C1") {
         state = TRUE
         i <- i + 1
-        cond <- clust_ft_mat[i, "Condition"]
+        current <- clust_ft_mat[i, "Condition"]
     }
 
-    # When it's not brain anymore, check if there are
+    # When it's not C1 anymore, check if there are any C1 clusters below
     leftover <- clust_ft_mat[i:nrow(clust_ft_mat), "Condition"] %>% unlist()
     if ("C1" %in% leftover) state = FALSE
 
@@ -217,16 +256,15 @@ isC1AtTop <- function(clust_ft_mat) {
 
 isC1AtBottom <- function(clust_ft_mat) {
 
+    # Ask if C1 is at the top when the clusters are ranked from
+    # lowest mean FC to highest
     isC1AtTop(clust_ft_mat[order(nrow(clust_ft_mat):1),])
 }
 
 estimateState <- function(clust_ft_mat) {
 
-    on <- isC1AtTop(clust_ft_mat)
-    off <- isC1AtBottom(clust_ft_mat)
-
-    if (on) return("ON")
-    else if (off) return("OFF")
-    else if (!on && !off) return(NA)
+    if (isC1AtTop(clust_ft_mat)) return("ON")
+    else if (isC1AtBottom(clust_ft_mat)) return("OFF")
+    else return(NA)
 }
 
