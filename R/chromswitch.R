@@ -36,4 +36,5 @@ NULL
 if(getRversion() >= "2.15.1") utils::globalVariables(c(".", "Var1", "Var2",
                                                         "Freq", "Cluster",
                                                         "Condition", "Sample",
-                                                        "C1", "C2"))
+                                                        "C1", "C2",
+                                                        "Average_Silhouette"))

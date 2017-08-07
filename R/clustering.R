@@ -140,8 +140,7 @@ cluster <- function(ft_mat, metadata, region,
     # Choose the clustering partition with the highest average Silhouette width
     stats <- ft_mat %>%
         clusterValidityPerK() %>%
-        dplyr::arrange_("desc(Average_Silhouette)") %>%
-        dplyr::slice(1)
+        dplyr::slice(which.max(Average_Silhouette))
 
     d_mat <- dist(ft_mat)
     tree <- hclust(d_mat)
