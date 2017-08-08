@@ -12,7 +12,7 @@ Imports:
     BiocParallel (>= 1.10.1),
     DescTools (>= 0.99.19),
     dplyr (>= 0.5.0),
-    GenomicRanges (>= 1.28.2),
+    GenomicRanges (>= 1.26.4),
     gplots(>= 3.0.1),
     graphics,
     grDevices,
