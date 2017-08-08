@@ -47,6 +47,22 @@ internalClusterValidity <- function(k, hclust_obj, dmatrix) {
 }
 
 
+#' @keywords internal
+getK <- function(ft_mat, optimal_clusters) {
+
+    if (optimal_clusters) {
+        ft_mat %>%
+            clusterValidityPerK() %>%
+            dplyr::slice(which.max(Average_Silhouette))
+    } else {
+        ft_mat %>%
+            clusterValidityPerK() %>%
+            dplyr::filter(k == 2)
+    }
+
+}
+
+
 #' clusterValidityPerK
 #'
 #' Given an hclust object and the corresponding dissimilarity
@@ -64,15 +80,8 @@ clusterValidityPerK <- function(ft_mat) {
     dmatrix <- dist(ft_mat)
     hclust_obj <- hclust(dmatrix, method = "complete")
 
-    if (is.atomic(ft_mat)) {
+    k <- seq(2, (nrow(ft_mat) - 1))
+    lapply(k, internalClusterValidity, hclust_obj, dmatrix) %>%
+        dplyr::bind_rows()
 
-        k <- 2
-        internalClusterValidity(k, hclust_obj, dmatrix)
-
-    } else {
-
-        k <- seq(2, (nrow(ft_mat) - 1))
-        lapply(k, internalClusterValidity, hclust_obj, dmatrix) %>%
-            dplyr::bind_rows()
-    }
 }

@@ -197,23 +197,68 @@ test_that("The position-aware strategy properly executes the analysis", {
                                                     reduce = TRUE)),
                 output, tolerance = 1e-4)
 
-    output_n <- data.frame(region = c("chr19:54924104-54929104",
+    output2 <- data.frame(region = c("chr19:54924104-54929104",
                                     "chr19:54892830-54897288"),
-                        k = c(2, 2),
-                        Average_Silhouette = c(1, 0),
-                        Purity = c(1, 0.6666667),
-                        Entropy = c(0, 0.4591479),
-                        ARI = c(1, 0),
-                        NMI = c(1, 0.2367466),
-                        Homogeneity = c(1, 0.1908745),
-                        Completeness = c(1, 0.293643),
-                        V_measure = c(1, 0.2313599),
-                        Consensus = c(1.0000000, 0.1560355),
-                        n_features = c(1, 0),
-                        E068 = c(1, 1),
-                        E071 = c(1, 1),
-                        E074 = c(1, 1),
-                        E101 = c(2, 1),
-                        E102 = c(2, 1),
-                        E110 = c(2, 2), stringsAsFactors = FALSE)
+                         k = c(2, 2),
+                         Average_Silhouette = c(0.8333333, 0),
+                         Purity = c(0.6666667, 0.6666667),
+                         Entropy = c(0.4591479, 0.4591479),
+                         ARI = c(0, 0),
+                         NMI = c(0.2367466, 0.2367466),
+                         Homogeneity = c(0.1908745, 0.1908745),
+                         Completeness = c(0.293643, 0.293643),
+                         V_measure = c(0.2313599, 0.2313599),
+                         Consensus = c(0.1560355, 0.1560355),
+                         E068 = c(1, 1),
+                         E071 = c(2, 1),
+                         E074 = c(1, 1),
+                         E101 = c(1, 1),
+                         E102 = c(1, 1),
+                         E110 = c(1, 2), stringsAsFactors = FALSE)
+
+    expect_equal(suppressWarnings(callPositionAware(query = regions,
+                                   peaks = H3K4me3,
+                                   metadata = metadata,
+                                   filter = TRUE,
+                                   filter_columns = c("signalValue"),
+                                   # A very extreme threshold, to make
+                                   # sure the filtering works
+                                   filter_thresholds = c(25))),
+                 output2, tolerance = 1e-5)
+
+    expect_error(callPositionAware(query = regions,
+                                   peaks = H3K4me3,
+                                   metadata = metadata,
+                                   filter = TRUE),
+                 "provide names of columns to filter")
+
+    output3 <- data.frame(region = "chr19:54924104-54929104",
+                          k = 2,
+                          Average_Silhouette = 0.4065566,
+                          Purity = 0.6666667,
+                          Entropy = 0.4591479,
+                          ARI = 0,
+                          NMI = 0.2367466,
+                          Homogeneity = 0.1908745,
+                          Completeness = 0.293643,
+                          V_measure = 0.2313599,
+                          Consensus = 0.1560355,
+                          n_features = 2,
+                          E068 = 1,
+                          E071 = 1,
+                          E074 = 2,
+                          E101 = 1,
+                          E102 = 1,
+                          E110 = 1, stringsAsFactors = FALSE)
+
+    expect_equal(callPositionAware(query = regions[1],
+                      peaks = H3K4me3,
+                      metadata = metadata,
+                      filter = FALSE,
+                      heatmap = TRUE,
+                      p = 0.9,
+                      n_features = TRUE), output3, tolerance = 1e-5)
+
+    file.remove(paste0(GRangesToCoord(regions[1]), ".pdf"))
+
 })

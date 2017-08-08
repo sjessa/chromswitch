@@ -6,8 +6,9 @@
 \usage{
 callPositionAware(query, peaks, metadata, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, reduce = TRUE,
-  gap = 300, p = 0.4, n_features = FALSE, heatmap = TRUE,
-  titles = NULL, outdir = NULL, BPPARAM = bpparam())
+  gap = 300, p = 0.4, n_features = FALSE, heatmap = FALSE,
+  titles = NULL, outdir = NULL, optimal_clusters = FALSE,
+  BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
@@ -63,6 +64,10 @@ title is the genomic coordinates of the region in the form "chrN:start-end"}
 
 \item{outdir}{(Optional) if \code{heatmap} is TRUE, the name of the directory
 where heatmaps should be saved}
+
+\item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
+samples into two groups, or to find the optimal clustering solution by
+choosing the set of clusters which maximizes the Average Silhouette width}
 
 \item{BPPARAM}{(Optional) instance of \code{BiocParallel:BiocParallelParam}
 used to determine the back-end used for parallel computations when performing

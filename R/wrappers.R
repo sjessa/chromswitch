@@ -69,6 +69,9 @@
 #' title is the genomic coordinates of the region in the form "chrN:start-end"
 #' @param outdir (Optional) if \code{heatmap} is TRUE, the name of the directory
 #' where heatmaps should be saved
+#' @param optimal_clusters (Optional) Logical value indicate whether to cluster
+#' samples into two groups, or to find the optimal clustering solution by
+#' choosing the set of clusters which maximizes the Average Silhouette width
 #' @param estimate_state (Optional) Logical value indicating whether to include
 #' a column "state" in the output specifying the estimated chromatin state of
 #' a test condition. The state will be on of "ON", "OFF", or NA, where the
@@ -120,6 +123,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                             summarize_columns,
                             length = FALSE, fraction = TRUE, n = FALSE,
                             heatmap = TRUE, titles = NULL, outdir = NULL,
+                            optimal_clusters = FALSE,
                             estimate_state = FALSE,
                             signal_col = NULL,
                             test_condition = NULL,
@@ -165,7 +169,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
     queries <- lapply(query, GRangesList)
 
     # Cluster the feature matrices
-    if (!heatmap) {
+    if (!isTRUE(heatmap)) {
 
         results <- Map(f = function(ft_mat, region)
             cluster(ft_mat, metadata, region,
@@ -173,13 +177,14 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                     title = NULL,
                     outdir = NULL,
                     n_features = FALSE,
+                    optimal_clusters = optimal_clusters,
                     estimate_state = estimate_state,
                     signal_col = signal_col,
                     test_condition = test_condition,
                     mark = mark),
             matrices, queries)
 
-    } else {
+    } else if (isTRUE(heatmap)) {
 
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
@@ -189,6 +194,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                     title = title,
                     outdir = outdir,
                     n_features = FALSE,
+                    optimal_clusters = optimal_clusters,
                     estimate_state = estimate_state,
                     signal_col = signal_col,
                     test_condition = test_condition,
@@ -258,6 +264,9 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #' title is the genomic coordinates of the region in the form "chrN:start-end"
 #' @param outdir (Optional) if \code{heatmap} is TRUE, the name of the directory
 #' where heatmaps should be saved
+#' @param optimal_clusters (Optional) Logical value indicate whether to cluster
+#' samples into two groups, or to find the optimal clustering solution by
+#' choosing the set of clusters which maximizes the Average Silhouette width
 #' @param BPPARAM (Optional) instance of \code{BiocParallel:BiocParallelParam}
 #' used to determine the back-end used for parallel computations when performing
 #' the analysis on more than one region.
@@ -289,7 +298,8 @@ callPositionAware <- function(query, peaks, metadata,
                             filter = FALSE, filter_columns = NULL,
                             filter_thresholds = NULL, reduce = TRUE,
                             gap = 300, p = 0.4, n_features = FALSE,
-                            heatmap = TRUE, titles = NULL, outdir = NULL,
+                            heatmap = FALSE, titles = NULL, outdir = NULL,
+                            optimal_clusters = FALSE,
                             BPPARAM = bpparam()) {
 
     # Preprocessing
@@ -321,26 +331,28 @@ callPositionAware <- function(query, peaks, metadata,
     queries <- lapply(query, GRangesList)
 
     # Cluster the feature matrices
-    if (!heatmap) {
+    if (!isTRUE(heatmap)) {
 
         results <- bpmapply(FUN = function(ft_mat, region)
             cluster(ft_mat, metadata, region,
                     heatmap = FALSE,
                     title = NULL,
                     outdir = NULL,
+                    optimal_clusters = optimal_clusters,
                     n_features = n_features),
             matrices, queries,
             SIMPLIFY = FALSE, BPPARAM = BPPARAM)
 
-    } else {
+    } else if (isTRUE(heatmap)) {
 
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
         results <- bpmapply(FUN = function(ft_mat, region, title)
             cluster(ft_mat, metadata, region,
-                    heatmap = heatmap,
+                    heatmap = TRUE,
                     title = title,
                     outdir = outdir,
+                    optimal_clusters = optimal_clusters,
                     n_features = n_features),
             matrices, queries, titles,
             SIMPLIFY = FALSE, BPPARAM = BPPARAM)

@@ -8,8 +8,9 @@ callWholeRegion(query, peaks, metadata, mark, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, normalize = TRUE,
   normalize_columns = NULL, tail = 0.005, summarize_columns,
   length = FALSE, fraction = TRUE, n = FALSE, heatmap = TRUE,
-  titles = NULL, outdir = NULL, estimate_state = FALSE,
-  signal_col = NULL, test_condition = NULL, BPPARAM = bpparam())
+  titles = NULL, outdir = NULL, optimal_clusters = FALSE,
+  estimate_state = FALSE, signal_col = NULL, test_condition = NULL,
+  BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
@@ -75,6 +76,10 @@ title is the genomic coordinates of the region in the form "chrN:start-end"}
 
 \item{outdir}{(Optional) if \code{heatmap} is TRUE, the name of the directory
 where heatmaps should be saved}
+
+\item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
+samples into two groups, or to find the optimal clustering solution by
+choosing the set of clusters which maximizes the Average Silhouette width}
 
 \item{estimate_state}{(Optional) Logical value indicating whether to include
 a column "state" in the output specifying the estimated chromatin state of

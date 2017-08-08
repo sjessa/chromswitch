@@ -5,8 +5,9 @@
 \title{cluster}
 \usage{
 cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
-  outdir = NULL, n_features = FALSE, estimate_state = FALSE,
-  signal_col = NULL, mark = NULL, test_condition = NULL)
+  outdir = NULL, optimal_clusters = FALSE, n_features = FALSE,
+  estimate_state = FALSE, signal_col = NULL, mark = NULL,
+  test_condition = NULL)
 }
 \arguments{
 \item{ft_mat}{matrix where columns are features and rows are samples as
@@ -26,6 +27,10 @@ plot, which will also be used for the output file name in PDF format}
 
 \item{outdir}{(Optional) String specifying the name of the directory where
 PDF of heatmaps should be saved}
+
+\item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
+samples into two groups, or to find the optimal clustering solution by
+choosing the set of clusters which maximizes the Average Silhouette width}
 
 \item{n_features}{(Optional) Logical value indicating whether to include
 a column "n_features" in the output storing the number of features in the

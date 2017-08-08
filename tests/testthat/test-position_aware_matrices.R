@@ -99,9 +99,9 @@ test_that("position-aware feature matrix construction works", {
                     peaks = pks,
                     samples = c("a", "b", "c", "d"))
 
-    position_matrix <- data.frame(ft1 = c(TRUE, TRUE, FALSE, FALSE),
-                                ft2 = c(TRUE, TRUE, TRUE, TRUE),
-                                ft3 = c(FALSE, FALSE, TRUE, TRUE))
+    position_matrix <- data.frame(ft1 = c(1, 1, 0, 0),
+                                ft2 = c(1, 1, 1, 1),
+                                ft3 = c(0, 0, 1, 1))
 
     colnames(position_matrix) = c("chr1:10-20",
                                     "chr1:2050-2500",
@@ -118,5 +118,7 @@ test_that("position-aware feature matrix construction works", {
     lp2 <- localPeaks(region2, list(A = pks2, B = pks2), c("A", "B"))
 
     expect_warning(binarizePeaks(lp2, 0.5), "No peaks found")
+    expect_equal(suppressWarnings(binarizePeaks(lp2, 0.5)),
+                 data.frame(no_peak = c(A = 1, B = 1)))
 
 })

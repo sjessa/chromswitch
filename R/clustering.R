@@ -20,6 +20,9 @@
 #' plot, which will also be used for the output file name in PDF format
 #' @param outdir (Optional) String specifying the name of the directory where
 #' PDF of heatmaps should be saved
+#' @param optimal_clusters (Optional) Logical value indicate whether to cluster
+#' samples into two groups, or to find the optimal clustering solution by
+#' choosing the set of clusters which maximizes the Average Silhouette width
 #' @param n_features (Optional) Logical value indicating whether to include
 #' a column "n_features" in the output storing the number of features in the
 #' feature matrix constructed for the region, which may be useful for
@@ -77,6 +80,7 @@
 #' @export
 cluster <- function(ft_mat, metadata, region,
                     heatmap = FALSE, title = NULL, outdir = NULL,
+                    optimal_clusters = FALSE,
                     n_features = FALSE,
                     estimate_state = FALSE,
                     signal_col = NULL,
@@ -87,11 +91,12 @@ cluster <- function(ft_mat, metadata, region,
 
     # If only one feature, can't draw a heatmap
     if (ncol(ft_mat) == 1) heatmap = FALSE
+    else heatmap = heatmap
 
     ft_mat <- data.matrix(ft_mat)
 
-    palette <- grDevices::colorRampPalette(c("dodgerblue4",
-                                            "white", "red"))(n = 100)
+    palette <- grDevices::colorRampPalette(
+        c("dodgerblue4", "white", "red"))(n = 100)
     hclust.fun <- function(i) hclust(i, method = "complete")
 
     conditions <- unique(metadata$Condition)
@@ -138,10 +143,9 @@ cluster <- function(ft_mat, metadata, region,
     }
 
     # Choose the clustering partition with the highest average Silhouette width
-    stats <- ft_mat %>%
-        clusterValidityPerK() %>%
-        dplyr::slice(which.max(Average_Silhouette))
+    stats <- getK(ft_mat, optimal_clusters = optimal_clusters)
 
+    # Get the clusters
     d_mat <- dist(ft_mat)
     tree <- hclust(d_mat)
     clusters <- cutree(tree, k = stats$k)
@@ -200,7 +204,7 @@ cluster <- function(ft_mat, metadata, region,
             dplyr::inner_join(metadata, by = "Sample") %>%
             dplyr::select(Sample, Condition, Cluster) %>%
             dplyr::mutate(Condition = ifelse(Condition == test_condition,
-                                             "C1", "C2"))
+                                            "C1", "C2"))
 
         cluster_table <- table(clust_id$Cluster, clust_id$Condition) %>%
             as.data.frame %>%
@@ -233,6 +237,11 @@ cluster <- function(ft_mat, metadata, region,
 
 }
 
+
+
+
+
+#' @keywords internal
 isC1AtTop <- function(clust_ft_mat) {
 
     state = FALSE
@@ -253,6 +262,8 @@ isC1AtTop <- function(clust_ft_mat) {
     return(state)
 }
 
+
+#' @keywords internal
 isC1AtBottom <- function(clust_ft_mat) {
 
     # Ask if C1 is at the top when the clusters are ranked from
@@ -260,6 +271,8 @@ isC1AtBottom <- function(clust_ft_mat) {
     isC1AtTop(clust_ft_mat[order(nrow(clust_ft_mat):1),])
 }
 
+
+#' @keywords internal
 estimateState <- function(clust_ft_mat) {
 
     if (isC1AtTop(clust_ft_mat)) return("ON")

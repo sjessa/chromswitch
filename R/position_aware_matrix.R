@@ -152,7 +152,7 @@ binarizePeaks <- function(lpks, p) {
 
         warning("No peaks found in region")
 
-        ft_matrix <- data.frame(no_peak = rep(TRUE, length(lpkPeaks(lpks))))
+        ft_matrix <- data.frame(no_peak = rep(1, length(lpkPeaks(lpks))))
         rownames(ft_matrix) <- lpkSamples(lpks)
 
         return(ft_matrix)
@@ -167,6 +167,9 @@ binarizePeaks <- function(lpks, p) {
     # Model presence/absence of each feature peak in each sample
     ft_matrix <- lapply(lpkPeaks(lpks), getSamplePeakProfile, uniq_pks, p) %>%
         dplyr::bind_rows()
+
+    # Convert from logical to numeric
+    ft_matrix <- ft_matrix * 1
 
     uniq_pks_coords <- uniq_pks %>% lapply(GRangesToCoord) %>% unlist()
     colnames(ft_matrix) <- uniq_pks_coords
@@ -185,7 +188,3 @@ binarizePeaks <- function(lpks, p) {
     return(ft_matrix)
 
 }
-
-
-
-
