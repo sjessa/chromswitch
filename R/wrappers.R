@@ -179,6 +179,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                     n_features = FALSE,
                     optimal_clusters = optimal_clusters,
                     estimate_state = estimate_state,
+                    method = "summary",
                     signal_col = signal_col,
                     test_condition = test_condition,
                     mark = mark),
@@ -196,6 +197,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
                     n_features = FALSE,
                     optimal_clusters = optimal_clusters,
                     estimate_state = estimate_state,
+                    method = "summary",
                     signal_col = signal_col,
                     test_condition = test_condition,
                     mark = mark),
@@ -267,6 +269,14 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #' @param optimal_clusters (Optional) Logical value indicate whether to cluster
 #' samples into two groups, or to find the optimal clustering solution by
 #' choosing the set of clusters which maximizes the Average Silhouette width
+#' @param estimate_state (Optional) Logical value indicating whether to include
+#' a column "state" in the output specifying the estimated chromatin state of
+#' a test condition. The state will be on of "ON", "OFF", or NA, where the
+#' latter results if a binary switch between the conditions is unclear.
+#' Default: FALSE.
+#' @param test_condition (Optional) If \code{estimate_state} is TRUE, string
+#' specifying one of the two biological condtions in \code{metadata$Condition}
+#' for which to estimate chromatin state.
 #' @param BPPARAM (Optional) instance of \code{BiocParallel:BiocParallelParam}
 #' used to determine the back-end used for parallel computations when performing
 #' the analysis on more than one region.
@@ -299,7 +309,8 @@ callPositionAware <- function(query, peaks, metadata,
                             filter_thresholds = NULL, reduce = TRUE,
                             gap = 300, p = 0.4, n_features = FALSE,
                             heatmap = FALSE, titles = NULL, outdir = NULL,
-                            optimal_clusters = FALSE,
+                            optimal_clusters = FALSE, estimate_state = FALSE,
+                            test_condition = NULL,
                             BPPARAM = bpparam()) {
 
     # Preprocessing
@@ -339,7 +350,10 @@ callPositionAware <- function(query, peaks, metadata,
                     title = NULL,
                     outdir = NULL,
                     optimal_clusters = optimal_clusters,
-                    n_features = n_features),
+                    n_features = n_features,
+                    estimate_state = estimate_state,
+                    method = "binary",
+                    test_condition = test_condition),
             matrices, queries,
             SIMPLIFY = FALSE, BPPARAM = BPPARAM)
 
@@ -353,7 +367,10 @@ callPositionAware <- function(query, peaks, metadata,
                     title = title,
                     outdir = outdir,
                     optimal_clusters = optimal_clusters,
-                    n_features = n_features),
+                    n_features = n_features,
+                    estimate_state = estimate_state,
+                    method = "binary",
+                    test_condition = test_condition),
             matrices, queries, titles,
             SIMPLIFY = FALSE, BPPARAM = BPPARAM)
     }

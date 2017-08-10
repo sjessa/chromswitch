@@ -15,7 +15,7 @@
 #' @name chromswitch
 NULL
 
-#' @import methods GenomicRanges IRanges
+#' @import methods GenomicRanges IRanges tidyr
 NULL
 
 #' @importFrom BiocParallel bplapply bpmapply bpparam
@@ -37,4 +37,5 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c(".", "Var1", "Var2",
                                                         "Freq", "Cluster",
                                                         "Condition", "Sample",
                                                         "C1", "C2", "k",
-                                                        "Average_Silhouette"))
+                                                        "Average_Silhouette",
+                                                        "olap"))

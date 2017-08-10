@@ -150,7 +150,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
                         mark = "H3K4me3",
                         summarize_columns = c("pValue", "qValue", "signalValue"),
                         heatmap = FALSE,
-                        estimate_state = TRUE), "signal")
+                        estimate_state = TRUE), "condition")
 
 })
 

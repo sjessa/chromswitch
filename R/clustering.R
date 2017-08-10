@@ -32,17 +32,20 @@
 #' a column "state" in the output specifying the estimated chromatin state of
 #' a test condition. The state will be on of "ON", "OFF", or NA, where the
 #' latter results if a binary switch between the conditions is unclear.
-#' This is only possible when the feature matrix was constructed by the whole-
-#' region strategy (\code{\link{summarizePeaks}}).
 #' Default: FALSE.
-#' @param signal_col (Optional) If \code{estimate_state} is TRUE, string
-#' specifying the name of the column in the original peak files which
-#' corresponds to the level of enrichment in the region, e.g. fold change
-#' @param mark (Optional) If \code{estimate_state} is TRUE, string specifying
-#' the name of the mark for which \code{ft_mat} was constructed
+#' @param method (Optional) If \code{estimate_state} is TRUE, one of "summary"
+#' or "binary", specifying which method was used to construct the feature
+#' matrix in \code{ft_mat}
 #' @param test_condition (Optional) If \code{estimate_state} is TRUE, string
 #' specifying one of the two biological condtions in \code{metadata$Condition}
 #' for which to estimate chromatin state.
+#' @param signal_col (Optional) If \code{estimate_state} is TRUE, and
+#' \code{method} is "summary", string
+#' specifying the name of the column in the original peak files which
+#' corresponds to the level of enrichment in the region, e.g. fold change
+#' @param mark (Optional) If \code{estimate_state} is TRUE, and \code{method}
+#' is "summary",string specifying
+#' the name of the mark for which \code{ft_mat} was constructed
 #'
 #' @examples
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
@@ -70,6 +73,7 @@
 #' # Estimate the state of the test condition, "Brain"
 #' cluster(ft_mat, metadata, region,
 #'     estimate_state = TRUE,
+#'     method = "summary",
 #'     signal_col = "signalValue",
 #'     mark = "H3K4me3",
 #'     test_condition = "Brain")
@@ -83,9 +87,10 @@ cluster <- function(ft_mat, metadata, region,
                     optimal_clusters = FALSE,
                     n_features = FALSE,
                     estimate_state = FALSE,
+                    method = NULL,
+                    test_condition = NULL,
                     signal_col = NULL,
-                    mark = NULL,
-                    test_condition = NULL) {
+                    mark = NULL) {
 
     if (is(region, "GRangesList")) region <- unlist(region)
 
@@ -93,6 +98,7 @@ cluster <- function(ft_mat, metadata, region,
     if (ncol(ft_mat) == 1) heatmap = FALSE
     else heatmap = heatmap
 
+    features <- attr(ft_mat, "features")
     ft_mat <- data.matrix(ft_mat)
 
     if (isTRUE(heatmap)) {
@@ -104,7 +110,7 @@ cluster <- function(ft_mat, metadata, region,
         conditions <- unique(metadata$Condition)
         conditions_colours <- metadata$Condition
 
-        conditions_colours[conditions_colours == conditions[1]] <- "mediumorchid"
+        conditions_colours[conditions_colours == conditions[1]] <-"mediumorchid"
         conditions_colours[conditions_colours == conditions[2]] <- "limegreen"
 
         if (is.null(title)) title <- GRangesToCoord(region)
@@ -181,19 +187,14 @@ cluster <- function(ft_mat, metadata, region,
     # which allows for an estimation of the "trajectory" of the switch
     if (estimate_state) {
 
-        if (is.null(signal_col))
-            stop("If estimate_trajectory = TRUE, please specify the name
-                of the column corresponding to the signal value.")
+        if (!(method %in% c("summary", "binary")))
+            stop(paste0("If estimate_trajectory is TRUE, specify the method",
+                    "used to construct feature matrices, one of 'summary' or",
+                    "'binary'."))
 
         if (is.null(test_condition))
             stop("If estimate_trajectory = TRUE, please specify the name
                 of the condition for which to call chromatin state.")
-
-        if (is.null(mark))
-            stop("If estimate_trajectory = TRUE, please specify the name
-                of the mark corresponding to the data in ft_mat.")
-
-        col <- paste0(mark, "_", signal_col, "_mean")
 
         # 1. Assign each cluster to one of the two conditions
         clust_id <- clusters_df %>%
@@ -206,15 +207,45 @@ cluster <- function(ft_mat, metadata, region,
             dplyr::mutate(Condition = ifelse(Condition == test_condition,
                                             "C1", "C2"))
 
-        cluster_table <- table(clust_id$Cluster, clust_id$Condition) %>%
-            as.data.frame %>%
-            tidyr::spread(Var2, Freq) %>%
-            dplyr::rename(Cluster = Var1) %>%
-            dplyr::mutate(Condition = ifelse(C1 >= C2, "C1", "C2")) %>%
-            dplyr::select(Cluster, Condition)
+        if (method == "summary") {
 
-        # 2. Get the mean signal of each cluster
-        clust_ft_mat <- ft_mat %>% as.data.frame %>%
+            if (is.null(signal_col))
+                stop("If estimate_trajectory = TRUE, please specify the name
+                of the column corresponding to the signal value.")
+
+
+            if (is.null(mark))
+                stop("If estimate_trajectory = TRUE, please specify the name
+                of the mark corresponding to the data in ft_mat.")
+
+            col <- paste0(mark, "_", signal_col, "_mean")
+            ft_mat2 <- ft_mat
+
+
+        } else if (method == "binary") {
+
+            ft_mat_df <- as.data.frame(ft_mat)
+
+            toLength <- function(i) {
+
+                length <- width(features[i])
+                ft_mat_df[,i] %>%
+                    dplyr::recode(`1` = length, `0` = as.integer(0)) %>%
+                    data.frame
+            }
+
+            ft_mat2 <- lapply(seq_along(ft_mat_df), toLength) %>%
+                dplyr::bind_cols()
+            ft_mat2$olap <- rowSums(ft_mat2)
+            ft_mat2 <- ft_mat2 %>% dplyr::mutate(
+                frac = olap / (width(region) + 1))
+            rownames(ft_mat2) <- rownames(ft_mat)
+
+            col <- "frac"
+        }
+
+        # 2. Get the mean signal or fraction of overlap of each cluster
+        clust_ft_mat <- ft_mat2 %>% as.data.frame %>%
             dplyr::select_(col) %>%
             dplyr::mutate(Sample = rownames(.)) %>%
             dplyr::inner_join(clust_id, by = "Sample") %>%
@@ -224,7 +255,6 @@ cluster <- function(ft_mat, metadata, region,
 
         # 3. Guess the state of the test condition in the region
         stats$state <- estimateState(clust_ft_mat)
-
     }
 
     if (n_features) stats$n_features <- ifelse("no_peak" %in% colnames(ft_mat),
@@ -236,8 +266,6 @@ cluster <- function(ft_mat, metadata, region,
     return(as.data.frame(results))
 
 }
-
-
 
 
 

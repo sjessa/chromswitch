@@ -6,8 +6,8 @@
 \usage{
 cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
   outdir = NULL, optimal_clusters = FALSE, n_features = FALSE,
-  estimate_state = FALSE, signal_col = NULL, mark = NULL,
-  test_condition = NULL)
+  estimate_state = FALSE, method = NULL, test_condition = NULL,
+  signal_col = NULL, mark = NULL)
 }
 \arguments{
 \item{ft_mat}{matrix where columns are features and rows are samples as
@@ -42,20 +42,24 @@ feature matrices. Default: FALSE}
 a column "state" in the output specifying the estimated chromatin state of
 a test condition. The state will be on of "ON", "OFF", or NA, where the
 latter results if a binary switch between the conditions is unclear.
-This is only possible when the feature matrix was constructed by the whole-
-region strategy (\code{\link{summarizePeaks}}).
 Default: FALSE.}
 
-\item{signal_col}{(Optional) If \code{estimate_state} is TRUE, string
-specifying the name of the column in the original peak files which
-corresponds to the level of enrichment in the region, e.g. fold change}
-
-\item{mark}{(Optional) If \code{estimate_state} is TRUE, string specifying
-the name of the mark for which \code{ft_mat} was constructed}
+\item{method}{(Optional) If \code{estimate_state} is TRUE, one of "summary"
+or "binary", specifying which method was used to construct the feature
+matrix in \code{ft_mat}}
 
 \item{test_condition}{(Optional) If \code{estimate_state} is TRUE, string
 specifying one of the two biological condtions in \code{metadata$Condition}
 for which to estimate chromatin state.}
+
+\item{signal_col}{(Optional) If \code{estimate_state} is TRUE, and
+\code{method} is "summary", string
+specifying the name of the column in the original peak files which
+corresponds to the level of enrichment in the region, e.g. fold change}
+
+\item{mark}{(Optional) If \code{estimate_state} is TRUE, and \code{method}
+is "summary",string specifying
+the name of the mark for which \code{ft_mat} was constructed}
 }
 \value{
 A dataframe with the region, the number of clusters inferred,
@@ -90,6 +94,7 @@ cluster(ft_mat, metadata, region)
 # Estimate the state of the test condition, "Brain"
 cluster(ft_mat, metadata, region,
     estimate_state = TRUE,
+    method = "summary",
     signal_col = "signalValue",
     mark = "H3K4me3",
     test_condition = "Brain")

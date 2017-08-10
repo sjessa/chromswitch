@@ -8,7 +8,7 @@ callPositionAware(query, peaks, metadata, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, reduce = TRUE,
   gap = 300, p = 0.4, n_features = FALSE, heatmap = FALSE,
   titles = NULL, outdir = NULL, optimal_clusters = FALSE,
-  BPPARAM = bpparam())
+  estimate_state = FALSE, test_condition = NULL, BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
@@ -68,6 +68,16 @@ where heatmaps should be saved}
 \item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
 samples into two groups, or to find the optimal clustering solution by
 choosing the set of clusters which maximizes the Average Silhouette width}
+
+\item{estimate_state}{(Optional) Logical value indicating whether to include
+a column "state" in the output specifying the estimated chromatin state of
+a test condition. The state will be on of "ON", "OFF", or NA, where the
+latter results if a binary switch between the conditions is unclear.
+Default: FALSE.}
+
+\item{test_condition}{(Optional) If \code{estimate_state} is TRUE, string
+specifying one of the two biological condtions in \code{metadata$Condition}
+for which to estimate chromatin state.}
 
 \item{BPPARAM}{(Optional) instance of \code{BiocParallel:BiocParallelParam}
 used to determine the back-end used for parallel computations when performing

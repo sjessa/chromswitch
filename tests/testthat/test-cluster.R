@@ -215,6 +215,7 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
     expect_equal(cluster(ft_mat, metadata, region,
                          n_features = TRUE,
                          estimate_state = TRUE,
+                         method = "summary",
                          signal_col = "signalValue",
                          mark = "H3K4me3",
                          test_condition = "Brain"),
@@ -222,19 +223,37 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
 
     expect_error(cluster(ft_mat, metadata, region,
                          n_features = TRUE,
-                         estimate_state = TRUE), "signal value")
+                         estimate_state = TRUE,
+                         method = "summary"), "condition")
 
+    expect_error(cluster(ft_mat, metadata, region,
+                         n_features = TRUE,
+                         estimate_state = TRUE, method = "summary",
+                         test_condition = "Brain"), "signal value")
 
     expect_error(cluster(ft_mat, metadata, region,
                          n_features = TRUE,
                          estimate_state = TRUE,
-                         signal_col = "H3K4me3"), "condition")
-
-    expect_error(cluster(ft_mat, metadata, region,
-                         n_features = TRUE,
-                         estimate_state = TRUE,
+                         method = "summary",
                          signal_col = "H3K4me3",
                          test_condition = "Brain"), "mark")
+
+    ft_mat2 <- data.frame(a = c(1, 1, 1, 0, 0, 0),
+                          b = c(1, 1, 1, 0, 0, 0))
+    rownames(ft_mat2) <- metadata$Sample
+    colnames(ft_mat2) <- c("chr19:54926620-54929876", "chr19:54926089.54926519")
+
+    gr <- c("chr19:54926620-54929876", "chr19:54926089-54926519") %>%
+        lapply(coordToGRanges)
+    attr(ft_mat2, "features") <- Reduce("c", gr)
+
+    expect_equal(dplyr::select(cluster(ft_mat2, metadata, region2,
+                                       estimate_state = TRUE,
+                                       method = "binary",
+                                       test_condition = "Brain",
+                                       n_features = TRUE),
+                               "state"),
+                 data.frame(state = "ON", stringsAsFactors = FALSE))
 
 })
 
