@@ -95,17 +95,17 @@ cluster <- function(ft_mat, metadata, region,
 
     ft_mat <- data.matrix(ft_mat)
 
-    palette <- grDevices::colorRampPalette(
-        c("dodgerblue4", "white", "red"))(n = 100)
-    hclust.fun <- function(i) hclust(i, method = "complete")
-
-    conditions <- unique(metadata$Condition)
-    conditions_colours <- metadata$Condition
-
-    conditions_colours[conditions_colours == conditions[1]] <- "mediumorchid"
-    conditions_colours[conditions_colours == conditions[2]] <- "limegreen"
-
     if (isTRUE(heatmap)) {
+
+        palette <- grDevices::colorRampPalette(
+            c("dodgerblue4", "white", "red"))(n = 100)
+        hclust.fun <- function(i) hclust(i, method = "complete")
+
+        conditions <- unique(metadata$Condition)
+        conditions_colours <- metadata$Condition
+
+        conditions_colours[conditions_colours == conditions[1]] <- "mediumorchid"
+        conditions_colours[conditions_colours == conditions[2]] <- "limegreen"
 
         if (is.null(title)) title <- GRangesToCoord(region)
 
@@ -227,7 +227,7 @@ cluster <- function(ft_mat, metadata, region,
 
     }
 
-    if (n_features) stats$n_features <- ifelse("no_peak" %in% names(ft_mat),
+    if (n_features) stats$n_features <- ifelse("no_peak" %in% colnames(ft_mat),
                                                 0,
                                                 ncol(ft_mat))
 

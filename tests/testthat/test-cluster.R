@@ -1,6 +1,6 @@
 context("Hierarchical clustering over the feature-by-sample matrix")
 
-test_that("Guessing trajectory makes correct calls", {
+test_that("The ranking method correctly estimates state/trajectory", {
 
 
     a <- data.frame(Condition = c("C1", "C1", "C2"),
@@ -235,5 +235,26 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
                          estimate_state = TRUE,
                          signal_col = "H3K4me3",
                          test_condition = "Brain"), "mark")
+
+})
+
+test_that("Clustering function assigns number of features", {
+
+    region2 <- GRanges(seqnames = "chr1",
+                       ranges = IRanges(start = 100, end = 300))
+
+    pks2 <- GRanges(seqnames = c(), ranges = IRanges(start = c(), end = c()))
+    lp2 <- localPeaks(region2, list(A = pks2, B = pks2, C = pks2, D = pks2),
+                      c("A", "B", "C", "D"))
+
+    meta <- data.frame(Sample = c("A", "B", "C", "D"),
+                       Condition = c("Brain", "Brain", "Other", "Other"))
+
+    ft_mat <- suppressWarnings(binarizePeaks(lp2, 0.5))
+
+    expect_equal(dplyr::select(suppressWarnings(cluster(ft_mat, meta, region2,
+                                                 n_features = TRUE)),
+                        "n_features"),
+                 data.frame(n_features = 0, stringsAsFactors = FALSE))
 
 })
