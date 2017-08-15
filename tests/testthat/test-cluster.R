@@ -221,6 +221,15 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
                          test_condition = "Brain"),
                  cluster_out3)
 
+    expect_equal(cluster(ft_mat, metadata, region,
+                         n_features = TRUE,
+                         estimate_state = TRUE,
+                         method = "summary",
+                         signal_col = "fraction",
+                         mark = "H3K4me3",
+                         test_condition = "Brain"),
+                 cluster_out3)
+
     expect_error(cluster(ft_mat, metadata, region,
                          n_features = TRUE,
                          estimate_state = TRUE,
