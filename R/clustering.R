@@ -218,6 +218,7 @@ cluster <- function(ft_mat, metadata, region,
                 stop("If estimate_trajectory = TRUE, please specify the name
                 of the mark corresponding to the data in ft_mat.")
 
+            print(signal_col)
             col <- ifelse(signal_col == "fraction",
                             paste0(mark, "_fraction_region_in_peaks"),
                             paste0(mark, "_", signal_col, "_mean"))
