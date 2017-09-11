@@ -42,7 +42,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
 
     call <- function(...) {
 
-        callWholeRegion(query = regions,
+        callSummary(query = regions,
                         peaks = H3K4me3,
                         metadata = metadata, ...)
 
@@ -190,7 +190,7 @@ test_that("The position-aware strategy properly executes the analysis", {
                         E102 = c(2, 1),
                         E110 = c(2, 2), stringsAsFactors = FALSE)
 
-    expect_equal(suppressWarnings(callPositionAware(query = regions,
+    expect_equal(suppressWarnings(callBinary(query = regions,
                                                     peaks = H3K4me3,
                                                     metadata = metadata,
                                                     filter = FALSE,
@@ -216,7 +216,7 @@ test_that("The position-aware strategy properly executes the analysis", {
                          E102 = c(1, 1),
                          E110 = c(1, 2), stringsAsFactors = FALSE)
 
-    expect_equal(suppressWarnings(callPositionAware(query = regions,
+    expect_equal(suppressWarnings(callBinary(query = regions,
                                    peaks = H3K4me3,
                                    metadata = metadata,
                                    filter = TRUE,
@@ -226,7 +226,7 @@ test_that("The position-aware strategy properly executes the analysis", {
                                    filter_thresholds = c(25))),
                  output2, tolerance = 1e-5)
 
-    expect_error(callPositionAware(query = regions,
+    expect_error(callBinary(query = regions,
                                    peaks = H3K4me3,
                                    metadata = metadata,
                                    filter = TRUE),
@@ -251,7 +251,7 @@ test_that("The position-aware strategy properly executes the analysis", {
                           E102 = 1,
                           E110 = 1, stringsAsFactors = FALSE)
 
-    expect_equal(callPositionAware(query = regions[1],
+    expect_equal(callBinary(query = regions[1],
                       peaks = H3K4me3,
                       metadata = metadata,
                       filter = FALSE,

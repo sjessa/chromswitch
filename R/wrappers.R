@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------- #
 
 
-#' callWholeRegion
+#' callSummary
 #'
 #' One of two main functions in the \code{chromswitch} package, this function
 #' detects a switch in chromatin state in one or
@@ -107,7 +107,7 @@
 #'     ranges = IRanges::IRanges(start = c(54924104, 54874318),
 #'                                 end = c(54929104, 54877536)))
 #'
-#' callWholeRegion(query = regions,
+#' callSummary(query = regions,
 #'                 peaks = H3K4me3,
 #'                 metadata = metadata,
 #'                 normalize_columns = c("qValue", "pValue", "signalValue"),
@@ -116,7 +116,7 @@
 #'                 heatmap = FALSE)
 #'
 #' @export
-callWholeRegion <- function(query, peaks, metadata, mark,
+callSummary <- function(query, peaks, metadata, mark,
                             filter = FALSE, filter_columns = NULL,
                             filter_thresholds = NULL, normalize = TRUE,
                             normalize_columns = NULL, tail = 0.005,
@@ -211,7 +211,7 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 
 
 
-#' callPositionAware
+#' callBinary
 #'
 #' One of two main functions in the \code{chromswitch} package, this function
 #' detects a switch in chromatin state in one or
@@ -301,10 +301,10 @@ callWholeRegion <- function(query, peaks, metadata, mark,
 #'     ranges = IRanges::IRanges(start = c(54924104, 54874318),
 #'                                 end = c(54929104, 54877536)))
 #'
-#' callPositionAware(query = regions, peaks = H3K4me3, metadata = metadata)
+#' callBinary(query = regions, peaks = H3K4me3, metadata = metadata)
 #'
 #' @export
-callPositionAware <- function(query, peaks, metadata,
+callBinary <- function(query, peaks, metadata,
                             filter = FALSE, filter_columns = NULL,
                             filter_thresholds = NULL, reduce = TRUE,
                             gap = 300, p = 0.4, n_features = FALSE,
