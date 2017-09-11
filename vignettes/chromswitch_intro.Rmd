@@ -88,7 +88,7 @@ regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
                                 end = c(54929104, 54877536)))
 
 # Run chromswitch using the whole-region strategy
-callWholeRegion(query = regions,
+callSummary(query = regions,
                 peaks = H3K4me3,
                 metadata = metadata,
                 normalize_columns = c("qValue", "pValue", "signalValue"),
@@ -97,7 +97,7 @@ callWholeRegion(query = regions,
                 heatmap = FALSE)
 
 # Run chromswitch using the position-aware strategy
-callPositionAware(query = regions,
+callBinary(query = regions,
                   peaks = H3K4me3,
                   metadata = metadata)
 
@@ -222,7 +222,7 @@ names in the BED files.
 
 ```{r wr_basic}
 
-out <- callWholeRegion(query = query,
+out <- callSummary(query = query,
                 peaks = pk_k4me3,
                 metadata = meta,
                 mark = "H3K4me3",
@@ -266,10 +266,10 @@ out %>%
 Let's explore some more options for detecting chromatin state switches
 with chromswitch. The options are briefly described in the comments,
 but you can obtain additional explanation of arguments and explore others
-not covered here by running `??chromswitch::callWholeRegion`.
+not covered here by running `??chromswitch::callSummary`.
 ```{r wr}
 
-out2 <- callWholeRegion(# Standard arguments of the function
+out2 <- callSummary(# Standard arguments of the function
                 query = query,
                 peaks = pk_k4me3,
                 metadata = meta,
@@ -337,7 +337,7 @@ this option controls whether to include an additional column recording
 the number of features in the output.
 
 ```{r pa_basic}
-out3 <- callPositionAware(query = query,
+out3 <- callBinary(query = query,
                 peaks = pk_k4me3,
                 metadata = meta,
                 reduce = TRUE,
