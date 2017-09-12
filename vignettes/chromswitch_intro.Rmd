@@ -58,7 +58,7 @@ library(chromswitch)
 
 We'll start with a toy dataset containing MACS2 narrow peak calls for 3 brain
 tissues and 3 other adult tissues from the Roadmap Epigenomics Program,
-restricted to a short region on chromosome 19. The data packged with
+restricted to a short region on chromosome 19. The data packaged with
 chromswitch is described in the manual, and the
 documentation can be accessed by running `??chromswitch::H3K4me3` in the console.
 In the code below, we prepare a corresponding metadata file, save a couple regions
