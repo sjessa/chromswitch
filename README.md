@@ -12,7 +12,7 @@ region of interest given peaks called from ChIP-seq data.
 Install `chromswitch` using `devtools`:
 
 ```
-devtools::install_github("sjessa/chromswitch", build_vignettes = TRUE)
+devtools::install_github("sjessa/chromswitch", build_vignettes = TRUE, local = FALSE)
 library(chromswitch)
 ```
 
