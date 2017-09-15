@@ -21,7 +21,8 @@ A list of GRanges objects storing peak calls for each sample, with
 columns specified in \code{columns} normalized.
 }
 \description{
-Given a set of peak calls for different marks and samples, normalize all peaks genome-wide for each
+Given a set of peak calls for different marks and samples, normalize all
+peaks genome-wide for each
 sample and mark by rescaling and Winsorizing,
 i.e. rescale the middle of the data to the range
 [0, 1] and bound the upper tail to 1 and the lower tail to 0, effectively
