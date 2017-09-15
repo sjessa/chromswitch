@@ -1,4 +1,4 @@
-context("Position-aware strategy for feature matrix construction")
+context("Binary strategy for feature matrix construction")
 
 test_that("pReciprocalOverlap properly distinguishes regions", {
 
@@ -81,7 +81,7 @@ test_that("getSamplePeakProfile correctly models peak presence", {
 })
 
 
-test_that("position-aware feature matrix construction works", {
+test_that("Binaryfeature matrix construction works", {
 
     a <- GRanges(seqnames = rep("chr1", 2),
                 ranges = IRanges(start = c(10, 2050), end = c(20, 2500)))
@@ -99,17 +99,17 @@ test_that("position-aware feature matrix construction works", {
                     peaks = pks,
                     samples = c("a", "b", "c", "d"))
 
-    position_matrix <- data.frame(ft1 = c(1, 1, 0, 0),
+    binary_matrix <- data.frame(ft1 = c(1, 1, 0, 0),
                                 ft2 = c(1, 1, 1, 1),
                                 ft3 = c(0, 0, 1, 1))
 
-    colnames(position_matrix) = c("chr1:10-20",
+    colnames(binary_matrix) = c("chr1:10-20",
                                     "chr1:2050-2500",
                                     "chr1:10-1000")
-    rownames(position_matrix) = lpkSamples(lp)
-    attr(position_matrix, "features") <- getUniquePeaks(Reduce("c", pks), 0.5)
+    rownames(binary_matrix) = lpkSamples(lp)
+    attr(binary_matrix, "features") <- getUniquePeaks(Reduce("c", pks), 0.5)
 
-    expect_equal(binarizePeaks(lp, 0.5), position_matrix)
+    expect_equal(binarizePeaks(lp, 0.5), binary_matrix)
 
     region2 <- GRanges(seqnames = "chr1",
                       ranges = IRanges(start = 100, end = 300))

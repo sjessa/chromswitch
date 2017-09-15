@@ -169,6 +169,9 @@ cluster <- function(ft_mat, metadata, region,
     stats$V_measure    <- vMeasure(contingency)
     stats$Consensus    <- mean(x = c(stats$ARI, stats$NMI, stats$V_measure))
 
+    stats <- stats %>% dplyr::select(-c(Purity, Entropy, ARI, NMI,
+                                       Homogeneity, Completeness, V_measure))
+
     clusters_df <- clusters %>%
         as.list() %>%
         as.data.frame(stringsAsFactors = FALSE)

@@ -1,7 +1,7 @@
 context("Chromswitch wrapper functions")
 
 
-test_that("The whole-region strategy wrapper properly executes the analysis", {
+test_that("The summary strategy wrapper properly executes the analysis", {
 
     samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
     outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
@@ -24,13 +24,6 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
         name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.911, 0.457),
-        Purity = c(1, 0.5),
-        Entropy = c(0, 0.918),
-        ARI = c(1, -0.216),
-        NMI = c(1, 0),
-        Homogeneity = c(1, 0),
-        Completeness = c(1, 0),
-        V_measure = c(1, 0),
         Consensus = c(1, -0.0721),
         E068 = as.integer(c(1, 1)),
         E071 = as.integer(c(1, 1)),
@@ -79,13 +72,6 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
         name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.6949372, 0.4614938),
-        Purity = c(1.0000000, 0.6666667),
-        Entropy = c(0.0000000, 0.9182958),
-        ARI = c(1, -0.1111111),
-        NMI = c(1, 0.08170417),
-        Homogeneity = c(1, 0.08170417),
-        Completeness = c(1, 0.08170417),
-        V_measure = c(1, 0.08170417),
         Consensus = c(1, 0.01743241),
         E068 = as.integer(c(1, 1)),
         E071 = as.integer(c(1, 2)),
@@ -120,13 +106,6 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
         name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.911, 0.457),
-        Purity = c(1, 0.5),
-        Entropy = c(0, 0.918),
-        ARI = c(1, -0.216),
-        NMI = c(1, 0),
-        Homogeneity = c(1, 0),
-        Completeness = c(1, 0),
-        V_measure = c(1, 0),
         Consensus = c(1, -0.0721),
         state = c("ON", NA),
         E068 = as.integer(c(1, 1)),
@@ -155,7 +134,7 @@ test_that("The whole-region strategy wrapper properly executes the analysis", {
 })
 
 
-test_that("The position-aware strategy properly executes the analysis", {
+test_that("The binary strategy properly executes the analysis", {
 
     samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
     outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
@@ -175,13 +154,6 @@ test_that("The position-aware strategy properly executes the analysis", {
                                     "chr19:54892830-54897288"),
                         k = c(2, 2),
                         Average_Silhouette = c(1, 0),
-                        Purity = c(1, 0.6666667),
-                        Entropy = c(0, 0.4591479),
-                        ARI = c(1, 0),
-                        NMI = c(1, 0.2367466),
-                        Homogeneity = c(1, 0.1908745),
-                        Completeness = c(1, 0.293643),
-                        V_measure = c(1, 0.2313599),
                         Consensus = c(1.0000000, 0.1560355),
                         E068 = c(1, 1),
                         E071 = c(1, 1),
@@ -201,13 +173,6 @@ test_that("The position-aware strategy properly executes the analysis", {
                                     "chr19:54892830-54897288"),
                          k = c(2, 2),
                          Average_Silhouette = c(0.8333333, 0),
-                         Purity = c(0.6666667, 0.6666667),
-                         Entropy = c(0.4591479, 0.4591479),
-                         ARI = c(0, 0),
-                         NMI = c(0.2367466, 0.2367466),
-                         Homogeneity = c(0.1908745, 0.1908745),
-                         Completeness = c(0.293643, 0.293643),
-                         V_measure = c(0.2313599, 0.2313599),
                          Consensus = c(0.1560355, 0.1560355),
                          E068 = c(1, 1),
                          E071 = c(2, 1),
@@ -235,13 +200,6 @@ test_that("The position-aware strategy properly executes the analysis", {
     output3 <- data.frame(region = "chr19:54924104-54929104",
                           k = 2,
                           Average_Silhouette = 0.4065566,
-                          Purity = 0.6666667,
-                          Entropy = 0.4591479,
-                          ARI = 0,
-                          NMI = 0.2367466,
-                          Homogeneity = 0.1908745,
-                          Completeness = 0.293643,
-                          V_measure = 0.2313599,
                           Consensus = 0.1560355,
                           n_features = 2,
                           E068 = 1,

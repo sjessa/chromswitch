@@ -1,4 +1,4 @@
-context("Whole-region strategy for feature matrix construction")
+context("Summary strategy for feature matrix construction")
 
 test_that("summarizePeaks generates summary-stats feature matrices", {
 
