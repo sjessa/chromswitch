@@ -5,7 +5,7 @@ author:
 - Selin Jessa
 date: "`r Sys.Date()`"
 output:
-  BiocStyle::html_document2:
+  BiocStyle::html_document:
     toc_float: true
     df_print: paged
 abstract: >
