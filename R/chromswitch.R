@@ -38,4 +38,9 @@ if(getRversion() >= "2.15.1") utils::globalVariables(c(".", "Var1", "Var2",
                                                         "Condition", "Sample",
                                                         "C1", "C2", "k",
                                                         "Average_Silhouette",
-                                                        "olap"))
+                                                        "olap",
+                                                        "ARI", "NMI",
+                                                        "Completeness",
+                                                        "Homogeneity",
+                                                        "Purity", "Entropy",
+                                                        "V_measure"))

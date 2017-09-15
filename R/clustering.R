@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
 #
 # Clustering function: takes in a feature matrix and returns clusters
-# scores in order to call a
+# scores in order to call a chromatin switch
 #
 # ---------------------------------------------------------------------------- #
 
