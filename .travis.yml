@@ -4,7 +4,6 @@ language: R
 r: bioc-devel
 sudo: false
 warnings_are_errors: true
-cache: packages
 os:
   - linux
   - osx
