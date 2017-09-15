@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
 #
-# Feature matrix construction functions for the whole-region strategy:
+# Feature matrix construction functions for the summary strategy:
 # Functions which take in a localPeaks object or a sample-by-feature matrix,
 # and return a feature matrix, and their helpers
 #

@@ -109,7 +109,7 @@ One of two main functions in the \code{chromswitch} package, this function
 detects a switch in chromatin state in one or
 more regions given ChIP-seq peak calls for one mark, executing the entire
 algorithm from preprocessing to evaluating the clustering results,
-using the whole-region strategy.
+using the summary strategy.
 }
 \details{
 This strategy constructs a sample-by-feature matrix to use as input for

@@ -50,7 +50,7 @@ to require. Default: 0.4}
 \item{n_features}{(Optional) Logical value indicating whether to include
 a column "n_features" in the output storing the number of features in the
 feature matrix constructed for the region, which may be useful for
-understanding the behaviour of the position-aware strategy for constructing
+understanding the behaviour of the binary strategy for constructing
 feature matrices. Default: FALSE}
 
 \item{heatmap}{(Optional) Logical value, plot the heatmap corresponding to
@@ -93,7 +93,7 @@ One of two main functions in the \code{chromswitch} package, this function
 detects a switch in chromatin state in one or
 more regions given ChIP-seq peak calls for one mark, executing the entire
 algorithm from preprocessing to evaluating the clustering results,
-using the whole-region strategy.
+using the binary strategy.
 }
 \details{
 This strategy constructs a sample-by-feature matrix to use as input for

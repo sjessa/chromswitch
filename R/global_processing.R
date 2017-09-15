@@ -34,16 +34,16 @@ winsorNorm <- function(x, trim) {
 
 #' normalizePeaks
 #'
-#' Given a set of peak calls for different marks and samples as returned by
-#' \code{\link{loadBed}},, normalize all peaks genome-wide for each
+#' Given a set of peak calls for different marks and samples, normalize all
+#' peaks genome-wide for each
 #' sample and mark by rescaling and Winsorizing,
 #' i.e. rescale the middle of the data to the range
 #' [0, 1] and bound the upper tail to 1 and the lower tail to 0, effectively
 #' replacing a fixed amount of extreme values in each tail. Similar to trimming
 #' the tails except instead of discarding the tails entirely they're bounded.
 #'
-#' @param peaks List of lists of GRanges objects, as returned by
-#' \code{\link{loadBed}}.
+#' @param peaks List of GRanges objects storing peak calls for each sample,
+#' where element names correspond to sample IDs
 #' @param columns Character vector specifying the names of columns to normalize
 #' @param tail Optional: numeric, a fraction in [0, 1] specifying how much of
 #' the data to bound to 0 (for the lower tail) or 1 (for the upper tail).
@@ -112,10 +112,11 @@ filterSamplePeaks <- function(sample_peaks, columns, thresholds) {
 
 #' filterPeaks
 #'
-#' Given a set of peak calls for different marks and samples as returned by
-#' \code{\link{loadBed}}, filter peaks according to values in numeric
+#' Given a set of peak calls for different marks and samples, filter peaks
+#' according to values in numeric
 #'
-#' @param peaks List of GRanges objects, as returned by \code{\link{loadBed}}
+#' @param peaks List of GRanges objects storing peak calls for each sample,
+#' where element names correspond to sample IDs
 #' @param columns Character vector of column names containing stats by which to
 #' filter peaks
 #' @param thresholds Vector of numeric values giving the lower thresholds to use

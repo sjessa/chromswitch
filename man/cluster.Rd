@@ -35,7 +35,7 @@ choosing the set of clusters which maximizes the Average Silhouette width}
 \item{n_features}{(Optional) Logical value indicating whether to include
 a column "n_features" in the output storing the number of features in the
 feature matrix constructed for the region, which may be useful for
-understanding the behaviour of the position-aware strategy for constructing
+understanding the behaviour of the binary strategy for constructing
 feature matrices. Default: FALSE}
 
 \item{estimate_state}{(Optional) Logical value indicating whether to include

@@ -13,7 +13,7 @@
 #' detects a switch in chromatin state in one or
 #' more regions given ChIP-seq peak calls for one mark, executing the entire
 #' algorithm from preprocessing to evaluating the clustering results,
-#' using the whole-region strategy.
+#' using the summary strategy.
 #'
 #' This strategy constructs a sample-by-feature matrix to use as input for
 #' hierarchical clustering by computing, for each sample, a vector of summary
@@ -217,7 +217,7 @@ callSummary <- function(query, peaks, metadata, mark,
 #' detects a switch in chromatin state in one or
 #' more regions given ChIP-seq peak calls for one mark, executing the entire
 #' algorithm from preprocessing to evaluating the clustering results,
-#' using the whole-region strategy.
+#' using the binary strategy.
 #'
 #' This strategy constructs a sample-by-feature matrix to use as input for
 #' hierarchical clustering by first assembling the set of unique peaks observed
@@ -255,7 +255,7 @@ callSummary <- function(query, peaks, metadata, mark,
 #' @param n_features (Optional) Logical value indicating whether to include
 #' a column "n_features" in the output storing the number of features in the
 #' feature matrix constructed for the region, which may be useful for
-#' understanding the behaviour of the position-aware strategy for constructing
+#' understanding the behaviour of the binary strategy for constructing
 #' feature matrices. Default: FALSE
 #' @param heatmap (Optional) Logical value, plot the heatmap corresponding to
 #' the hierarchical clustering result? Default: TRUE

@@ -42,13 +42,16 @@ or type of input data, describe `chromswitch` output, and discuss some of the
 options available to the user.
 
 Finally, we demonstrate how the steps of the method
-implemented in chromswitch can be run individually, and how this modularity
-can be leveraged to perform more complicated analyses, for example, incorporating
+implemented in chromswitch can be run individually, and how this
+modularity
+can be leveraged to perform more complicated analyses, for
+example, incorporating
 data from multiple marks.
 
 # Install
 
-We can install `r Githubpkg("selinj/chromswitch")` from GitHub using `r CRANpkg("devtools")`:
+We can install `r Githubpkg("selinj/chromswitch")` from GitHub
+using `r CRANpkg("devtools")`:
 ```{r setup}
 devtools::install_github("selinj/chromswitch")
 library(chromswitch)
@@ -57,11 +60,13 @@ library(chromswitch)
 # Quickstart
 
 We'll start with a toy dataset containing MACS2 narrow peak calls for 3 brain
-tissues and 3 other adult tissues from the Roadmap Epigenomics Program,
+tissues and 3 other adult tissues from the Roadmap Epigenomics
+Program,
 restricted to a short region on chromosome 19. The data packaged with
 chromswitch is described in the manual, and the
-documentation can be accessed by running `??chromswitch::H3K4me3` in the console.
-In the code below, we prepare a corresponding metadata file, save a couple regions
+documentation can be accessed by running `??chromswitch::H3K4me3` in the
+console. In the code below, we prepare a corresponding metadata file,
+save a couple regions
 of interest, and run `chromswitch` on our dataset, testing both strategies
 for feature matrix construction.
 
@@ -87,7 +92,7 @@ regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
     ranges = IRanges::IRanges(start = c(54924104, 54874318),
                                 end = c(54929104, 54877536)))
 
-# Run chromswitch using the whole-region strategy
+# Run chromswitch using the summary strategy
 callSummary(query = regions,
                 peaks = H3K4me3,
                 metadata = metadata,
@@ -96,7 +101,7 @@ callSummary(query = regions,
                 summarize_columns = c("pValue", "qValue", "signalValue"),
                 heatmap = FALSE)
 
-# Run chromswitch using the position-aware strategy
+# Run chromswitch using the binary strategy
 callBinary(query = regions,
                   peaks = H3K4me3,
                   metadata = metadata)
@@ -183,7 +188,7 @@ other than peaks (for example, chromatin state segementations); the `extraCols`
 aregument to `rtracklayer::import` should be modified to fit the data.
 
 
-## Applying the whole-region strategy to detect brain-specific switches
+## Applying the summary strategy to detect brain-specific switches
 
 We'll apply `chromswitch` to 5kbp windows surrounding chromatin state
 switches in a few genes on chromosome 19:
@@ -206,7 +211,8 @@ handy for converting a list of query regions in a dataframe into a `GRanges`
 object (remember the `keep.extra.columns = TRUE` argument to preserve any
 additional data associated with the regions).
 
-We'll first run a basic analysis using the whole-region strategy for constructing 
+We'll first run a basic analysis using the summary strategy
+for constructing 
 feature matrices, summarizing on the `qValue` and `signalValue` statistics only.
 This means that for each sample, the features used to the cluster samples in the
 region will be the mean, median, and maximum of these two statistics across
@@ -309,15 +315,15 @@ out2 <- callSummary(# Standard arguments of the function
 out2
 ```
 
-The whole-region approach can be applied to epigenomic data where there
+The summary approach can be applied to epigenomic data where there
 are no statistics assoicated with the features (peaks, states, *etc*). In this
 case, set `summarize_columns = NULL`, `filter = FALSE`, `normalize = FALSE`,
 and ensure that one or more of `length`, `n`, and `fraction` are set to `TRUE`.
 
-## Applying the position-aware strategy to detect brain-specific switches
+## Applying the binary strategy to detect brain-specific switches
 
-The position-aware strategy requires approximately the same basic
-input as the whole-region strategy. It also uses two tuning parameters:
+The binary strategy requires approximately the same basic
+input as the summary strategy. It also uses two tuning parameters:
 
 1. `gap` which is the distance between peaks in the same sample below which
 two peaks should be merged. This preprocessing step is optional, and is 
@@ -363,9 +369,9 @@ out3 %>%
 
 # Step-by-step analysis
 
-## Whole-region approach
+## Summary approach
 
-## Position-aware approach
+## Binary approach
 
 # Leveraging the modularity of *chromswitch* to incorporate multiple marks
 

@@ -7,7 +7,8 @@
 filterPeaks(peaks, columns, thresholds)
 }
 \arguments{
-\item{peaks}{List of GRanges objects, as returned by \code{\link{loadBed}}}
+\item{peaks}{List of GRanges objects storing peak calls for each sample,
+where element names correspond to sample IDs}
 
 \item{columns}{Character vector of column names containing stats by which to
 filter peaks}
@@ -20,8 +21,8 @@ A list of GRanges objects storing peak calls for each sample, with
 peaks filtered according to the columns and thresholds specified.
 }
 \description{
-Given a set of peak calls for different marks and samples as returned by
-\code{\link{loadBed}}, filter peaks according to values in numeric
+Given a set of peak calls for different marks and samples, filter peaks
+according to values in numeric
 }
 \examples{
 filterPeaks(peaks = H3K4me3,

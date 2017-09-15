@@ -1,6 +1,6 @@
 # ---------------------------------------------------------------------------- #
 #
-# Feature matrix construction functions for the position-aware strategy:
+# Feature matrix construction functions for the binary strategy:
 # Functions which take in a localPeaks object or a sample-by-feature matrix,
 # and return a feature matrix, and their helpers
 #

@@ -7,8 +7,8 @@
 normalizePeaks(peaks, columns, tail = 0.005)
 }
 \arguments{
-\item{peaks}{List of lists of GRanges objects, as returned by
-\code{\link{loadBed}}.}
+\item{peaks}{List of GRanges objects storing peak calls for each sample,
+where element names correspond to sample IDs}
 
 \item{columns}{Character vector specifying the names of columns to normalize}
 
@@ -21,8 +21,7 @@ A list of GRanges objects storing peak calls for each sample, with
 columns specified in \code{columns} normalized.
 }
 \description{
-Given a set of peak calls for different marks and samples as returned by
-\code{\link{loadBed}},, normalize all peaks genome-wide for each
+Given a set of peak calls for different marks and samples, normalize all peaks genome-wide for each
 sample and mark by rescaling and Winsorizing,
 i.e. rescale the middle of the data to the range
 [0, 1] and bound the upper tail to 1 and the lower tail to 0, effectively

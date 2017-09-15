@@ -9,8 +9,8 @@
 #'
 #' @format A list with six entries, named according to fake IDs for the samples.
 #' Each element contains a GRanges object with peak calls and associated
-#' statistics which are computed by MACS2. This is the format returned when
-#' calling \code{\link{loadBed}}.
+#' statistics which are computed by MACS2. This is the format expected by the
+#' \code{peaks} argument in functions in chromswitch.
 #'
 #' @source \url{egg2.wustl.edu/roadmap/web_portal/}
 "H3K4me3"
