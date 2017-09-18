@@ -1,16 +1,22 @@
 ---
 title: "An introduction to *chromswitch* for detecting chromatin state switches"
 shorttitle: "An introduction to *chromswitch*"
-author:
-- Selin Jessa
+author: Selin Jessa and Claudia L. Kleinman
 date: "`r Sys.Date()`"
 output:
   BiocStyle::html_document:
     toc_float: true
     df_print: paged
 abstract: >
-    This vignette describes the method for detecting chromatin state switches
-    implemented in *chromswitch*, and demonstrates some example analyses.
+    An important question in comparative analysis of epigenomic data is how 
+    chromatin state differs between biological conditions. The package 
+    chromswitch implements a method for detecting chromatin state switches
+    by integrating epigenomic data (ChIP-seq peaks for histone modifications,
+    DNase-seq, previously learned chromatin state segmentations, *etc.*) in
+    specific genomic regions of interest. Chromswitch transforms data in the
+    query region into a sample-by-feature matrix, clusters samples
+    hierarchically, and then uses external cluster validity measures to
+    predict a switch in chromatin state.
 vignette: >
     %\VignetteIndexEntry{An introduction to `chromswitch` for detecting chromatin state switches}
     %\VignetteEngine{knitr::rmarkdown}
@@ -18,108 +24,144 @@ vignette: >
 ---
 
 
-# Overview of the method
-
-# Overview of this document
-
-To run `chromswitch`, we essentially need three pieces of information:
-
-1. Metadata which describes the samples and their conditions
-2. One or more genomic regions which will serve as query regions ^[`chromswitch`
-acts at the level of individual regions and so will return results for each 
-region independently]
-3. A set of epigenomic features (peaks or chromatin state segmentations,
-for example) for each sample
-
-In the Quickstart section, we demonstrate how to use data packaged with
-`chromswitch` to quickly test the method on two example query regions.
-
-In the next section, we demonstrate how to construct or import these components
-into formats that `chromswitch` can analyze. We then call chromatin state
-switches for a few example regions using the wrapper functions which provide
-one-line commands to call chromatin state switches based on a single mark
-or type of input data, describe `chromswitch` output, and discuss some of the
-options available to the user.
-
-Finally, we demonstrate how the steps of the method
-implemented in chromswitch can be run individually, and how this
-modularity
-can be leveraged to perform more complicated analyses, for
-example, incorporating
-data from multiple marks.
-
-# Install
-
-We can install `r Githubpkg("selinj/chromswitch")` from GitHub
+Install `r Githubpkg("sjessa/chromswitch")` from GitHub
 using `r CRANpkg("devtools")`:
-```{r setup}
-devtools::install_github("selinj/chromswitch")
+```{r setup, warn = FALSE, message = FALSE}
+devtools::install_github("sjessa/chromswitch")
 library(chromswitch)
 ```
 
+# Overview of this vignette
+
+In the Quickstart section, we show a basic analysis with
+`chromswitch` using a small dataset included in the package. In the next
+section, we very briefly outline the method for detecting chromatin
+switches that chromswitch implements. Next, we demonstrate a basic analysis
+chromswitch with a detailed discussion of data import, input, parameters
+available to the user, and interpretation of chromswitch output. demonstrate how
+to construct or import these components. In this section
+we use the wrapper functions which
+provide one-line commands to call chromatin state switches
+based on a single mark
+or type of input data. Finally, we demonstrate how the steps of the method
+implemented in chromswitch can be run individually, and how this
+modularity can be leveraged to perform more complicated analyses, for
+example, to incorporate data from multiple histone marks.
+
 # Quickstart
 
-We'll start with a toy dataset containing MACS2 narrow peak calls for 3 brain
-tissues and 3 other adult tissues from the Roadmap Epigenomics
-Program,
-restricted to a short region on chromosome 19. The data packaged with
-chromswitch is described in the manual, and the
+We'll start with a toy dataset containing MACS2 narrow peak calls for H3K4me3
+ChIP-seq in 3 brain tissues and 3 other adult tissues from the Roadmap
+Epigenomics Project, restricted to a short region on chromosome 19. The data
+packaged with chromswitch is described in the manual, and the
 documentation can be accessed by running `??chromswitch::H3K4me3` in the
 console. In the code below, we prepare a corresponding metadata file,
-save a couple regions
-of interest, and run `chromswitch` on our dataset, testing both strategies
-for feature matrix construction.
+save a couple regions of interest, and run `chromswitch` on our dataset,
+testing both strategies for feature matrix construction. We can then call chromatin state switches by thresholding on the value of
+the Consensus score, which sores the similarity between the cluster assignments
+and the biological condition labels.
 
-We can then call chromatin state switches by thresholding on the value of
-the Consensus score, one of the columns in the output.
-```{r qs_pa}
+Chromswitch essentially requires 3 inputs:
 
+1. Genomic query region
+2. Peaks
+3. Metadata dataframe
+```{r quickstart}
 # Prepare metadata
-samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-
-outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+samples    <- c("E068", "E071", "E074", "E101", "E102", "E110")
+outfiles   <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
                         package = "chromswitch")
-
 conditions <- c(rep("Brain", 3), rep("Other", 3))
-
-metadata <- data.frame(Sample = samples,
-    H3K4me3 = outfiles,
-    Condition = conditions,
-    stringsAsFactors = FALSE)
+metadata   <- data.frame(Sample = samples,
+                         H3K4me3 = outfiles,
+                         Condition = conditions,
+                         stringsAsFactors = FALSE)
 
 # Define query regions
 regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
-    ranges = IRanges::IRanges(start = c(54924104, 54874318),
-                                end = c(54929104, 54877536)))
+                                  ranges = IRanges::IRanges(
+                                      start = c(54924104,54874318),
+                                      end = c(54929104, 54877536)))
 
 # Run chromswitch using the summary strategy
-callSummary(query = regions,
-                peaks = H3K4me3,
-                metadata = metadata,
-                normalize_columns = c("qValue", "pValue", "signalValue"),
-                mark = "H3K4me3",
-                summarize_columns = c("pValue", "qValue", "signalValue"),
-                heatmap = FALSE)
+callSummary(query = regions,     # Input 1: Query region
+            peaks = H3K4me3,     # Input 2: Peaks
+            metadata = metadata, # Input 3: Metadata dataframe
+            normalize_columns = c("qValue", "pValue", "signalValue"),
+            mark = "H3K4me3",
+            summarize_columns = c("pValue", "qValue", "signalValue"),
+            heatmap = FALSE)
 
 # Run chromswitch using the binary strategy
 callBinary(query = regions,
-                  peaks = H3K4me3,
-                  metadata = metadata)
-
+           peaks = H3K4me3,
+           metadata = metadata)
 ```
 
+# Overview of the method
 
-# A basic `chromswitch` analysis
+Our method for detecting chromatin state switches using epigenomic data
+involves three steps, which is reflected in its implementation in the
+chromswitch package and the functions available to users. As input,
+chromswitch requires epigenetic features represented by their genomic
+coordinates and optionally, some associated statistics. Possible examples
+include ChIP-seq or DNase-seq peaks, or previously-learned chromatin state
+segmentations. Here we'll refer to peaks for simplicity, but the analysis 
+is the same for other types of epigenetic features given as intervals.
+
+In the pre-processing phase, the user can set thresholds on any statistics
+associated with peaks and filter out peaks below these thresholds
+(`filterPeaks()`). These statistics can then be normalized genome-wide for each
+sample (`normalizePeaks()`). More detailed discussion of the normalization process
+can be found in the documentation of that function.
+Both these steps are optional. We then retrieve all the peaks in each sample
+which overlap the query region (`retrievePeaks`).
+
+Next, chromswitch transforms the peaks in the query region into a
+sample-by-feature matrix using one of two strategies. In the summary strategy
+(`summarizePeaks()`), we compute a set of summary statistics from the peaks 
+in each sample in the query region. These can include the mean, median, and max
+of the statistics associated with the peaks in the input, as well as the 
+fraction of the region overlapped by peaks, the number of peaks, and their
+average length. Genome-wide normalization of the data is therefore mainly
+important if choosing this strategy.
+
+In the binary strategy (`binarizePeaks()`) we
+construct a binary matrix where each feature corresponds to a unique peak in the
+region, and the matrix holds the binary presence or absence calls of each
+unique peak in each sample. We obtain the unique peaks by collapsing the union
+of all peaks in the region observed in all samples using a parameter `p`
+which specifies how much reciprocal overlap is required between two peaks to
+call them the same. Since regions corresponding to the same biological event
+can occasionally result in separate peaks during the process of interpretation
+of raw signal, peak calling, *etc*, we also introduce an option to combine
+peaks which are separated by less than `gap` base pairs (`reducePeaks()`).
+
+Finally, chromswitch clusters samples hierarchically
+and then scores the similarity between the inferred cluster assignments and the
+known biological condition labels of the samples (`cluster()`).
+
+# Walkthrough of a basic `chromswitch` analysis
 
 ## Setup    
 
 First, we'll load other packages we'll use in our analysis:
-```{r load_pkg}
+```{r load_pkg, message = FALSE, warning = FALSE}
 library(magrittr)
 library(rtracklayer)
 library(GenomicRanges)
 library(dplyr)
 ```
+
+## Input
+
+To run `chromswitch`, we essentially need three pieces of information:
+
+1. Metadata which describes the samples and their conditions
+2. One or more genomic regions which will serve as query regions (note that
+chromswitch acts at the level of individual regions and so will return results for each  region independently)
+3. A set of epigenomic features (peaks or chromatin state segmentations,
+for example) for each sample
 
 ## Obtain data
 
@@ -184,9 +226,8 @@ str(pk_k4me3$E068)
 ```
 
 The same process can be applied to BED files containing epigenomic features
-other than peaks (for example, chromatin state segementations); the `extraCols`
-aregument to `rtracklayer::import` should be modified to fit the data.
-
+other than peaks (for example, chromatin state segmentations); the `extraCols`
+argument to `rtracklayer::import` should be modified to fit the data.
 
 ## Applying the summary strategy to detect brain-specific switches
 
@@ -226,7 +267,7 @@ Note that the column names passed to arguments in the wrappers (*e.g.*
 `normalize_columns`, `summarize_columns`, *etc*) must match exactly the column
 names in the BED files.
 
-```{r wr_basic}
+```{r summary_basic}
 
 out <- callSummary(query = query,
                 peaks = pk_k4me3,
@@ -242,6 +283,8 @@ out
 
 ```
 
+## Output
+
 The basic output of `chromswitch` is a tidy dataframe which includes:
 
 * The query regions and any additional data associated with the query (here, 
@@ -250,12 +293,17 @@ the name of the gene)
 `optimal_clusters = FALSE`,
 otherwise, the optimal set of clusters is obtained by selecting the clusters
 with the highest average Silhouette width, displayed in the next column)
-* Several measures of the similarity between the inferred clusters and the
-biological condition labels of the samples (here, Brain and Other) - the last
-column is the Consensus score, an average of the Adjusted Rand Index (ARI),
+* The Average Silhouette score, which measures cluster compactness and
+separation, and can be interpreted as assessing the internal consistency
+of the clustering
+* A score of the similarity between the inferred clusters and the
+biological condition labels of the samples (here, Brain and Other), labeled
+as "Consensus", which is an average of the Adjusted Rand Index (ARI),
 the Normalized Mutual Information (NMI), and the V measure. This is the score
-we recommend to use for later filtering, and thresholding.
-* The cluster assignments for each sample
+we recommend to use for later filtering, and thresholding. This score takes
+on values between -1 and 1, where 1 represents a perfect agreement between
+cluster assignments and the biological conditions of the sample
+* The cluster assignments for each sample, one sample per column
 
 We can threshold on the consensus score to subset the query regions to those
 containing putative chromatin state switches:
@@ -263,17 +311,14 @@ containing putative chromatin state switches:
 ```{r threshold}
 
 out %>% 
-    dplyr::filter(Consensus >= 0.75) %>% 
-    dplyr::select(region, gene, k, Consensus,
-                      E068, E071, E074, E101, E102, E110)
-
+    dplyr::filter(Consensus >= 0.75)
 ```
 
 Let's explore some more options for detecting chromatin state switches
 with chromswitch. The options are briefly described in the comments,
 but you can obtain additional explanation of arguments and explore others
 not covered here by running `??chromswitch::callSummary`.
-```{r wr}
+```{r summary2}
 
 out2 <- callSummary(# Standard arguments of the function
                 query = query,
@@ -316,7 +361,7 @@ out2
 ```
 
 The summary approach can be applied to epigenomic data where there
-are no statistics assoicated with the features (peaks, states, *etc*). In this
+are no statistics associated with the features (peaks, states, *etc*). In this
 case, set `summarize_columns = NULL`, `filter = FALSE`, `normalize = FALSE`,
 and ensure that one or more of `length`, `n`, and `fraction` are set to `TRUE`.
 
@@ -360,9 +405,7 @@ Again, threshold the output to obtain putative switches:
 ```{r threshold2}
 
 out3 %>% 
-    dplyr::filter(Consensus >= 0.75) %>% 
-    dplyr::select(region, gene, k, Consensus,
-                      E068, E071, E074, E101, E102, E110)
+    dplyr::filter(Consensus >= 0.75)
 
 ```
 

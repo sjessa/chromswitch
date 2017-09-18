@@ -191,9 +191,9 @@ cluster <- function(ft_mat, metadata, region,
     if (estimate_state) {
 
         if (!(method %in% c("summary", "binary")))
-            stop(paste0("If estimate_trajectory is TRUE, specify the method",
+            stop("If estimate_trajectory is TRUE, specify the method",
                     "used to construct feature matrices, one of 'summary' or",
-                    "'binary'."))
+                    "'binary'.")
 
         if (is.null(test_condition))
             stop("If estimate_trajectory = TRUE, please specify the name

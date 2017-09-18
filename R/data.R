@@ -1,7 +1,7 @@
 #' H3K4me3 peak calls in a short region for six adult tissues
 #'
 #' A toy dataset containing MACS2 narrow peak calls for 3 brain tissues and
-#' 3 other adult tissues from the Roadmap Epigenomics Program, restricted
+#' 3 other adult tissues from the Roadmap Epigenomics Project, restricted
 #' to a short region on chromosome 19. The generation of this dataset is
 #' executed by the script in the "data-raw" directory of this package, which
 #' can be viewed at
