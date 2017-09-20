@@ -21,3 +21,8 @@ Open the vignette for an introduction to the package:
 ```
 browseVignettes("chromswitch")
 ```
+
+# Issues
+
+Bug reports and issues are welcome, please open an issue in the GitHub
+repository.

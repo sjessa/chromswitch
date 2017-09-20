@@ -10,7 +10,7 @@ output:
 abstract: >
     An important question in comparative analysis of epigenomic data is how 
     chromatin state differs between biological conditions. The package 
-    chromswitch implements a method for detecting chromatin state switches
+    *chromswitch* implements a method for detecting chromatin state switches
     by integrating epigenomic data (ChIP-seq peaks for histone modifications,
     DNase-seq, previously learned chromatin state segmentations, *etc.*) in
     specific genomic regions of interest. Chromswitch transforms data in the
@@ -33,20 +33,25 @@ library(chromswitch)
 
 # Overview of this vignette
 
-In the Quickstart section, we show a basic analysis with
-`chromswitch` using a small dataset included in the package. In the next
-section, we very briefly outline the method for detecting chromatin
-switches that chromswitch implements. Next, we demonstrate a basic analysis
-chromswitch with a detailed discussion of data import, input, parameters
-available to the user, and interpretation of chromswitch output. demonstrate how
-to construct or import these components. In this section
-we use the wrapper functions which
+This vignette is organized hierarchically in terms of level of detail:
+
+* In the Quickstart section, we show a basic analysis with
+`chromswitch` using a small dataset included in the package.
+
+* In the next section, we give a brief overview of the method for detecting
+chromatin state switches that chromswitch, referencing specific
+functions in chromswitch which implement the different steps of the method.
+
+* In the Walkthrough, we demonstrate a basic analysis
+chromswitch with a discussion of data import, input, the most important 
+parameters available to the user, and interpretation of chromswitch output.
+In this section we use the wrapper functions which
 provide one-line commands to call chromatin state switches
-based on a single mark
-or type of input data. Finally, we demonstrate how the steps of the method
-implemented in chromswitch can be run individually, and how this
-modularity can be leveraged to perform more complicated analyses, for
-example, to incorporate data from multiple histone marks.
+based on a single mark or type of input data.
+
+* In last section, Step-by-step, we demonstrate how the steps of the 
+method can be run individually to gain finer control over the analysis and
+show the intermediate results from chromswitch available to the user.
 
 # Quickstart
 
@@ -157,19 +162,71 @@ library(dplyr)
 
 To run `chromswitch`, we essentially need three pieces of information:
 
-1. Metadata which describes the samples and their conditions
-2. One or more genomic regions which will serve as query regions (note that
+* Metadata which describes the samples and their conditions
+* One or more genomic regions which will serve as query regions (note that
 chromswitch acts at the level of individual regions and so will return results for each  region independently)
-3. A set of epigenomic features (peaks or chromatin state segmentations,
+* A set of epigenomic features (peaks or chromatin state segmentations,
 for example) for each sample
 
-## Obtain data
+## Output
+
+The basic output of `chromswitch` is a tidy dataframe which includes:
+
+* The query regions and any additional data associated with the query (here, 
+the name of the gene)
+* The number of clusters inferred in the region ($k = 2$ if
+`optimal_clusters = FALSE`,
+otherwise, the optimal set of clusters is obtained by selecting the clusters
+with the highest average Silhouette width, displayed in the next column)
+* The Average Silhouette score, which measures cluster compactness and
+separation, and can be interpreted as assessing the internal consistency
+of the clustering
+* A score of the similarity between the inferred clusters and the
+biological condition labels of the samples (here, Brain and Other), labeled
+as "Consensus", which is an average of the Adjusted Rand Index (ARI),
+the Normalized Mutual Information (NMI), and the V measure. This is the score
+we recommend to use for later filtering, and thresholding. This score takes
+on values between -1 and 1, where 1 represents a perfect agreement between
+cluster assignments and the biological conditions of the sample
+* The cluster assignments for each sample, one sample per column
+
+## The H3K4me3 dataset
 
 The package ships with a small dataset that we will analyze to detect brain-
 specific chromatin state switches. The dataset contains MACS2 narrow
 peak calls for H3K4me3 in a short section of chromosome 19 for six samples,
 3 adult brain tissues, 
-and 3 other adult tissues. In the code below, we prepare a minimal metadata
+and 3 other adult tissues.
+
+![](figures/igv_screenshot.png)
+*Genome browser screenshot of H3K4me3 dataset included in the chromswitch package. Red boxes indicate the genes studied in the demo analysis in this section.*
+
+## Query regions
+
+We'll apply `chromswitch` to 5kbp windows surrounding chromatin state
+switches in a few genes on chromosome 19:
+
+```{r regions}
+query <- data.frame(
+    gene = c("CACNG8", "TTYH1", "LENG8"),
+    TSS = c(54466290, 54926605, 54960065), stringsAsFactors = FALSE) %>% 
+    dplyr::mutate(chromosome = "chr19",
+           start = TSS - 2500,
+           end = TSS + 2500) %>%
+    dplyr::select(-TSS) %>% 
+    makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+
+query
+```
+
+The `makeGRangesFromDataFrame` function from `r Biocpkg("GenomicRanges")` is
+handy for converting a list of query regions in a dataframe into a `GRanges`
+object (remember the `keep.extra.columns = TRUE` argument to preserve any
+additional data associated with the regions).
+
+## Import epigenomic data into R
+
+In the code below, we prepare a minimal metadata
 dataframe. The metadata dataframe needs at least two
 columns, "Sample" which stores the sample IDs, "Condition", which stores the
 biological condition labels of the samples; this can be passed to the `metadata`
@@ -231,27 +288,6 @@ argument to `rtracklayer::import` should be modified to fit the data.
 
 ## Applying the summary strategy to detect brain-specific switches
 
-We'll apply `chromswitch` to 5kbp windows surrounding chromatin state
-switches in a few genes on chromosome 19:
-
-```{r regions}
-query <- data.frame(
-    gene = c("CACNG8", "TTYH1", "LENG8"),
-    TSS = c(54466290, 54926605, 54960065), stringsAsFactors = FALSE) %>% 
-    dplyr::mutate(chromosome = "chr19",
-           start = TSS - 2500,
-           end = TSS + 2500) %>%
-    dplyr::select(-TSS) %>% 
-    makeGRangesFromDataFrame(keep.extra.columns = TRUE)
-
-query
-```
-
-The `makeGRangesFromDataFrame` function from `r Biocpkg("GenomicRanges")` is
-handy for converting a list of query regions in a dataframe into a `GRanges`
-object (remember the `keep.extra.columns = TRUE` argument to preserve any
-additional data associated with the regions).
-
 We'll first run a basic analysis using the summary strategy
 for constructing 
 feature matrices, summarizing on the `qValue` and `signalValue` statistics only.
@@ -282,28 +318,6 @@ out <- callSummary(query = query,
 out
 
 ```
-
-## Output
-
-The basic output of `chromswitch` is a tidy dataframe which includes:
-
-* The query regions and any additional data associated with the query (here, 
-the name of the gene)
-* The number of clusters inferred in the region ($k = 2$ if
-`optimal_clusters = FALSE`,
-otherwise, the optimal set of clusters is obtained by selecting the clusters
-with the highest average Silhouette width, displayed in the next column)
-* The Average Silhouette score, which measures cluster compactness and
-separation, and can be interpreted as assessing the internal consistency
-of the clustering
-* A score of the similarity between the inferred clusters and the
-biological condition labels of the samples (here, Brain and Other), labeled
-as "Consensus", which is an average of the Adjusted Rand Index (ARI),
-the Normalized Mutual Information (NMI), and the V measure. This is the score
-we recommend to use for later filtering, and thresholding. This score takes
-on values between -1 and 1, where 1 represents a perfect agreement between
-cluster assignments and the biological conditions of the sample
-* The cluster assignments for each sample, one sample per column
 
 We can threshold on the consensus score to subset the query regions to those
 containing putative chromatin state switches:
@@ -409,15 +423,209 @@ out3 %>%
 
 ```
 
+# Step-by-step analysis for finer control
 
-# Step-by-step analysis
+Chromswitch is implemented in a relatively modular way, with functions for each
+step of the method. In this section, we repeat the analysis we performed in 
+the previous sections, except that instead of using the wrapper functions,
+`callBinary()` and `callSummary()`, we perform each step individually, and 
+allocate some more discussion to options and parameters at each step.
 
-## Summary approach
+## Filter peaks
+After preparing the metadata dataframe (`meta`) and importing data into GenomicRanges
+objects (`H3K4me3`), we can pre-process the data. First, since the peak calls
+from MACS2 are associated with a fold change, a *q* value, *etc*, we'll set
+some thresholds on these statistics and filter out peaks which do not meet them.
+The user can pass the names of any numeric columns in the data to the `columns`
+argument, ensuring that a numeric threshold for each is passed to `thresholds`,
+in the same order. If too few threshold values provided, they will not be
+recycled; chromswitch will return an error.
+
+```{r filter}
+# Number of peaks in each sample prior to filtering
+lapply(H3K4me3, length) %>% as.data.frame()
+
+H3K4me3_filt <- filterPeaks(peaks = H3K4me3,
+                            columns = c("qValue", "signalValue"),
+                            thresholds = c(10, 4))
+
+# Number of peaks in each sample after filtering
+lapply(H3K4me3_filt, length) %>% as.data.frame()
+```
+
+There are some additional pre-processing steps which are specific to the approach
+used to construct feature matrices from the data, and we explain these below.
+
+## Summary approach for constructing feature matrices
+
+### Normalization
+In the summary approach, the features for each sample are a set of summary
+statistics which represent the peaks observed in that sample in the query region.
+It's important, therefore, that the features have comparable ranges. We
+normalize each statistic genome-wide for each sample. The normalization process
+essentially involves rescaling the central part of the data to the range [0, 1]
+and bounding the lower and upper outliers to 0 and 1 respectively. The amount
+of outliers in each tail to bound can be specified by the user in the `tail`
+parameter, which expects a fraction in [0, 1] (for example, `tail = 0.005` results
+in bounding the upper and lower 0.5% of the data, the default).
+
+```{r normalize}
+# Summary of the two statistics we will use downstream in raw data in one sample
+H3K4me3_filt %>% lapply(as.data.frame) %>%
+    lapply(select, signalValue, qValue) %>%
+    lapply(summary) %>% 
+    `[`(1)
+
+H3K4me3_norm <- normalizePeaks(H3K4me3_filt,
+                               columns = c("qValue", "signalValue"),
+                               tail = 0.005)
+
+# Summary after normalization
+H3K4me3_norm %>% lapply(as.data.frame) %>%
+    lapply(select, signalValue, qValue) %>%
+    lapply(summary) %>% 
+    `[`(1)
+```
+
+### Retrieve peaks in the query region
+Next, we'll retrieve the peaks in the query region. Here we'll consider the 
+5 kbp window around the transcription start site of *TTYH1*, which is a known
+brain-specific gene. This returns an object of the `localPeaks` class.
+A `localPeaks` object is a container for the peaks for a set
+of samples in a specific genomic region of interest, as well as the genomic region
+itself, and the sample IDs. These components are needed to convert sets of peaks
+into rectangular feature-by-sample matrices which we can then use for downstream
+analysis - and in particular, as input to a clustering algorithm in order to
+call a chromatin state switch.
+
+```{r retrieve}
+# TTYH1 
+ttyh1 <- query[2]
+ttyh1
+
+ttyh1_pk <- retrievePeaks(peaks = H3K4me3_norm,
+                          metadata = meta,
+                          region = ttyh1)
+
+ttyh1_pk
+```
+
+
+### Construct feature matrix
+We can now construct a sample-by-feature matrix from the filtered and normalized
+data in the query regon.
+To do so, we'll take the mean, median, and max of the *q* value and fold
+change of peaks in the query region, as well as the fraction of the region
+overlapped by peaks. When selecting which peak statistics to use in feature
+construction, it's important to consider whether statistics are redundant,
+for example, here we avoid using both the *p* and *q* values.
+
+```{r summarizePeaks}
+summary_mat <- summarizePeaks(localpeaks = ttyh1_pk,
+                              mark = "H3K4me3",
+                              cols = c("qValue", "signalValue"),
+                              fraction = TRUE,
+                              n = FALSE)
+
+# The sample-by-feature matrix
+summary_mat
+```
+
+### Cluster
+Finally, we can cluster over samples using this matrix, and call a chromatin
+state switch by assessing the agreement between the inferred cluster assignments
+and the known biological condition labels of the samples. Since hiearchical
+clustering results in a dendrogram, we choose the partition of the samples which
+maximizes the average Silhouette width, which is an internal measure of cluster
+goodness based on cluster compactness and separation.
+
+```{r cluster}
+
+cluster(ft_mat = summary_mat,
+        region = ttyh1,
+        metadata = meta,
+        heatmap = TRUE,
+        title = "TTYH1 - summary",
+        optimal_clusters = TRUE)
+
+```
+
+The consensus score is equal to 1, indicating a perfect agreement between the
+inferred clusters and the biological groups (Brain/Other), so we can infer
+a chromatin state switch around the TSS of *TTYH1*.
+
+The `cluster` function has a `heatmap` argument which controls whether a heatmap
+is produced as a PDF file in the current working directory or at a path specified by `outdir`.
+
+![](figures/ttyh1_summary.png)
+
+*Heatmap showing hierarchical clustering result from chromswitch applied to
+TTYH1 using the summary strategy*
 
 ## Binary approach
 
-# Leveraging the modularity of *chromswitch* to incorporate multiple marks
+### Reduce peaks
+In the binary approach, the features correspond to unique peaks observed in the
+region across samples. This can be sensitive to noisy data in the region, so
+we propose an additional pre-processing step prior to this approach. When
+considering peaks, often, we observe two scenarios:
 
+1. Two peaks may be called as separate
+peaks but result from the same biological event
+2. Two overlapping peaks may not necessarily correspond to the same biological signal
+
+The way chromswitch handles these is controlled by two tuning parameters. The first
+is the `gap` parameter, and is used to decide when nearby
+peaks should be joined and replaced by one peak. The `gap` parameter is the distance
+between two peaks below which they should be joined.
+
+![](figures/reduce.png)
+*Example of a transformation on peaks to join nearby peaks which are likely due
+to the same biological event, implemented in chromswitch as `reducePeaks()`.*
+
+The `reducePeaks()` function takes a `localPeaks` object as input, so we can
+use the peaks in the *TTYH1* window that we've already obtained.
+```{r reduce}
+
+ttyh1_pk_red <- reducePeaks(localpeaks = ttyh1_pk,
+                            gap = 300)
+
+```
+
+### Construct feature matrix
+In this appraoch, we convert the data in the query region into a binary representation
+by modelling the presence or absence of each unique peak. In this function,
+first the unique peaks are obtained by collapsing down the *union* of all peaks
+supplied in the region, and then we look for each unique peak in each sample
+to construct the binary matrix. This involves using the second tuning parameter,
+`p`, which sepcifies how much reciprocal overlap two peaks must have in order
+to be considered the same peak.
+
+```{r binarizePeaks}
+binary_mat <- binarizePeaks(ttyh1_pk_red,
+                            p = 0.4)
+
+# Chromswitch finds a single unique peak in the region
+binary_mat
+```
+
+In terms of selecting values for these tuning parameters, our experiments indicate
+that chromswitch is very robust to changes in these parameters, within reasonable
+ranges. Visual inspection of the data in a genome browser can be useful for
+determining exact values, and can help to control the resolution of the analysis.
+
+### Cluster
+
+Again, chromswitch finds good agreement between the cluster assignments and
+the biological groups in our analysis.
+```{r cluster2}
+
+cluster(ft_mat = binary_mat,
+        metadata = meta,
+        region = ttyh1,
+        optimal_clusters = TRUE)
+
+```
 
 # Session Info
 ```{r session}
