@@ -12,7 +12,7 @@ abstract: >
     chromatin state differs between biological conditions. The package 
     *chromswitch* implements a method for detecting chromatin state switches
     by integrating epigenomic data (ChIP-seq peaks for histone modifications,
-    DNase-seq, previously learned chromatin state segmentations, *etc.*) in
+    DNase-seq peaks, previously learned chromatin state segmentations, *etc.*) in
     specific genomic regions of interest. Chromswitch transforms data in the
     query region into a sample-by-feature matrix, clusters samples
     hierarchically, and then uses external cluster validity measures to
@@ -24,19 +24,14 @@ vignette: >
 ---
 
 
-Install `r Githubpkg("sjessa/chromswitch")` from GitHub
-using `r CRANpkg("devtools")`:
-```{r setup, warn = FALSE, message = FALSE}
-devtools::install_github("sjessa/chromswitch")
-library(chromswitch)
-```
+
 
 # Overview of this vignette
 
 This vignette is organized hierarchically in terms of level of detail:
 
 * In the Quickstart section, we show a basic analysis with
-`chromswitch` using a small dataset included in the package.
+chromswitch using a small dataset included in the package.
 
 * In the next section, we give a brief overview of the method for detecting
 chromatin state switches that chromswitch, referencing specific
@@ -55,12 +50,17 @@ show the intermediate results from chromswitch available to the user.
 
 # Quickstart
 
+Install `r Githubpkg("sjessa/chromswitch")` from GitHub
+using `r CRANpkg("devtools")`:
+```{r setup, warn = FALSE, message = FALSE}
+devtools::install_github("sjessa/chromswitch")
+library(chromswitch)
+```
+
 We'll start with a toy dataset containing MACS2 narrow peak calls for H3K4me3
 ChIP-seq in 3 brain tissues and 3 other adult tissues from the Roadmap
-Epigenomics Project, restricted to a short region on chromosome 19. The data
-packaged with chromswitch is described in the manual, and the
-documentation can be accessed by running `??chromswitch::H3K4me3` in the
-console. In the code below, we prepare a corresponding metadata file,
+Epigenomics Project, restricted to a short region on chromosome 19. This data
+is packaged with chromswitch in the object `H3K4me3`. In the code below, we prepare a corresponding metadata file,
 save a couple regions of interest, and run `chromswitch` on our dataset,
 testing both strategies for feature matrix construction. We can then call chromatin state switches by thresholding on the value of
 the Consensus score, which sores the similarity between the cluster assignments
@@ -103,6 +103,11 @@ callBinary(query = regions,
            metadata = metadata)
 ```
 
+Looking at the Consensus score in each case, which represents the similarity
+between the cluster assignments and the biological groups of the samples,
+here we see a good agreement in the first region, indicating a switch, and
+poor agreement in the second, indicating the absence of a switch.
+
 # Overview of the method
 
 Our method for detecting chromatin state switches using epigenomic data
@@ -111,7 +116,7 @@ chromswitch package and the functions available to users. As input,
 chromswitch requires epigenetic features represented by their genomic
 coordinates and optionally, some associated statistics. Possible examples
 include ChIP-seq or DNase-seq peaks, or previously-learned chromatin state
-segmentations. Here we'll refer to peaks for simplicity, but the analysis 
+segmentations such as from ChromHMM. Here we'll refer to peaks for simplicity, but the analysis 
 is the same for other types of epigenetic features given as intervals.
 
 In the pre-processing phase, the user can set thresholds on any statistics
@@ -139,18 +144,18 @@ of all peaks in the region observed in all samples using a parameter `p`
 which specifies how much reciprocal overlap is required between two peaks to
 call them the same. Since regions corresponding to the same biological event
 can occasionally result in separate peaks during the process of interpretation
-of raw signal, peak calling, *etc*, we also introduce an option to combine
+of raw signal, peak calling, *etc.*, we also introduce an option to combine
 peaks which are separated by less than `gap` base pairs (`reducePeaks()`).
 
 Finally, chromswitch clusters samples hierarchically
 and then scores the similarity between the inferred cluster assignments and the
 known biological condition labels of the samples (`cluster()`).
 
-# Walkthrough of a basic `chromswitch` analysis
+# Walkthrough of a basic chromswitch analysis
 
 ## Setup    
 
-First, we'll load other packages we'll use in our analysis:
+Once chromswitch is installed and loaded (see [Quickstart]), we'll load other packages we'll use in our analysis:
 ```{r load_pkg, message = FALSE, warning = FALSE}
 library(magrittr)
 library(rtracklayer)
@@ -196,7 +201,10 @@ The package ships with a small dataset that we will analyze to detect brain-
 specific chromatin state switches. The dataset contains MACS2 narrow
 peak calls for H3K4me3 in a short section of chromosome 19 for six samples,
 3 adult brain tissues, 
-and 3 other adult tissues.
+and 3 other adult tissues.  The data
+packaged with chromswitch is described in the manual, and the
+documentation can be accessed by running `??chromswitch::H3K4me3` in the
+console.
 
 ![](figures/igv_screenshot.png)
 *Genome browser screenshot of H3K4me3 dataset included in the chromswitch package. Red boxes indicate the genes studied in the demo analysis in this section.*
@@ -401,7 +409,7 @@ that `chromswitch` identifies for these samples in the query region, and
 this option controls whether to include an additional column recording 
 the number of features in the output.
 
-```{r pa_basic}
+```{r binary_basic}
 out3 <- callBinary(query = query,
                 peaks = pk_k4me3,
                 metadata = meta,
@@ -511,10 +519,18 @@ ttyh1_pk
 ```
 
 
-### Construct feature matrix
+### Selecting features for the feature matrix in the summary approach
 We can now construct a sample-by-feature matrix from the filtered and normalized
-data in the query regon.
-To do so, we'll take the mean, median, and max of the *q* value and fold
+data in the query region.
+To do so, we need to select some summary statistics to be the features
+in the matrix. If there are any values associated with the peaks or data,
+specifying these in the `cols` parameter to `summarizePeaks()` results in taking the mean, median, and maximum of each statistic as a separate feature. There are also three
+measures which can be calculated from genomic ranges alone: the number of peaks
+overlapping the query region (argument `n`), the fraction of the region
+overlapped by peaks (argument `fraction`), and the take the mean, median, and max of the length of peaks (argument `length`). These parameters take logical
+values specifying whether or not they should be included.
+
+Here, we take the mean, median, and max of the *q* value and fold
 change of peaks in the query region, as well as the fraction of the region
 overlapped by peaks. When selecting which peak statistics to use in feature
 construction, it's important to consider whether statistics are redundant,

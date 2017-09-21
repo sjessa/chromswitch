@@ -20,6 +20,7 @@ Imports:
     grDevices,
     IRanges (>= 2.4.8),
     lazyeval (>= 0.2.0),
+    matrixStats (>= 0.52),
     magrittr (>= 1.5),
     mclust (>= 5.3),
     methods,

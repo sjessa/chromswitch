@@ -51,7 +51,7 @@ purity <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
 
-    maxes  <- apply(contingency, 2, max)
+    maxes  <- matrixStats::colMaxs(contingency)
     purity <- sum(maxes) / sum(contingency)
 
     return(purity)
