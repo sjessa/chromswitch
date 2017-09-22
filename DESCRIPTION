@@ -1,13 +1,12 @@
 Package: chromswitch
 Title: An R package to detect chromatin state switches from epigenomic data
-Version: 0.99.4
+Version: 0.99.5
 Date: 2017-09-20
 Authors@R: c(person("Selin", "Jessa", email = "selinjessa@gmail.com", role = c("aut", "cre")),
              person(c("Claudia", "L."), "Kleinman", role = "aut"))  
-Description: chromswitch implements a flexible method to detect chromatin state 
+Description: Chromswitch implements a flexible method to detect chromatin state
     switches between samples in two biological conditions in a specific genomic
-    region of interest given epigenomic data like ChIP-seq peaks or previously
-    learned chromatin state segmentations.
+    region of interest given peaks or chromatin state calls from ChIP-seq data.
 Depends: R (>= 3.4)
 Imports:
     cluster (>= 2.0.6),
