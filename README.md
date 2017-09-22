@@ -5,7 +5,7 @@
 
 `chromswitch` implements a flexible method to detect chromatin state 
 switches between samples in two biological conditions in a specific genomic
-region of interest given peaks called from ChIP-seq data.
+region of interest given peaks or chromatin state calls from ChIP-seq data.
 
 # Quickstart
 
