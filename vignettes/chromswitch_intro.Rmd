@@ -61,7 +61,7 @@ We'll start with a toy dataset containing MACS2 narrow peak calls for H3K4me3
 ChIP-seq in 3 brain tissues and 3 other adult tissues from the Roadmap
 Epigenomics Project, restricted to a short region on chromosome 19. This data
 is packaged with chromswitch in the object `H3K4me3`. In the code below, we prepare a corresponding metadata file,
-save a couple regions of interest, and run `chromswitch` on our dataset,
+save a couple regions of interest, and run chromswitch on our dataset,
 testing both strategies for feature matrix construction. We can then call chromatin state switches by thresholding on the value of
 the Consensus score, which sores the similarity between the cluster assignments
 and the biological condition labels.
@@ -165,7 +165,7 @@ library(dplyr)
 
 ## Input
 
-To run `chromswitch`, we essentially need three pieces of information:
+To run chromswitch, we essentially need three pieces of information:
 
 * Metadata which describes the samples and their conditions
 * One or more genomic regions which will serve as query regions (note that
@@ -175,7 +175,7 @@ for example) for each sample
 
 ## Output
 
-The basic output of `chromswitch` is a tidy dataframe which includes:
+The basic output of chromswitch is a tidy dataframe which includes:
 
 * The query regions and any additional data associated with the query (here, 
 the name of the gene)
@@ -211,8 +211,11 @@ console.
 
 ## Query regions
 
-We'll apply `chromswitch` to 5kbp windows surrounding chromatin state
-switches in a few genes on chromosome 19:
+We'll apply chromswitch to 5kbp windows surrounding chromatin state
+switches in a few genes on chromosome 19. The `makeGRangesFromDataFrame` function from `r Biocpkg("GenomicRanges")` is
+handy for converting a list of query regions in a dataframe into a `GRanges`
+object (remember the `keep.extra.columns = TRUE` argument to preserve any
+additional data associated with the regions).
 
 ```{r regions}
 query <- data.frame(
@@ -227,18 +230,13 @@ query <- data.frame(
 query
 ```
 
-The `makeGRangesFromDataFrame` function from `r Biocpkg("GenomicRanges")` is
-handy for converting a list of query regions in a dataframe into a `GRanges`
-object (remember the `keep.extra.columns = TRUE` argument to preserve any
-additional data associated with the regions).
-
 ## Import epigenomic data into R
 
 In the code below, we prepare a minimal metadata
 dataframe. The metadata dataframe needs at least two
-columns, "Sample" which stores the sample IDs, "Condition", which stores the
-biological condition labels of the samples; this can be passed to the `metadata`
-argument of `chromswitch` functions that require it.
+columns: "Sample" which stores the sample IDs, "Condition", which stores the
+biological condition labels of the samples. This dataframe can be passed to the `metadata`
+argument of any chromswitch functions that require it.
 
 ```{r meta}
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
@@ -253,9 +251,9 @@ meta
 
 To import BED files containing peak calls,
 we can use `r Biocpkg("rtracklayer")` to read the data
-into `GRanges` objects, which can be analyzed with `chromswitch`. This chunk
-will produce `pk_k4me3`, which is identical to the `H3K4me3` object packaged
-with `chromswitch`.
+into `GRanges` objects, which can be analyzed with chromswitch. This
+will produce the `pk_k4me3` object, which is identical to the `H3K4me3` object packaged
+with chromswitch.
 
 ```{r paths}
 paths <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
@@ -405,7 +403,7 @@ to changes in these parameters within reasonable ranges.
 
 The other option unique to this strategy is `n_features`. The number of features
 in the matrix used for clustering corresponds to the number of unique peaks
-that `chromswitch` identifies for these samples in the query region, and
+that chromswitch identifies for these samples in the query region, and
 this option controls whether to include an additional column recording 
 the number of features in the output.
 
@@ -642,6 +640,13 @@ cluster(ft_mat = binary_mat,
         optimal_clusters = TRUE)
 
 ```
+
+These steps can also be easily run in a pipeline using the `%>%` operator, which is convenient when using individual chromswitch functions to compose an analysis rather than the two wrapper functions.
+
+# Bug reports and support
+
+Bug reports and questions about usage, the method, *etc.* are welcome. Please open an issue on the
+GitHub repository for the development version of chromswitch: https://github.com/sjessa/chromswitch/issues/new.
 
 # Session Info
 ```{r session}
