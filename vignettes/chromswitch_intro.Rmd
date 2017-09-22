@@ -60,6 +60,10 @@ devtools::install_github("sjessa/chromswitch")
 library(chromswitch)
 ```
 
+```{r biocp}
+library(BiocParallel)
+```
+
 We'll start with a toy dataset containing MACS2 narrow peak calls for H3K4me3
 ChIP-seq in 3 brain tissues and 3 other adult tissues from the Roadmap
 Epigenomics Project, restricted to a short region on chromosome 19. This data
@@ -101,7 +105,8 @@ callSummary(query = regions,     # Input 1: Query region
             normalize_columns = c("qValue", "pValue", "signalValue"),
             mark = "H3K4me3",
             summarize_columns = c("pValue", "qValue", "signalValue"),
-            heatmap = FALSE)
+            heatmap = FALSE,
+            BPPARAM = SerialParam())
 ```
 
 Looking at the Consensus score in each case, which represents the similarity
@@ -113,7 +118,8 @@ Run chromswitch using the binary strategy:
 ```{r quickstart_2}
 callBinary(query = regions,
            peaks = H3K4me3,
-           metadata = metadata)
+           metadata = metadata,
+           BPPARAM = SerialParam())
 ```
 
 # Overview of the method
@@ -327,7 +333,8 @@ out <- callSummary(query = query,
                 normalize_columns = c("qValue", "signalValue"),
                 summarize_columns = c("qValue", "signalValue"),
                 optimal_clusters = TRUE,
-                heatmap = FALSE)
+                heatmap = FALSE,
+                BPPARAM = SerialParam())
 
 out
 
@@ -382,7 +389,11 @@ out2 <- callSummary(# Standard arguments of the function
                 
                 # Set this to TRUE to save a PDF of the heatmap
                 # for each region to the current working directory
-                heatmap = FALSE)
+                heatmap = FALSE,
+                
+                # Chromswitch uses BiocParallel as a backend for
+                # parallel computations
+                BPPARAM = SerialParam())
 
 
 out2
@@ -424,7 +435,8 @@ out3 <- callBinary(query = query,
                 p = 0.4,
                 n_features = TRUE,
                 optimal_clusters = TRUE,
-                heatmap = FALSE)
+                heatmap = FALSE,
+                BPPARAM = SerialParam())
 
 out3
 ```
