@@ -1,6 +1,7 @@
 context("Local processing functions")
 
 test_that("retrievePeaks finds peaks in the query region", {
+    skip_on_os("windows")
 
     metadata <- data.frame(Sample = c("A", "B"),
                            TestMark = c("../test_data/basic.bed",
@@ -42,6 +43,7 @@ test_that("retrievePeaks finds peaks in the query region", {
 
 
 test_that("reducePeaks reduces nearby peaks within a gap", {
+    skip_on_os("windows")
 
     pks <- list(A = GRanges(seqnames = rep("chr1", 3),
                             ranges = IRanges(start = c(100, 210, 500),

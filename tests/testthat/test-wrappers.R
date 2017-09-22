@@ -2,6 +2,7 @@ context("Chromswitch wrapper functions")
 
 
 test_that("The summary strategy wrapper properly executes the analysis", {
+    skip_on_os("windows")
 
     samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
     outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
@@ -134,7 +135,8 @@ test_that("The summary strategy wrapper properly executes the analysis", {
 })
 
 
-test_that("The binary strategy properly executes the analysis", {
+test_that("The binary strategy classifies regions correctly", {
+    skip_on_os("windows")
 
     samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
     outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
