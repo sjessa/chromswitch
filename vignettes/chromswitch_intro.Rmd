@@ -9,21 +9,24 @@ output:
     df_print: paged
 abstract: >
     An important question in comparative analysis of epigenomic data is how 
-    chromatin state differs between biological conditions. The package 
-    *chromswitch* implements a method for detecting chromatin state switches
-    by integrating epigenomic data (ChIP-seq peaks for histone modifications,
-    DNase-seq peaks, previously learned chromatin state segmentations, *etc.*) in
-    specific genomic regions of interest. Chromswitch transforms data in the
-    query region into a sample-by-feature matrix, clusters samples
-    hierarchically, and then uses external cluster validity measures to
-    predict a switch in chromatin state.
+    chromatin state differs between biological conditions. The package
+    *chromswitch* implements a method for integrating epigenomic data to
+    identify chromatin state switches in genomic regions of interest between
+    samples in two biological conditions.
+    Chromswitch is flexible in its input; possible data types include ChIP-seq
+    peaks for histone modification, DNase-seq peaks, or previously-learned
+    chromatin state segmentations. Chromswitch transforms epigenomic data in the
+    query region into a sample-by-feature matrix using one of two strategies,
+    clusters samples hierarchically, and then uses external cluster validity
+    measures to predict a switch in chromatin state. Chromswitch is robust
+    to small sample sizes and high class imbalance, free from data-intensive
+    training steps, and suitable for analyzing marks with diverse binding
+    profiles.
 vignette: >
     %\VignetteIndexEntry{An introduction to `chromswitch` for detecting chromatin state switches}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---
-
-
 
 
 # Overview of this vignette
@@ -88,7 +91,10 @@ regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
                                       start = c(54924104,54874318),
                                       end = c(54929104, 54877536)))
 
-# Run chromswitch using the summary strategy
+```
+
+Run chromswitch using the summary strategy:
+```{r quickstart_1}
 callSummary(query = regions,     # Input 1: Query region
             peaks = H3K4me3,     # Input 2: Peaks
             metadata = metadata, # Input 3: Metadata dataframe
@@ -96,17 +102,19 @@ callSummary(query = regions,     # Input 1: Query region
             mark = "H3K4me3",
             summarize_columns = c("pValue", "qValue", "signalValue"),
             heatmap = FALSE)
-
-# Run chromswitch using the binary strategy
-callBinary(query = regions,
-           peaks = H3K4me3,
-           metadata = metadata)
 ```
 
 Looking at the Consensus score in each case, which represents the similarity
 between the cluster assignments and the biological groups of the samples,
 here we see a good agreement in the first region, indicating a switch, and
 poor agreement in the second, indicating the absence of a switch.
+
+Run chromswitch using the binary strategy:
+```{r quickstart_2}
+callBinary(query = regions,
+           peaks = H3K4me3,
+           metadata = metadata)
+```
 
 # Overview of the method
 
@@ -306,7 +314,7 @@ step of the method (preprocessing, feature matrix construction, clustering)
 individually.
 
 Note that the column names passed to arguments in the wrappers (*e.g.*
-`normalize_columns`, `summarize_columns`, *etc*) must match exactly the column
+`normalize_columns`, `summarize_columns`, *etc.*) must match exactly the column
 names in the BED files.
 
 ```{r summary_basic}
@@ -381,7 +389,7 @@ out2
 ```
 
 The summary approach can be applied to epigenomic data where there
-are no statistics associated with the features (peaks, states, *etc*). In this
+are no statistics associated with the features (peaks, states, *etc.*). In this
 case, set `summarize_columns = NULL`, `filter = FALSE`, `normalize = FALSE`,
 and ensure that one or more of `length`, `n`, and `fraction` are set to `TRUE`.
 
@@ -429,6 +437,16 @@ out3 %>%
 
 ```
 
+## Saving chromswitch heatmaps
+
+If chromswitch performs hierarchical clustering on a feature matrix with more
+than one feature, both wrapper functions, `callSummary()` and `callBinary()`
+as well as `cluster()`) can optionally
+produce a heatmap with the resulting dendrogram as a PDF. Whether this 
+heatmap is produced or not is passed as a logical value to the argument `heatmap`.
+The title of the heatmap and prefix of the file name can be passed as a string
+to `title`, while the path to the output directory can be passed to `outdir`.
+
 # Step-by-step analysis for finer control
 
 Chromswitch is implemented in a relatively modular way, with functions for each
@@ -440,7 +458,8 @@ allocate some more discussion to options and parameters at each step.
 ## Filter peaks
 After preparing the metadata dataframe (`meta`) and importing data into GenomicRanges
 objects (`H3K4me3`), we can pre-process the data. First, since the peak calls
-from MACS2 are associated with a fold change, a *q* value, *etc*, we'll set
+from MACS2 are associated with a fold change of enrichment of ChIP-seq
+signal, a *q* value for enrichment, *etc.*, we'll set
 some thresholds on these statistics and filter out peaks which do not meet them.
 The user can pass the names of any numeric columns in the data to the `columns`
 argument, ensuring that a numeric threshold for each is passed to `thresholds`,
