@@ -113,7 +113,8 @@
 #'                 normalize_columns = c("qValue", "pValue", "signalValue"),
 #'                 mark = "H3K4me3",
 #'                 summarize_columns = c("pValue", "qValue", "signalValue"),
-#'                 heatmap = FALSE)
+#'                 heatmap = FALSE,
+#'                 BPPARAM = BiocParallel::SerialParam())
 #'
 #' @export
 callSummary <- function(query, peaks, metadata, mark,
@@ -301,7 +302,8 @@ callSummary <- function(query, peaks, metadata, mark,
 #'     ranges = IRanges::IRanges(start = c(54924104, 54874318),
 #'                                 end = c(54929104, 54877536)))
 #'
-#' callBinary(query = regions, peaks = H3K4me3, metadata = metadata)
+#' callBinary(query = regions, peaks = H3K4me3, metadata = metadata,
+#'            BPPARAM = BiocParallel::SerialParam())
 #'
 #' @export
 callBinary <- function(query, peaks, metadata,

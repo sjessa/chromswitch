@@ -118,6 +118,7 @@ regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
     ranges = IRanges::IRanges(start = c(54924104, 54874318),
                                 end = c(54929104, 54877536)))
 
-callBinary(query = regions, peaks = H3K4me3, metadata = metadata)
+callBinary(query = regions, peaks = H3K4me3, metadata = metadata,
+           BPPARAM = BiocParallel::SerialParam())
 
 }

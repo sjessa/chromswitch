@@ -141,6 +141,7 @@ callSummary(query = regions,
                 normalize_columns = c("qValue", "pValue", "signalValue"),
                 mark = "H3K4me3",
                 summarize_columns = c("pValue", "qValue", "signalValue"),
-                heatmap = FALSE)
+                heatmap = FALSE,
+                BPPARAM = BiocParallel::SerialParam())
 
 }
