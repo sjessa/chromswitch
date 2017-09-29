@@ -61,6 +61,7 @@ library(chromswitch)
 ```
 
 ```{r biocp}
+library(GenomicRanges)
 library(BiocParallel)
 ```
 
@@ -90,8 +91,8 @@ metadata   <- data.frame(Sample = samples,
                          stringsAsFactors = FALSE)
 
 # Define query regions
-regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
-                                  ranges = IRanges::IRanges(
+regions <- GRanges(seqnames = c("chr19", "chr19"),
+                                  ranges = IRanges(
                                       start = c(54924104,54874318),
                                       end = c(54929104, 54877536)))
 
@@ -173,7 +174,6 @@ Once chromswitch is installed and loaded (see [Quickstart]), we'll load other pa
 ```{r load_pkg, message = FALSE, warning = FALSE}
 library(magrittr)
 library(rtracklayer)
-library(GenomicRanges)
 library(dplyr)
 ```
 

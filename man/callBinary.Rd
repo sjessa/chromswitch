@@ -114,8 +114,8 @@ metadata <- data.frame(Sample = samples,
     Condition = Conditions,
     stringsAsFactors = FALSE)
 
-regions <- GenomicRanges::GRanges(seqnames = c("chr19", "chr19"),
-    ranges = IRanges::IRanges(start = c(54924104, 54874318),
+regions <- GRanges(seqnames = c("chr19", "chr19"),
+    ranges = IRanges(start = c(54924104, 54874318),
                                 end = c(54929104, 54877536)))
 
 callBinary(query = regions, peaks = H3K4me3, metadata = metadata,

@@ -7,13 +7,13 @@ Authors@R: c(person("Selin", "Jessa", email = "selinjessa@gmail.com", role = c("
 Description: Chromswitch implements a flexible method to detect chromatin state
     switches between samples in two biological conditions in a specific genomic
     region of interest given peaks or chromatin state calls from ChIP-seq data.
-Depends: R (>= 3.4)
+Depends: R (>= 3.4),
+    GenomicRanges (>= 1.26.4)
 Imports:
     cluster (>= 2.0.6),
     BiocParallel (>= 1.8.2),
     DescTools (>= 0.99.19),
     dplyr (>= 0.5.0),
-    GenomicRanges (>= 1.26.4),
     gplots(>= 3.0.1),
     graphics,
     grDevices,

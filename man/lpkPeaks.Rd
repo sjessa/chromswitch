@@ -27,8 +27,8 @@ metadata <- data.frame(Sample = samples,
 
 lpk <- retrievePeaks(H3K4me3,
     metadata = metadata,
-    region = GenomicRanges::GRanges(seqnames = "chr19",
-    ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+    region = GRanges(seqnames = "chr19",
+    ranges = IRanges(start = 54924104, end = 54929104)))
 
 lpkPeaks(lpk)
 

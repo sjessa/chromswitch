@@ -131,8 +131,8 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 #'
 #' lpk <- retrievePeaks(H3K4me3,
 #'     metadata = metadata,
-#'     region = GenomicRanges::GRanges(seqnames = "chr19",
-#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+#'     region = GRanges(seqnames = "chr19",
+#'     ranges = IRanges(start = 54924104, end = 54929104)))
 #'
 #' # Get feature matrix
 #' ft_matrix <- binarizePeaks(lpk, 0.5)

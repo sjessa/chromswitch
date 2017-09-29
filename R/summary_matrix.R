@@ -152,8 +152,8 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
 #'
 #' lpk <- retrievePeaks(H3K4me3,
 #'     metadata = metadata,
-#'     region = GenomicRanges::GRanges(seqnames = "chr19",
-#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+#'     region = GRanges(seqnames = "chr19",
+#'     ranges = IRanges(start = 54924104, end = 54929104)))
 #'
 #' summarizePeaks(lpk, mark = "H3K4me3", cols = c("qValue", "signalValue"))
 #'

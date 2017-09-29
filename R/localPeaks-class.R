@@ -72,8 +72,8 @@ localPeaks <- function(region, peaks, samples) {
 #'
 #' lpk <- retrievePeaks(H3K4me3,
 #'     metadata = metadata,
-#'     region = GenomicRanges::GRanges(seqnames = "chr19",
-#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+#'     region = GRanges(seqnames = "chr19",
+#'     ranges = IRanges(start = 54924104, end = 54929104)))
 #'
 #' lpkRegion(lpk)
 #'
@@ -100,8 +100,8 @@ lpkRegion <- function(lpks) lpks@region
 #'
 #' lpk <- retrievePeaks(H3K4me3,
 #'     metadata = metadata,
-#'     region = GenomicRanges::GRanges(seqnames = "chr19",
-#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+#'     region = GRanges(seqnames = "chr19",
+#'     ranges = IRanges(start = 54924104, end = 54929104)))
 #'
 #' lpkSamples(lpk)
 #'
@@ -129,8 +129,8 @@ lpkSamples <- function(lpks) lpks@samples
 #'
 #' lpk <- retrievePeaks(H3K4me3,
 #'     metadata = metadata,
-#'     region = GenomicRanges::GRanges(seqnames = "chr19",
-#'     ranges = IRanges::IRanges(start = 54924104, end = 54929104)))
+#'     region = GRanges(seqnames = "chr19",
+#'     ranges = IRanges(start = 54924104, end = 54929104)))
 #'
 #' lpkPeaks(lpk)
 #'

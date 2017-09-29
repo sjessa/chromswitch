@@ -39,7 +39,7 @@ coordToGRanges <- function(coord) {
     split <- strsplit(coord, ":")
     split2 <- strsplit(split[[1]][2], "-")
     GRanges(seqnames = split[[1]][1],
-            ranges = IRanges::IRanges(as.numeric(gsub(",", "", split2[[1]][1])),
+            ranges = IRanges(as.numeric(gsub(",", "", split2[[1]][1])),
                                     as.numeric(gsub(",", "", split2[[1]][2]))))
 
 }
