@@ -115,8 +115,8 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 #' feature matrix where each row is a binary vector which models the presence
 #' or absence of unqiue peaks in the region.
 #'
-#' @param lpks localPeaks object storing peaks for all samples in the query
-#' region
+#' @param localpeaks localPeaks object storing peaks for all samples in the
+#' query region
 #' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
 #' to require.
 #'
@@ -145,27 +145,27 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 #' attribute of the data frame.
 #'
 #' @export
-binarizePeaks <- function(lpks, p) {
+binarizePeaks <- function(localpeaks, p) {
 
     # Empty peaks scenario: make a dummy feature, set to TRUE for all samples
-    if (is.empty(lpks)) {
+    if (is.empty(localpeaks)) {
 
         warning("No peaks found in region")
 
-        ft_matrix <- data.frame(no_peak = rep(1, length(lpkPeaks(lpks))))
-        rownames(ft_matrix) <- lpkSamples(lpks)
+        ft_matrix <- data.frame(no_peak = rep(1, length(lpkPeaks(localpeaks))))
+        rownames(ft_matrix) <- lpkSamples(localpeaks)
 
         return(ft_matrix)
     }
 
     # Get the union of all peaks
-    loc_union <- Reduce("c", lpkPeaks(lpks))
+    loc_union <- Reduce("c", lpkPeaks(localpeaks))
 
     # From the union, extract unique peaks to serve as features
     uniq_pks <- getUniquePeaks(loc_union, p)
 
     # Model presence/absence of each feature peak in each sample
-    ft_matrix <- lapply(lpkPeaks(lpks), getSamplePeakProfile, uniq_pks, p) %>%
+    ft_matrix <- lapply(lpkPeaks(localpeaks), getSamplePeakProfile, uniq_pks, p) %>%
         dplyr::bind_rows()
 
     # Convert from logical to numeric
@@ -173,7 +173,7 @@ binarizePeaks <- function(lpks, p) {
 
     uniq_pks_coords <- uniq_pks %>% lapply(GRangesToCoord) %>% unlist()
     colnames(ft_matrix) <- uniq_pks_coords
-    rownames(ft_matrix) <- lpkSamples(lpks)
+    rownames(ft_matrix) <- lpkSamples(localpeaks)
 
     # This is not necessary if the features are unique peaks rather than
     # arbitrary bins

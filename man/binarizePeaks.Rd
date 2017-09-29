@@ -4,11 +4,11 @@
 \alias{binarizePeaks}
 \title{binarizePeaks}
 \usage{
-binarizePeaks(lpks, p)
+binarizePeaks(localpeaks, p)
 }
 \arguments{
-\item{lpks}{localPeaks object storing peaks for all samples in the query
-region}
+\item{localpeaks}{localPeaks object storing peaks for all samples in the
+query region}
 
 \item{p}{Numeric value in [0, 1] giving the fraction of reciprocal overlap
 to require.}
