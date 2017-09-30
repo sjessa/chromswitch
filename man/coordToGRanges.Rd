@@ -16,4 +16,8 @@ GRanges object
 \description{
 Convert a string of genomic coordinates to a GRanges object
 }
-\keyword{internal}
+\examples{
+string <- "chr1:1000-2000"
+coordToGRanges(string)
+
+}

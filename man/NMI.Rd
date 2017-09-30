@@ -29,4 +29,10 @@ Hornik K (2005). “A CLUE for CLUster Ensembles.” _Journal of
 Statistical Software_, *14*(12). doi: 10.18637/jss.v014.i12 (URL:
 http://doi.org/10.18637/jss.v014.i12).
 }
-\keyword{internal}
+\examples{
+
+clusters <- c(0, 0, 2, 1, 1, 0, 1)
+classes <- c("A", "A", "A", "B", "B", "A", "B")
+NMI(clusters, classes)
+
+}

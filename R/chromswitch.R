@@ -30,6 +30,9 @@ NULL
 #' @importFrom Biobase samples
 NULL
 
+#' @importFrom cluster silhouette
+NULL
+
 #' @importFrom stats hclust dist cutree
 NULL
 

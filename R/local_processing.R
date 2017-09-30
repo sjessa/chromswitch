@@ -7,18 +7,16 @@
 # ---------------------------------------------------------------------------- #
 
 
-#' retrieveSamplePeaks
-#'
-#' Given a set of peaks for one sample and a region of interest,
-#' retrieve peaks overlapping query region
-#'
-#' @param peaks GRanges object containing peak calls for the sample
-#' @param region GRanges object specifying genomic region in which to search
-#' for peaks
-#'
-#' @return GRanges object. Contains all peaks overlapping query region.
-#'
-#' @keywords internal
+# retrieveSamplePeaks
+#
+# Given a set of peaks for one sample and a region of interest,
+# retrieve peaks overlapping query region
+#
+# @param peaks GRanges object containing peak calls for the sample
+# @param region GRanges object specifying genomic region in which to search
+# for peaks
+#
+# @return GRanges object. Contains all peaks overlapping query region.
 retrieveSamplePeaks <- function(peaks, region) {
 
     # Retrieve peaks and associated metadata columns in query region

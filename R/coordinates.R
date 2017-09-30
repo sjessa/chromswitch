@@ -13,10 +13,13 @@
 #' @param start The starting position of the genomic region
 #' @param end The ending position of the genomic region
 #'
+#' @examples
+#'
+#' makeBrowserCoord("chr1", 1000, 2000)
+#'
+#' @export
 #' @return String with copy-pastable, genome browser-friendly version of
 #' coordinates.
-#'
-#' @keywords internal
 makeBrowserCoord <- function(chr, start, end) {
 
     paste0(chr, ":", start, "-", end)
@@ -31,8 +34,12 @@ makeBrowserCoord <- function(chr, start, end) {
 #' @param coord String coordinate in genome browser-friendly format to convert
 #' to a GRanges object
 #'
+#' @examples
+#' string <- "chr1:1000-2000"
+#' coordToGRanges(string)
+#'
+#' @export
 #' @return GRanges object
-#' @keywords internal
 coordToGRanges <- function(coord) {
     # String of coordinates to GRanges
 
@@ -51,8 +58,12 @@ coordToGRanges <- function(coord) {
 #'
 #' @param gr GRanges object specifying region to convert to a string
 #'
+#' gr <- GRanges(seqnames = "chr1",
+#'               ranges = IRanges(start = 1000, end = 2000))
+#'
+#' GRangesToCoord(gr)
+#' @export
 #' @return String
-#' @keywords internal
 GRangesToCoord <- function(gr) {
 
     makeBrowserCoord(seqnames(gr), start(gr), end(gr))

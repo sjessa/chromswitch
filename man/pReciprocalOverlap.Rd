@@ -22,4 +22,12 @@ by having a p-reciprocal overlap, FALSE otherwise
 If a and b denote two genomic regions, check whether they overlap
 reciprocally by \code{p}*100% of their lengths
 }
-\keyword{internal}
+\examples{
+a <- GRanges(seqnames = "chr11",
+             ranges = IRanges(start = 112829468, end = 112834468))
+b <- GRanges(seqnames = "chr11",
+             ranges = IRanges(start = 112829468, end = 113834468))
+
+pReciprocalOverlap(a, b, 0.9)
+
+}

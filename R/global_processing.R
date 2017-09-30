@@ -89,19 +89,18 @@ normalizePeaks <- function(peaks, columns, tail = 0.005) {
 }
 
 
-#' filterSamplePeaks
-#'
-#' @param sample_peaks GRanges object (peak calls for one sample)
-#' @param columns Character vector of column names containing stats by which to
-#' filter peaks
-#' @param thresholds Vector of numeric values giving the lower thresholds to use
-#' for each of the columns specified, in the same order as \code{columns}
-#'
-#' @return A GRanges object containing peak calls for this sample, filtered
-#' according to the thresholds and columns specified.
-#'
-#' @seealso filterPeaks
-#' @keywords internal
+# filterSamplePeaks
+#
+# @param sample_peaks GRanges object (peak calls for one sample)
+# @param columns Character vector of column names containing stats by which to
+# filter peaks
+# @param thresholds Vector of numeric values giving the lower thresholds to use
+# for each of the columns specified, in the same order as \code{columns}
+#
+# @return A GRanges object containing peak calls for this sample, filtered
+# according to the thresholds and columns specified.
+#
+# @seealso filterPeaks
 filterSamplePeaks <- function(sample_peaks, columns, thresholds) {
 
     pk <- as.data.frame(sample_peaks)

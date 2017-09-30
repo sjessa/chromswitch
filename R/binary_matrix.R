@@ -17,10 +17,18 @@
 #' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
 #' to require.
 #'
+#' @examples
+#' a <- GRanges(seqnames = "chr11",
+#'              ranges = IRanges(start = 112829468, end = 112834468))
+#' b <- GRanges(seqnames = "chr11",
+#'              ranges = IRanges(start = 112829468, end = 113834468))
+#'
+#' pReciprocalOverlap(a, b, 0.9)
+#'
 #' @return Logical value, TRUE if \code{a} and \code{b} are the same
 #' by having a p-reciprocal overlap, FALSE otherwise
 #'
-#' @keywords internal
+#' @export
 pReciprocalOverlap <- function(a, b, p) {
 
     isOlap <- function(b_i, a, p) {
@@ -36,24 +44,22 @@ pReciprocalOverlap <- function(a, b, p) {
 }
 
 
-#' getUniquePeaks
-#'
-#' Given a set of peaks, collapse them such that we retain only unique peaks
-#' which do not have a reciprocal overlap of \code{p}%. We do so by scanning
-#' through the union of peaks across samples in the query region in the order
-#' they're provided, and growing a list of unique peaks. For every peak visited,
-#' add it to the list of unique peaks if it doesn't have a p-reciprocal overlap
-#' with any peak already in the list;E otherwise, discard it.
-#'
-#' @param loc_union GRanges object storing union of peaks in the query
-#' region across samples
-#' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
-#' to require.
-#'
-#' @return GRanges objects with a list of unique peaks as determined by
-#' the p-reciprocal overlap rule
-#'
-#' @keywords internal
+# getUniquePeaks
+#
+# Given a set of peaks, collapse them such that we retain only unique peaks
+# which do not have a reciprocal overlap of \code{p}%. We do so by scanning
+# through the union of peaks across samples in the query region in the order
+# they're provided, and growing a list of unique peaks. For every peak visited,
+# add it to the list of unique peaks if it doesn't have a p-reciprocal overlap
+# with any peak already in the list;E otherwise, discard it.
+#
+# @param loc_union GRanges object storing union of peaks in the query
+# region across samples
+# @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
+# to require.
+#
+# @return GRanges objects with a list of unique peaks as determined by
+# the p-reciprocal overlap rule
 getUniquePeaks <- function(loc_union, p) {
 
     unique_peaks <- GRanges()
@@ -77,26 +83,24 @@ getUniquePeaks <- function(loc_union, p) {
 }
 
 
-#' getSamplePeakProfile
-#'
-#' For a set of peaks in one sample and a set of windows, which could correspond
-#' to bins of a region, or unique peaks, model presence or absence of peaks in
-#' each window by calling peaks present in a window if peaks in the sample have
-#' a p-reciprocal overlap with the window. Alternatively, the windows can be
-#' viewed as unique peaks, and this function calls the presence or absence of
-#' each peak in the sample.
-#'
-#' @param peaks GRanges object containing peaks for one sample
-#' @param windows GRanges object containing windows in which to model presence/
-#' absence of peaks, these become the features or columns of the output
-#' or columns
-#' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
-#' to require.
-#'
-#' @return A one-row dataframe with a logical value TRUE/FALSE in each column
-#' (window) indicating whether any peaks overlap the window
-#'
-#' @keywords internal
+# getSamplePeakProfile
+#
+# For a set of peaks in one sample and a set of windows, which could correspond
+# to bins of a region, or unique peaks, model presence or absence of peaks in
+# each window by calling peaks present in a window if peaks in the sample have
+# a p-reciprocal overlap with the window. Alternatively, the windows can be
+# viewed as unique peaks, and this function calls the presence or absence of
+# each peak in the sample.
+#
+# @param peaks GRanges object containing peaks for one sample
+# @param windows GRanges object containing windows in which to model presence/
+# absence of peaks, these become the features or columns of the output
+# or columns
+# @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
+# to require.
+#
+# @return A one-row dataframe with a logical value TRUE/FALSE in each column
+# (window) indicating whether any peaks overlap the window
 getSamplePeakProfile <- function(peaks, windows, p) {
 
     overlaps <- lapply(windows, pReciprocalOverlap, peaks, p) %>%

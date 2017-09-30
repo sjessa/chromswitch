@@ -7,7 +7,10 @@
 region(x)
 }
 \arguments{
-\item{x}{Region}
+\item{x}{Object}
+}
+\value{
+A region associated with the object
 }
 \description{
 Generic function

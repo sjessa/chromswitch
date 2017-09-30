@@ -281,7 +281,6 @@ cluster <- function(ft_mat, metadata, region,
 
 
 
-#' @keywords internal
 isC1AtTop <- function(clust_ft_mat) {
 
     state = FALSE
@@ -303,7 +302,6 @@ isC1AtTop <- function(clust_ft_mat) {
 }
 
 
-#' @keywords internal
 isC1AtBottom <- function(clust_ft_mat) {
 
     # Ask if C1 is at the top when the clusters are ranked from
@@ -312,7 +310,6 @@ isC1AtBottom <- function(clust_ft_mat) {
 }
 
 
-#' @keywords internal
 estimateState <- function(clust_ft_mat) {
 
     if (isC1AtTop(clust_ft_mat)) return("ON")

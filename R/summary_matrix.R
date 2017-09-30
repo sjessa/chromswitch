@@ -7,19 +7,18 @@
 # ---------------------------------------------------------------------------- #
 
 
-#' peakOverlap
-#'
-#' Compute the fraction of the query region of interest which is overlapped
-#' by peaks. This value will be at most 1, since we only consider the
-#' overlapping portion of each peak, and peaks do not overlap with each other.
-#' This value will be 0 in the case that there are no peaks in the query region.
-#'
-#' @param region GRanges object defining query region
-#' @param peaks GRanges object storing peak calls for a sample in the
-#' query region
-#'
-#' @return double, a number in [0,1].
-#' @keywords internal
+# peakOverlap
+#
+# Compute the fraction of the query region of interest which is overlapped
+# by peaks. This value will be at most 1, since we only consider the
+# overlapping portion of each peak, and peaks do not overlap with each other.
+# This value will be 0 in the case that there are no peaks in the query region.
+#
+# @param region GRanges object defining query region
+# @param peaks GRanges object storing peak calls for a sample in the
+# query region
+#
+# @return double, a number in [0,1].
 peakOverlap <- function(region, peaks) {
 
     # If no peaks found to be overlapping, return 0
@@ -46,25 +45,24 @@ peakOverlap <- function(region, peaks) {
 }
 
 
-#' summarizeSamplePeaks
-#'
-#' For one sample, given peaks in the query region, compute several summary
-#' statistics of peaks in that region, including the mean, median, and max of
-#' any specified
-#'
-#' @param peaks GRanges object storing peak calls for a sample in the
-#' query region
-#' @param region GRanges object storing query region
-#' @param mark String specifying the name of the mark for which peaks are given
-#' @param cols Character vector of column names on which to compute summary
-#' statistics
-#' @param length Logical: compute the mean, median, and max of peak length?
-#' @param fraction Loogical: compute the fraction of the region overlapped by
-#' peaks?
-#' @param n Logical: compute the number of peaks in the region?
-#'
-#' @return data.frame
-#' @keywords internal
+# summarizeSamplePeaks
+#
+# For one sample, given peaks in the query region, compute several summary
+# statistics of peaks in that region, including the mean, median, and max of
+# any specified
+#
+# @param peaks GRanges object storing peak calls for a sample in the
+# query region
+# @param region GRanges object storing query region
+# @param mark String specifying the name of the mark for which peaks are given
+# @param cols Character vector of column names on which to compute summary
+# statistics
+# @param length Logical: compute the mean, median, and max of peak length?
+# @param fraction Loogical: compute the fraction of the region overlapped by
+# peaks?
+# @param n Logical: compute the number of peaks in the region?
+#
+# @return data.frame
 summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
                                 fraction = TRUE, n = FALSE) {
 

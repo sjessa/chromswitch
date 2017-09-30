@@ -9,6 +9,9 @@ peaks(x)
 \arguments{
 \item{x}{Object}
 }
+\value{
+A set of peaks associated with the object
+}
 \description{
 Generic function
 }

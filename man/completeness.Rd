@@ -22,4 +22,11 @@ Computes the completeness of a set of clusters given ground-truth
 classes, as defined in
 https://aclweb.org/anthology/D/D07/D07-1043.pdf
 }
-\keyword{internal}
+\examples{
+
+clusters <- c(0, 0, 2, 1, 1, 0, 1)
+classes <- c("A", "A", "A", "B", "B", "A", "B")
+ct <- table(classes, clusters)
+completeness(contingency = ct)
+
+}

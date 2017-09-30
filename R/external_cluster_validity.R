@@ -5,21 +5,20 @@
 # ---------------------------------------------------------------------------- #
 
 
-#' contingencyTable
-#'
-#' For each assigned cluster, stores the number of samples which belong
-#' to each known class. Used for evaluating the clustering solution. This
-#' function exists to create the contingencyTable from the metadata, to
-#' ensure that the clusters & conditions for the classes are associated
-#' correctly based on sample IDs.
-#'
-#' @param clusters A vector where values are the cluster assignments for each
-#' sample
-#' @param metadata Data frame with at least two columns: "Sample" storing
-#' sample IDs and "Condition" storing biological conditions of each samples
-#'
-#' @return table
-#' @keywords internal
+# contingencyTable
+#
+# For each assigned cluster, stores the number of samples which belong
+# to each known class. Used for evaluating the clustering solution. This
+# function exists to create the contingencyTable from the metadata, to
+# ensure that the clusters & conditions for the classes are associated
+# correctly based on sample IDs.
+#
+# @param clusters A vector where values are the cluster assignments for each
+# sample
+# @param metadata Data frame with at least two columns: "Sample" storing
+# sample IDs and "Condition" storing biological conditions of each samples
+#
+# @return table
 contingencyTable <- function(clusters, metadata) {
 
     # For one cluster, how many samples in each class?
@@ -45,8 +44,15 @@ contingencyTable <- function(clusters, metadata) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' purity(contingency = ct)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 purity <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -69,8 +75,15 @@ purity <- function(contingency, c, k) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' classEntropy(contingency = ct)
+#'
 #' @return Numeric
-#' @keywords internal
+#' @export
 classEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -94,8 +107,15 @@ classEntropy <- function(contingency, c, k) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' clusterEntropy(contingency = ct)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 clusterEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -120,8 +140,15 @@ clusterEntropy <- function(contingency, c, k) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' conditionalClassEntropy(contingency = ct)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 conditionalClassEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -150,8 +177,15 @@ conditionalClassEntropy <- function(contingency, c, k) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' conditionalClusterEntropy(contingency = ct)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 conditionalClusterEntropy <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -180,8 +214,15 @@ conditionalClusterEntropy <- function(contingency, c, k) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' homogeneity(contingency = ct)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 homogeneity <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -206,8 +247,15 @@ homogeneity <- function(contingency, c, k) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' completeness(contingency = ct)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 completeness <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -232,8 +280,15 @@ completeness <- function(contingency, c, k) {
 #' @param c Vector of classes
 #' @param k Vector of clusters
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' ct <- table(classes, clusters)
+#' vMeasure(contingency = ct)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 vMeasure <- function(contingency, c, k) {
 
     if(missing(contingency)) contingency <- table(c, k)
@@ -265,8 +320,14 @@ vMeasure <- function(contingency, c, k) {
 #' @param clusters A vector of cluster assignments
 #' @param classes A vector giving the true classes of the objects
 #'
+#' @examples
+#'
+#' clusters <- c(0, 0, 2, 1, 1, 0, 1)
+#' classes <- c("A", "A", "A", "B", "B", "A", "B")
+#' NMI(clusters, classes)
+#'
+#' @export
 #' @return Numeric
-#' @keywords internal
 NMI <- function(clusters, classes) {
 
     x <- table(clusters, classes)

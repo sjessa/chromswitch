@@ -21,4 +21,11 @@ Numeric
 Computes the purity of a partition as defined in
 https://www.ncbi.nlm.nih.gov/pubmed/17483501
 }
-\keyword{internal}
+\examples{
+
+clusters <- c(0, 0, 2, 1, 1, 0, 1)
+classes <- c("A", "A", "A", "B", "B", "A", "B")
+ct <- table(classes, clusters)
+purity(contingency = ct)
+
+}

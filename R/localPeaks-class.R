@@ -42,7 +42,9 @@ localPeaks <- function(region, peaks, samples) {
 #'
 #' Generic function
 #'
-#' @param x Region
+#' @param x Object
+#'
+#' @return A region associated with the object
 setGeneric("region", function(x) {standardGeneric("region")})
 
 
@@ -83,6 +85,8 @@ setMethod("region", signature(x = "localPeaks"),
 #' Generic function
 #'
 #' @param x Object
+#'
+#' @return A set of peaks associated with the object
 setGeneric("peaks", function(x) {standardGeneric("peaks")})
 
 
