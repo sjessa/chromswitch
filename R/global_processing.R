@@ -20,7 +20,16 @@
 #' to bound to 0 (for the lower tail) or 1 (for the upper tail)
 #'
 #' @return Numeric vector
-#' @keywords internal
+#'
+#' @examples
+#'
+#' x <- seq(1, 100, by = 1)
+#' x
+#'
+#' # Bound the lower and upper 5% of values in the vector
+#' winsorNorm(x, trim = 0.05)
+#'
+#' @export
 winsorNorm <- function(x, trim) {
 
     trimmed    <- DescTools::Trim(x, trim = trim)

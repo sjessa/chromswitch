@@ -22,4 +22,12 @@ lower tail to 0, effectively replacing a fixed amount of extreme values in
 each tail. Similar to trimming the tails except instead of discarding
 the tails entirely they're bounded.
 }
-\keyword{internal}
+\examples{
+
+x <- seq(1, 100, by = 1)
+x
+
+# Bound the lower and upper 5\% of values in the vector
+winsorNorm(x, trim = 0.05)
+
+}
