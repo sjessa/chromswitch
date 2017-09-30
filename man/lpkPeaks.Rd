@@ -14,7 +14,7 @@ List of lists of GRanges objects. Each outer list stores peaks
 for each sample for one mark in the region given by \code{lpkRegion(lpks)}.
 }
 \description{
-Accessor for \code{peaks} slot of a \code{\link{localPeaks}} object.
+Accessor for \code{peaks} slot of a \code{\linkS4class{localPeaks}} object.
 }
 \examples{
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")

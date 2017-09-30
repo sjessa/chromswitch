@@ -21,7 +21,7 @@ test_that("localPeaks access works", {
 })
 
 
-test_that("is.empty finds empty localPeaks", {
+test_that("isEmpty finds empty localPeaks", {
 
     region <- GRanges(seqnames = "chr1",
                       ranges = IRanges(start = 100, end = 300))
@@ -32,12 +32,12 @@ test_that("is.empty finds empty localPeaks", {
                           B = GRanges(seqnames = rep("chr1", 2),
                                       ranges = IRanges(start = c(100, 150),
                                                        end = c(200, 250))))
-    expect_equal(is.empty(localPeaks(region,
+    expect_equal(isEmpty(localPeaks(region,
                                      list(A = pks, B = pks),
                                      c("A", "B"))),
                  TRUE)
 
-    expect_equal(is.empty(localPeaks(region,
+    expect_equal(isEmpty(localPeaks(region,
                                      list(A = pks_in_region, B = pks_in_region),
                                      c("A", "B"))),
                  FALSE)

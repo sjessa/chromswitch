@@ -24,6 +24,9 @@ NULL
 #' @importFrom magrittr %>%
 NULL
 
+#' @importFrom S4Vectors isEmpty
+NULL
+
 #' @importFrom stats hclust dist cutree
 NULL
 

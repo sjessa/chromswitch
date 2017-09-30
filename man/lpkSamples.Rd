@@ -13,7 +13,7 @@ lpkSamples(lpks)
 Character vector with sample IDs for the localPeaks object
 }
 \description{
-Accessor for \code{samples} slot of a \code{\link{localPeaks}} object.
+Accessor for \code{samples} slot of a \code{\linkS4class{localPeaks}} object.
 }
 \examples{
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")

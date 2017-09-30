@@ -5,6 +5,23 @@
 \alias{localPeaks-class}
 \title{localPeaks}
 \description{
-An S4 class to aggregate and summarize peaks located in an input region
+A localPeaks object is a S4 class, a container for the peaks for one or more
+marks for
+a set of samples in a specific genomic region of interest, as well as the
+genomic region itself, and the sample IDs. These components are needed to
+convert sets of peaks into rectangular feature-by-sample matrices which we
+can then use for downstream analysis - and in particular, as input to a
+clustering algorithm in order to call a chromatin state switch.
 }
-\keyword{internal}
+\section{Slots}{
+
+\describe{
+\item{\code{region}}{A GRanges object specifying one genomic region,
+the query region}
+
+\item{\code{peaks}}{List of lists of GRanges objects. Each outer list stores peaks
+for each sample for one mark in \code{region}.}
+
+\item{\code{samples}}{Character vector with sample identifiers.}
+}}
+

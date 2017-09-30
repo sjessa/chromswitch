@@ -148,7 +148,7 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 binarizePeaks <- function(localpeaks, p) {
 
     # Empty peaks scenario: make a dummy feature, set to TRUE for all samples
-    if (is.empty(localpeaks)) {
+    if (isEmpty(localpeaks)) {
 
         warning("No peaks found in region")
 

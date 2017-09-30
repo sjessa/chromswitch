@@ -1,17 +1,29 @@
 # ---------------------------------------------------------------------------- #
 #
 # localPeaks object
-# Defines an S4 class "localPeaks", accessor methods, and other associated
-# methods for working with localPeaks objects
+# Defines an S4 class "localPeaks", accessor generics and methods,
+# and other associated methods for working with localPeaks objects
 #
 # ---------------------------------------------------------------------------- #
 
 
 #' localPeaks
 #'
-#' An S4 class to aggregate and summarize peaks located in an input region
+#' A localPeaks object is a S4 class, a container for the peaks for one or more
+#' marks for
+#' a set of samples in a specific genomic region of interest, as well as the
+#' genomic region itself, and the sample IDs. These components are needed to
+#' convert sets of peaks into rectangular feature-by-sample matrices which we
+#' can then use for downstream analysis - and in particular, as input to a
+#' clustering algorithm in order to call a chromatin state switch.
 #'
-#' @keywords internal
+#' @slot region A GRanges object specifying one genomic region,
+#' the query region
+#' @slot peaks List of lists of GRanges objects. Each outer list stores peaks
+#' for each sample for one mark in \code{region}.
+#' @slot samples Character vector with sample identifiers.
+#'
+#' @export
 setClass("localPeaks",
 
         # Define slot contents
@@ -22,25 +34,20 @@ setClass("localPeaks",
 )
 
 
-#' localPeaks object
-#'
-#' A localPeaks object is a container for the peaks for one or more marks for
-#' a set of samples in a specific genomic region of interest, as well as the
-#' genomic region itself, and the sample IDs. These components are needed to
-#' convert sets of peaks into rectangular feature-by-sample matrices which we
-#' can then use for downstream analysis - and in particular, as input to a
-#' clustering algorithm in order to call a chromatin state switch. This function
-#' is a constructor for a localPeaks object.
-#'
-#' @param region A GRanges object specifying one genomic region,
-#' the query region
-#' @param peaks List of lists of GRanges objects. Each outer list stores peaks
-#' for each sample for one mark in \code{region}.
-#' @param samples Character vector with sample identifiers.
-#'
-#' @return localPeaks object
-#'
-#' @keywords internal
+# localPeaks object
+#
+# This function
+# is a constructor for a localPeaks object.
+#
+# @param region A GRanges object specifying one genomic region,
+# the query region
+# @param peaks List of lists of GRanges objects. Each outer list stores peaks
+# for each sample for one mark in \code{region}.
+# @param samples Character vector with sample identifiers.
+#
+# @return localPeaks object
+#
+# @keywords internal
 localPeaks <- function(region, peaks, samples) {
 
     new("localPeaks",
@@ -53,7 +60,7 @@ localPeaks <- function(region, peaks, samples) {
 
 #' lpkRegion
 #'
-#' Accessor for \code{region} slot of a \code{\link{localPeaks}} object.
+#' Accessor for \code{region} slot of a \code{\linkS4class{localPeaks}} object.
 #'
 #' @param lpks localPeaks object
 #'
@@ -83,7 +90,7 @@ lpkRegion <- function(lpks) lpks@region
 
 #' lpkSamples
 #'
-#' Accessor for \code{samples} slot of a \code{\link{localPeaks}} object.
+#' Accessor for \code{samples} slot of a \code{\linkS4class{localPeaks}} object.
 #'
 #' @param lpks localPeaks object
 #'
@@ -111,7 +118,7 @@ lpkSamples <- function(lpks) lpks@samples
 
 #' lpkPeaks
 #'
-#' Accessor for \code{peaks} slot of a \code{\link{localPeaks}} object.
+#' Accessor for \code{peaks} slot of a \code{\linkS4class{localPeaks}} object.
 #'
 #' @param lpks localPeaks object
 #'
@@ -138,20 +145,11 @@ lpkSamples <- function(lpks) lpks@samples
 lpkPeaks <- function(lpks) lpks@peaks
 
 
-#' is.empty
-#'
-#' @return Logical value indicating if the object is empty (TRUE) or not (FALSE)
-#'
-#' @param object The object to check for emptiness
-#'
-#' @keywords internal
-setGeneric("is.empty", function(object) {standardGeneric("is.empty")})
-
-
-#' @describeIn is.empty Returns TRUE if the localPeaks object has no peaks in
-#' any of the samples in \code{object@peaks}, i.e. if no peaks were found in
-#' the query region.
-#'
-#' @keywords internal
-setMethod("is.empty", signature(object = "localPeaks"),
-        function(object) {sum(unlist(lapply(lpkPeaks(object), length))) == 0})
+# isEmpty
+#
+# @describeIn isEmpty Returns TRUE if the localPeaks object has no peaks in
+# any of the samples in \code{object@peaks}, i.e. if no peaks were found in
+# the query region.
+#
+setMethod("isEmpty", signature(x = "localPeaks"),
+        function(x) {sum(unlist(lapply(lpkPeaks(x), length))) == 0})

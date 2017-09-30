@@ -14,7 +14,7 @@ GRanges object with query region associated with the localPeaks
 object
 }
 \description{
-Accessor for \code{region} slot of a \code{\link{localPeaks}} object.
+Accessor for \code{region} slot of a \code{\linkS4class{localPeaks}} object.
 }
 \examples{
 

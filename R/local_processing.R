@@ -49,7 +49,7 @@ retrieveSamplePeaks <- function(peaks, region) {
 #' @param region GRanges object specifying one genomic region,
 #' the query region
 #'
-#' @return localPeaks object as described in \code{\link{localPeaks}}
+#' @return localPeaks object as described in \code{\linkS4class{localPeaks}}
 #'
 #' @examples
 #'
