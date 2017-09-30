@@ -162,12 +162,12 @@ summarizePeaks <- function(localpeaks, mark, cols, length = FALSE,
                             fraction = TRUE, n = FALSE) {
 
 
-    ft_matrix <- lpkPeaks(localpeaks) %>%
+    ft_matrix <- peaks(localpeaks) %>%
         lapply(summarizeSamplePeaks,
-                lpkRegion(localpeaks), mark, cols, length, fraction, n) %>%
+                region(localpeaks), mark, cols, length, fraction, n) %>%
         dplyr::bind_rows()
 
-    rownames(ft_matrix) <- lpkSamples(localpeaks)
+    rownames(ft_matrix) <- samples(localpeaks)
     return(data.matrix(ft_matrix))
 
 }

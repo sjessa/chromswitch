@@ -152,20 +152,20 @@ binarizePeaks <- function(localpeaks, p) {
 
         warning("No peaks found in region")
 
-        ft_matrix <- data.frame(no_peak = rep(1, length(lpkPeaks(localpeaks))))
-        rownames(ft_matrix) <- lpkSamples(localpeaks)
+        ft_matrix <- data.frame(no_peak = rep(1, length(peaks(localpeaks))))
+        rownames(ft_matrix) <- samples(localpeaks)
 
         return(ft_matrix)
     }
 
     # Get the union of all peaks
-    loc_union <- Reduce("c", lpkPeaks(localpeaks))
+    loc_union <- Reduce("c", peaks(localpeaks))
 
     # From the union, extract unique peaks to serve as features
     uniq_pks <- getUniquePeaks(loc_union, p)
 
     # Model presence/absence of each feature peak in each sample
-    ft_matrix <- lapply(lpkPeaks(localpeaks), getSamplePeakProfile, uniq_pks, p) %>%
+    ft_matrix <- lapply(peaks(localpeaks), getSamplePeakProfile, uniq_pks, p) %>%
         dplyr::bind_rows()
 
     # Convert from logical to numeric
@@ -173,7 +173,7 @@ binarizePeaks <- function(localpeaks, p) {
 
     uniq_pks_coords <- uniq_pks %>% lapply(GRangesToCoord) %>% unlist()
     colnames(ft_matrix) <- uniq_pks_coords
-    rownames(ft_matrix) <- lpkSamples(localpeaks)
+    rownames(ft_matrix) <- samples(localpeaks)
 
     # This is not necessary if the features are unique peaks rather than
     # arbitrary bins

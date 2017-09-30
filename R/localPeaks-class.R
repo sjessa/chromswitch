@@ -7,23 +7,6 @@
 # ---------------------------------------------------------------------------- #
 
 
-#' localPeaks
-#'
-#' A localPeaks object is a S4 class, a container for the peaks for one or more
-#' marks for
-#' a set of samples in a specific genomic region of interest, as well as the
-#' genomic region itself, and the sample IDs. These components are needed to
-#' convert sets of peaks into rectangular feature-by-sample matrices which we
-#' can then use for downstream analysis - and in particular, as input to a
-#' clustering algorithm in order to call a chromatin state switch.
-#'
-#' @slot region A GRanges object specifying one genomic region,
-#' the query region
-#' @slot peaks List of lists of GRanges objects. Each outer list stores peaks
-#' for each sample for one mark in \code{region}.
-#' @slot samples Character vector with sample identifiers.
-#'
-#' @export
 setClass("localPeaks",
 
         # Define slot contents
@@ -36,8 +19,7 @@ setClass("localPeaks",
 
 # localPeaks object
 #
-# This function
-# is a constructor for a localPeaks object.
+# This function is a constructor for a localPeaks object.
 #
 # @param region A GRanges object specifying one genomic region,
 # the query region
@@ -46,8 +28,6 @@ setClass("localPeaks",
 # @param samples Character vector with sample identifiers.
 #
 # @return localPeaks object
-#
-# @keywords internal
 localPeaks <- function(region, peaks, samples) {
 
     new("localPeaks",
@@ -58,11 +38,19 @@ localPeaks <- function(region, peaks, samples) {
 }
 
 
-#' lpkRegion
+#' region
+#'
+#' Generic function
+#'
+#' @param x Region
+setGeneric("region", function(x) {standardGeneric("region")})
+
+
+#' region
 #'
 #' Accessor for \code{region} slot of a \code{\linkS4class{localPeaks}} object.
 #'
-#' @param lpks localPeaks object
+#' @param x localPeaks object
 #'
 #' @return GRanges object with query region associated with the localPeaks
 #' object
@@ -82,17 +70,58 @@ localPeaks <- function(region, peaks, samples) {
 #'     region = GRanges(seqnames = "chr19",
 #'     ranges = IRanges(start = 54924104, end = 54929104)))
 #'
-#' lpkRegion(lpk)
+#' region(lpk)
 #'
 #' @export
-lpkRegion <- function(lpks) lpks@region
+#' @aliases region-method
+setMethod("region", signature(x = "localPeaks"),
+          function(x) x@region)
 
 
-#' lpkSamples
+#' peaks
+#'
+#' Generic function
+#'
+#' @param x Object
+setGeneric("peaks", function(x) {standardGeneric("peaks")})
+
+
+#' peaks
+#'
+#' Accessor for \code{peaks} slot of a \code{\linkS4class{localPeaks}} object.
+#'
+#' @param x localPeaks object
+#'
+#' @return List of lists of GRanges objects. Each outer list stores peaks
+#' for each sample for one mark in the region given by \code{region(lpks)}.
+#'
+#' @examples
+#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
+#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+#' package = "chromswitch")
+#'
+#' metadata <- data.frame(Sample = samples,
+#'     H3K4me3 = outfiles,
+#'     stringsAsFactors = FALSE)
+#'
+#' lpk <- retrievePeaks(H3K4me3,
+#'     metadata = metadata,
+#'     region = GRanges(seqnames = "chr19",
+#'     ranges = IRanges(start = 54924104, end = 54929104)))
+#'
+#' peaks(lpk)
+#'
+#' @export
+#' @aliases peaks-method
+setMethod("peaks", signature(x = "localPeaks"),
+          function(x) x@peaks)
+
+
+#' samples
 #'
 #' Accessor for \code{samples} slot of a \code{\linkS4class{localPeaks}} object.
 #'
-#' @param lpks localPeaks object
+#' @param object localPeaks object
 #'
 #' @return Character vector with sample IDs for the localPeaks object
 #'
@@ -110,46 +139,18 @@ lpkRegion <- function(lpks) lpks@region
 #'     region = GRanges(seqnames = "chr19",
 #'     ranges = IRanges(start = 54924104, end = 54929104)))
 #'
-#' lpkSamples(lpk)
+#' samples(lpk)
 #'
 #' @export
-lpkSamples <- function(lpks) lpks@samples
-
-
-#' lpkPeaks
-#'
-#' Accessor for \code{peaks} slot of a \code{\linkS4class{localPeaks}} object.
-#'
-#' @param lpks localPeaks object
-#'
-#' @return List of lists of GRanges objects. Each outer list stores peaks
-#' for each sample for one mark in the region given by \code{lpkRegion(lpks)}.
-#'
-#' @examples
-#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
-#' package = "chromswitch")
-#'
-#' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = outfiles,
-#'     stringsAsFactors = FALSE)
-#'
-#' lpk <- retrievePeaks(H3K4me3,
-#'     metadata = metadata,
-#'     region = GRanges(seqnames = "chr19",
-#'     ranges = IRanges(start = 54924104, end = 54929104)))
-#'
-#' lpkPeaks(lpk)
-#'
-#' @export
-lpkPeaks <- function(lpks) lpks@peaks
+#' @aliases samples-method
+setMethod("samples", signature(object = "localPeaks"),
+          function(object) object@samples)
 
 
 # isEmpty
 #
-# @describeIn isEmpty Returns TRUE if the localPeaks object has no peaks in
+# Returns TRUE if the localPeaks object has no peaks in
 # any of the samples in \code{object@peaks}, i.e. if no peaks were found in
 # the query region.
-#
 setMethod("isEmpty", signature(x = "localPeaks"),
-        function(x) {sum(unlist(lapply(lpkPeaks(x), length))) == 0})
+        function(x) {sum(unlist(lapply(peaks(x), length))) == 0})

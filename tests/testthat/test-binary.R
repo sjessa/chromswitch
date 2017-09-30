@@ -81,7 +81,7 @@ test_that("Binaryfeature matrix construction works", {
     colnames(binary_matrix) = c("chr1:10-20",
                                     "chr1:2050-2500",
                                     "chr1:10-1000")
-    rownames(binary_matrix) = lpkSamples(lp)
+    rownames(binary_matrix) = samples(lp)
     attr(binary_matrix, "features") <- getUniquePeaks(Reduce("c", pks), 0.5)
 
     expect_equal(binarizePeaks(lp, 0.5), binary_matrix)

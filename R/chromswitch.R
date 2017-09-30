@@ -27,6 +27,9 @@ NULL
 #' @importFrom S4Vectors isEmpty
 NULL
 
+#' @importFrom Biobase samples
+NULL
+
 #' @importFrom stats hclust dist cutree
 NULL
 

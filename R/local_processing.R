@@ -114,7 +114,7 @@ reducePeaks <- function(localpeaks, gap) {
 
     if (gap <= 0) stop("The gap argument must be a positive integer.")
 
-    localpeaks@peaks <- lpkPeaks(localpeaks) %>% lapply(GenomicRanges::reduce,
+    localpeaks@peaks <- peaks(localpeaks) %>% lapply(GenomicRanges::reduce,
                                         min.gapwidth = gap + 1)
     return(localpeaks)
 

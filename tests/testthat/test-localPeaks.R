@@ -14,9 +14,9 @@ test_that("localPeaks access works", {
 
     lpk <- localPeaks(region, pks_in_region, c("A", "B"))
 
-    expect_equal(lpkRegion(lpk), region)
-    expect_equal(lpkSamples(lpk), c("A", "B"))
-    expect_equal(lpkPeaks(lpk), pks_in_region)
+    expect_equal(region(lpk), region)
+    expect_equal(samples(lpk), c("A", "B"))
+    expect_equal(peaks(lpk), pks_in_region)
 
 })
 
