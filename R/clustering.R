@@ -8,6 +8,13 @@
 
 #' cluster
 #'
+#' Given a sample-by-feature matrix and sample-associated metadata including
+#' their biological condition groupings, cluster samples hierarchically
+#' and use external cluster validity measures (Adjusted Rand Index,
+#' Normalized Mutual Information, and V measure) to assess the agreement between
+#' the inferred clusters and the biological conditions. Optionally, produce
+#' a heatmap reflecting the hierarchical clustering result.
+#'
 #' @param ft_mat matrix where columns are features and rows are samples as
 #' returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}
 #' @param metadata A dataframe with a column "Sample" which stores

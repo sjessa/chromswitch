@@ -66,7 +66,12 @@ A dataframe with the region, the number of clusters inferred,
 the cluster validity statistics, and the cluster assignments for each sample
 }
 \description{
-cluster
+Given a sample-by-feature matrix and sample-associated metadata including
+their biological condition groupings, cluster samples hierarchically
+and use external cluster validity measures (Adjusted Rand Index,
+Normalized Mutual Information, and V measure) to assess the agreement between
+the inferred clusters and the biological conditions. Optionally, produce
+a heatmap reflecting the hierarchical clustering result.
 }
 \examples{
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
