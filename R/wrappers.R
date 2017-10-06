@@ -61,7 +61,7 @@
 #' @param n (Optional) Logical value, during feature matrix construction,
 #' compute the number of peaks in the region? Default: FALSE
 #' @param heatmap (Optional) Logical value, plot the heatmap corresponding to
-#' the hierarchical clustering result? Default: TRUE
+#' the hierarchical clustering result? Default: FALSE
 #' @param titles (Optional)  if \code{heatmap} is TRUE, a character vector
 #' of the same length as \code{query}, specifying the title to use when plotting
 #' each heatmap (e.g. a gene name), also reused as the
@@ -123,7 +123,7 @@ callSummary <- function(query, peaks, metadata, mark,
                             normalize_columns = NULL, tail = 0.005,
                             summarize_columns,
                             length = FALSE, fraction = TRUE, n = FALSE,
-                            heatmap = TRUE, titles = NULL, outdir = NULL,
+                            heatmap = FALSE, titles = NULL, outdir = NULL,
                             optimal_clusters = FALSE,
                             estimate_state = FALSE,
                             signal_col = NULL,
@@ -259,7 +259,7 @@ callSummary <- function(query, peaks, metadata, mark,
 #' understanding the behaviour of the binary strategy for constructing
 #' feature matrices. Default: FALSE
 #' @param heatmap (Optional) Logical value, plot the heatmap corresponding to
-#' the hierarchical clustering result? Default: TRUE
+#' the hierarchical clustering result? Default: FALSE
 #' @param titles (Optional)  if \code{heatmap} is TRUE, a character vector
 #' of the same length as \code{query}, specifying the title to use when plotting
 #' each heatmap (e.g. a gene name), also reused as the

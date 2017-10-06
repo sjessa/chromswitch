@@ -54,7 +54,7 @@ understanding the behaviour of the binary strategy for constructing
 feature matrices. Default: FALSE}
 
 \item{heatmap}{(Optional) Logical value, plot the heatmap corresponding to
-the hierarchical clustering result? Default: TRUE}
+the hierarchical clustering result? Default: FALSE}
 
 \item{titles}{(Optional)  if \code{heatmap} is TRUE, a character vector
 of the same length as \code{query}, specifying the title to use when plotting

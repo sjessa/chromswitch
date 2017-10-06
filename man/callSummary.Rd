@@ -7,7 +7,7 @@
 callSummary(query, peaks, metadata, mark, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, normalize = TRUE,
   normalize_columns = NULL, tail = 0.005, summarize_columns,
-  length = FALSE, fraction = TRUE, n = FALSE, heatmap = TRUE,
+  length = FALSE, fraction = TRUE, n = FALSE, heatmap = FALSE,
   titles = NULL, outdir = NULL, optimal_clusters = FALSE,
   estimate_state = FALSE, signal_col = NULL, test_condition = NULL,
   BPPARAM = bpparam())
@@ -66,7 +66,7 @@ compute the fraction of the region overlapped by peaks? Default: TRUE}
 compute the number of peaks in the region? Default: FALSE}
 
 \item{heatmap}{(Optional) Logical value, plot the heatmap corresponding to
-the hierarchical clustering result? Default: TRUE}
+the hierarchical clustering result? Default: FALSE}
 
 \item{titles}{(Optional)  if \code{heatmap} is TRUE, a character vector
 of the same length as \code{query}, specifying the title to use when plotting
