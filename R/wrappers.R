@@ -71,7 +71,8 @@
 #' where heatmaps should be saved
 #' @param optimal_clusters (Optional) Logical value indicate whether to cluster
 #' samples into two groups, or to find the optimal clustering solution by
-#' choosing the set of clusters which maximizes the Average Silhouette width
+#' choosing the set of clusters which maximizes the Average Silhouette width.
+#' Default: TRUE
 #' @param estimate_state (Optional) Logical value indicating whether to include
 #' a column "state" in the output specifying the estimated chromatin state of
 #' a test condition. The state will be on of "ON", "OFF", or NA, where the
@@ -124,7 +125,7 @@ callSummary <- function(query, peaks, metadata, mark,
                             summarize_columns,
                             length = FALSE, fraction = TRUE, n = FALSE,
                             heatmap = FALSE, titles = NULL, outdir = NULL,
-                            optimal_clusters = FALSE,
+                            optimal_clusters = TRUE,
                             estimate_state = FALSE,
                             signal_col = NULL,
                             test_condition = NULL,
@@ -269,7 +270,8 @@ callSummary <- function(query, peaks, metadata, mark,
 #' where heatmaps should be saved
 #' @param optimal_clusters (Optional) Logical value indicate whether to cluster
 #' samples into two groups, or to find the optimal clustering solution by
-#' choosing the set of clusters which maximizes the Average Silhouette width
+#' choosing the set of clusters which maximizes the Average Silhouette width.
+#' Default: TRUE.
 #' @param estimate_state (Optional) Logical value indicating whether to include
 #' a column "state" in the output specifying the estimated chromatin state of
 #' a test condition. The state will be on of "ON", "OFF", or NA, where the
@@ -311,7 +313,7 @@ callBinary <- function(query, peaks, metadata,
                             filter_thresholds = NULL, reduce = TRUE,
                             gap = 300, p = 0.4, n_features = FALSE,
                             heatmap = FALSE, titles = NULL, outdir = NULL,
-                            optimal_clusters = FALSE, estimate_state = FALSE,
+                            optimal_clusters = TRUE, estimate_state = FALSE,
                             test_condition = NULL,
                             BPPARAM = bpparam()) {
 

@@ -29,7 +29,8 @@
 #' PDF of heatmaps should be saved
 #' @param optimal_clusters (Optional) Logical value indicate whether to cluster
 #' samples into two groups, or to find the optimal clustering solution by
-#' choosing the set of clusters which maximizes the Average Silhouette width
+#' choosing the set of clusters which maximizes the Average Silhouette width.
+#' Default: TRUE
 #' @param n_features (Optional) Logical value indicating whether to include
 #' a column "n_features" in the output storing the number of features in the
 #' feature matrix constructed for the region, which may be useful for
@@ -91,7 +92,7 @@
 #' @export
 cluster <- function(ft_mat, metadata, region,
                     heatmap = FALSE, title = NULL, outdir = NULL,
-                    optimal_clusters = FALSE,
+                    optimal_clusters = TRUE,
                     n_features = FALSE,
                     estimate_state = FALSE,
                     method = NULL,

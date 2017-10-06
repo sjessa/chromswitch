@@ -217,6 +217,7 @@ test_that("The binary strategy classifies regions correctly", {
                       filter = FALSE,
                       heatmap = TRUE,
                       p = 0.9,
+                      optimal_clusters = FALSE,
                       n_features = TRUE), output3, tolerance = 1e-5)
 
     file.remove(paste0(GRangesToCoord(regions[1]), ".pdf"))

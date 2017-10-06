@@ -8,7 +8,7 @@ callSummary(query, peaks, metadata, mark, filter = FALSE,
   filter_columns = NULL, filter_thresholds = NULL, normalize = TRUE,
   normalize_columns = NULL, tail = 0.005, summarize_columns,
   length = FALSE, fraction = TRUE, n = FALSE, heatmap = FALSE,
-  titles = NULL, outdir = NULL, optimal_clusters = FALSE,
+  titles = NULL, outdir = NULL, optimal_clusters = TRUE,
   estimate_state = FALSE, signal_col = NULL, test_condition = NULL,
   BPPARAM = bpparam())
 }
@@ -79,7 +79,8 @@ where heatmaps should be saved}
 
 \item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
 samples into two groups, or to find the optimal clustering solution by
-choosing the set of clusters which maximizes the Average Silhouette width}
+choosing the set of clusters which maximizes the Average Silhouette width.
+Default: TRUE}
 
 \item{estimate_state}{(Optional) Logical value indicating whether to include
 a column "state" in the output specifying the estimated chromatin state of

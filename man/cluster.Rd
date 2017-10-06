@@ -5,7 +5,7 @@
 \title{cluster}
 \usage{
 cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
-  outdir = NULL, optimal_clusters = FALSE, n_features = FALSE,
+  outdir = NULL, optimal_clusters = TRUE, n_features = FALSE,
   estimate_state = FALSE, method = NULL, test_condition = NULL,
   signal_col = NULL, mark = NULL)
 }
@@ -30,7 +30,8 @@ PDF of heatmaps should be saved}
 
 \item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
 samples into two groups, or to find the optimal clustering solution by
-choosing the set of clusters which maximizes the Average Silhouette width}
+choosing the set of clusters which maximizes the Average Silhouette width.
+Default: TRUE}
 
 \item{n_features}{(Optional) Logical value indicating whether to include
 a column "n_features" in the output storing the number of features in the

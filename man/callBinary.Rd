@@ -7,7 +7,7 @@
 callBinary(query, peaks, metadata, filter = FALSE, filter_columns = NULL,
   filter_thresholds = NULL, reduce = TRUE, gap = 300, p = 0.4,
   n_features = FALSE, heatmap = FALSE, titles = NULL, outdir = NULL,
-  optimal_clusters = FALSE, estimate_state = FALSE, test_condition = NULL,
+  optimal_clusters = TRUE, estimate_state = FALSE, test_condition = NULL,
   BPPARAM = bpparam())
 }
 \arguments{
@@ -67,7 +67,8 @@ where heatmaps should be saved}
 
 \item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
 samples into two groups, or to find the optimal clustering solution by
-choosing the set of clusters which maximizes the Average Silhouette width}
+choosing the set of clusters which maximizes the Average Silhouette width.
+Default: TRUE.}
 
 \item{estimate_state}{(Optional) Logical value indicating whether to include
 a column "state" in the output specifying the estimated chromatin state of
