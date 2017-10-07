@@ -62,6 +62,14 @@ test_that("The summary strategy wrapper properly executes the analysis", {
                         heatmap = FALSE),
                  "one threshold per column")
 
+    expect_error(call(mark = "H3K4me3", normalize = FALSE,
+                      filter = TRUE,
+                      filter_columns = "pValue",
+                      filter_thresholds = NULL,
+                      summarize_columns = c("pValue", "qValue", "signalValue"),
+                      heatmap = FALSE),
+                 "specify thresholds")
+
     output_nonorm <- data.frame(
         region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
