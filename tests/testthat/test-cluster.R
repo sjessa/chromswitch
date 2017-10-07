@@ -37,12 +37,12 @@ test_that("The clustering function returns the correct set of clusters", {
     expect_equal(getK(ft_mat, optimal_clusters = TRUE), best_k)
 
     samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-    outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+    bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
                             package = "chromswitch")
     groups <- c(rep("Brain", 3), rep("Other", 3))
 
     metadata <- data.frame(Sample = samples,
-                           H3K4me3 = outfiles,
+                           H3K4me3 = bedfiles,
                            Condition = groups,
                            stringsAsFactors = FALSE)
 
@@ -98,12 +98,12 @@ test_that("The clustering function returns the correct set of clusters", {
 test_that("Hierarchical clustering finds clusters from feature matrix", {
 
     samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-    outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+    bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
     package = "chromswitch")
     groups <- c(rep("Brain", 3), rep("Other", 3))
 
     metadata <- data.frame(Sample = samples,
-        H3K4me3 = outfiles,
+        H3K4me3 = bedfiles,
         Condition = groups,
         stringsAsFactors = FALSE)
 
