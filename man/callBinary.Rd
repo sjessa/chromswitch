@@ -4,7 +4,7 @@
 \alias{callBinary}
 \title{callBinary}
 \usage{
-callBinary(query, peaks, metadata, filter = FALSE, filter_columns = NULL,
+callBinary(query, metadata, peaks, filter = FALSE, filter_columns = NULL,
   filter_thresholds = NULL, reduce = TRUE, gap = 300, p = 0.4,
   n_features = FALSE, heatmap = FALSE, titles = NULL, outdir = NULL,
   optimal_clusters = TRUE, estimate_state = FALSE, test_condition = NULL,
@@ -15,12 +15,12 @@ callBinary(query, peaks, metadata, filter = FALSE, filter_columns = NULL,
 in which to call a switch. The output dataframe will contain one row per
 region in \code{query}.}
 
-\item{peaks}{List of GRanges objects storing peak calls for each sample,
-where element names correspond to sample IDs}
-
 \item{metadata}{A dataframe with at least two columns: "Sample" which stores
 the sample IDs, "Condition", which stores the biological condition labels
 of the samples}
+
+\item{peaks}{List of GRanges objects storing peak calls for each sample,
+where element names correspond to sample IDs}
 
 \item{filter}{(Optional) logical value, filter peaks based on thresholds on
 peak statistics? Default: FALSE. The filter step is described in
@@ -119,7 +119,7 @@ regions <- GRanges(seqnames = c("chr19", "chr19"),
     ranges = IRanges(start = c(54924104, 54874318),
                                 end = c(54929104, 54877536)))
 
-callBinary(query = regions, peaks = H3K4me3, metadata = metadata,
+callBinary(query = regions, metadata = metadata, peaks = H3K4me3,
            BPPARAM = BiocParallel::SerialParam())
 
 }

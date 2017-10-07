@@ -4,7 +4,7 @@
 \alias{callSummary}
 \title{callSummary}
 \usage{
-callSummary(query, peaks, metadata, mark, filter = FALSE,
+callSummary(query, metadata, peaks, mark, filter = FALSE,
   filter_columns = summarize_columns, filter_thresholds = NULL,
   normalize = TRUE, summarize_columns = NULL,
   normalize_columns = summarize_columns, tail = 0.005, length = FALSE,
@@ -17,12 +17,12 @@ callSummary(query, peaks, metadata, mark, filter = FALSE,
 in which to call a switch. The output dataframe will contain one row per
 region in \code{query}.}
 
-\item{peaks}{List of GRanges objects storing peak calls for each sample,
-where element names correspond to sample IDs}
-
 \item{metadata}{A dataframe with at least two columns: "Sample" which stores
 the sample IDs, "Condition", which stores the biological condition labels
 of the samples}
+
+\item{peaks}{List of GRanges objects storing peak calls for each sample,
+where element names correspond to sample IDs}
 
 \item{mark}{Character specifying the histone mark or ChIP-target,
 for example, "H3K4me3"}
@@ -137,8 +137,8 @@ regions <- GRanges(seqnames = c("chr19", "chr19"),
                                 end = c(54929104, 54877536)))
 
 callSummary(query = regions,
-                peaks = H3K4me3,
                 metadata = metadata,
+                peaks = H3K4me3,
                 normalize_columns = c("qValue", "pValue", "signalValue"),
                 mark = "H3K4me3",
                 summarize_columns = c("pValue", "qValue", "signalValue"),

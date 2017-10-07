@@ -25,11 +25,11 @@
 #' @param query GRanges list containing one or more genomic regions of interest
 #' in which to call a switch. The output dataframe will contain one row per
 #' region in \code{query}.
-#' @param peaks List of GRanges objects storing peak calls for each sample,
-#' where element names correspond to sample IDs
 #' @param metadata A dataframe with at least two columns: "Sample" which stores
 #' the sample IDs, "Condition", which stores the biological condition labels
 #' of the samples
+#' @param peaks List of GRanges objects storing peak calls for each sample,
+#' where element names correspond to sample IDs
 #' @param mark Character specifying the histone mark or ChIP-target,
 #' for example, "H3K4me3"
 #' @param filter (Optional) logical value, filter peaks based on thresholds on
@@ -109,8 +109,8 @@
 #'                                 end = c(54929104, 54877536)))
 #'
 #' callSummary(query = regions,
-#'                 peaks = H3K4me3,
 #'                 metadata = metadata,
+#'                 peaks = H3K4me3,
 #'                 normalize_columns = c("qValue", "pValue", "signalValue"),
 #'                 mark = "H3K4me3",
 #'                 summarize_columns = c("pValue", "qValue", "signalValue"),
@@ -118,7 +118,7 @@
 #'                 BPPARAM = BiocParallel::SerialParam())
 #'
 #' @export
-callSummary <- function(query, peaks, metadata, mark,
+callSummary <- function(query, metadata, peaks, mark,
                             filter = FALSE, filter_columns = summarize_columns,
                             filter_thresholds = NULL, normalize = TRUE,
                             summarize_columns = NULL,
@@ -232,11 +232,11 @@ callSummary <- function(query, peaks, metadata, mark,
 #' @param query GRanges list containing one or more genomic regions of interest
 #' in which to call a switch. The output dataframe will contain one row per
 #' region in \code{query}.
-#' @param peaks List of GRanges objects storing peak calls for each sample,
-#' where element names correspond to sample IDs
 #' @param metadata A dataframe with at least two columns: "Sample" which stores
 #' the sample IDs, "Condition", which stores the biological condition labels
 #' of the samples
+#' @param peaks List of GRanges objects storing peak calls for each sample,
+#' where element names correspond to sample IDs
 #' @param filter (Optional) logical value, filter peaks based on thresholds on
 #' peak statistics? Default: FALSE. The filter step is described in
 #' \code{\link{filterPeaks}}.
@@ -306,11 +306,11 @@ callSummary <- function(query, peaks, metadata, mark,
 #'     ranges = IRanges(start = c(54924104, 54874318),
 #'                                 end = c(54929104, 54877536)))
 #'
-#' callBinary(query = regions, peaks = H3K4me3, metadata = metadata,
+#' callBinary(query = regions, metadata = metadata, peaks = H3K4me3,
 #'            BPPARAM = BiocParallel::SerialParam())
 #'
 #' @export
-callBinary <- function(query, peaks, metadata,
+callBinary <- function(query, metadata, peaks,
                             filter = FALSE, filter_columns = NULL,
                             filter_thresholds = NULL, reduce = TRUE,
                             gap = 300, p = 0.4, n_features = FALSE,
