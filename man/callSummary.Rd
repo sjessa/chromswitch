@@ -5,12 +5,12 @@
 \title{callSummary}
 \usage{
 callSummary(query, peaks, metadata, mark, filter = FALSE,
-  filter_columns = NULL, filter_thresholds = NULL, normalize = TRUE,
-  normalize_columns = NULL, tail = 0.005, summarize_columns,
-  length = FALSE, fraction = TRUE, n = FALSE, heatmap = FALSE,
-  titles = NULL, outdir = NULL, optimal_clusters = TRUE,
-  estimate_state = FALSE, signal_col = NULL, test_condition = NULL,
-  BPPARAM = bpparam())
+  filter_columns = summarize_columns, filter_thresholds = NULL,
+  normalize = TRUE, summarize_columns = NULL,
+  normalize_columns = summarize_columns, tail = 0.005, length = FALSE,
+  fraction = TRUE, n = FALSE, heatmap = FALSE, titles = NULL,
+  outdir = NULL, optimal_clusters = TRUE, estimate_state = FALSE,
+  signal_col = NULL, test_condition = NULL, BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
@@ -44,6 +44,10 @@ order. If \code{filter} is FALSE, not used.}
 genome-wide for each sample? Default: TRUE. The normalization step is
 described in \code{\link{normalizePeaks}}.}
 
+\item{summarize_columns}{Character vector of column names on which to compute
+summary statistics during feature matrix construction. These statistics
+become the features of the matrix.}
+
 \item{normalize_columns}{If \code{normalize} is TRUE, a character vector
 corresponding to names of columns in the peak metadata to normalize
 genome-wide for each sample. If \code{normalize} is FALSE, not used.}
@@ -51,10 +55,6 @@ genome-wide for each sample. If \code{normalize} is FALSE, not used.}
 \item{tail}{(Optional) if \code{normalize} is TRUE, specifies the fraction
 of extreme values in each tail to bound during normalization. More details at
 \code{\link{normalizePeaks}}.}
-
-\item{summarize_columns}{Character vector of column names on which to compute
-summary statistics during feature matrix construction. These statistics
-become the features of the matrix.}
 
 \item{length}{(Optional) Logical value, during feature matrix construction,
 compute the mean, median, and max of peak length? Default: FALSE}

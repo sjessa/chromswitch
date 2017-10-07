@@ -119,10 +119,10 @@
 #'
 #' @export
 callSummary <- function(query, peaks, metadata, mark,
-                            filter = FALSE, filter_columns = NULL,
+                            filter = FALSE, filter_columns = summarize_columns,
                             filter_thresholds = NULL, normalize = TRUE,
-                            normalize_columns = NULL, tail = 0.005,
-                            summarize_columns,
+                            summarize_columns = NULL,
+                            normalize_columns = summarize_columns, tail = 0.005,
                             length = FALSE, fraction = TRUE, n = FALSE,
                             heatmap = FALSE, titles = NULL, outdir = NULL,
                             optimal_clusters = TRUE,
@@ -131,12 +131,17 @@ callSummary <- function(query, peaks, metadata, mark,
                             test_condition = NULL,
                             BPPARAM = bpparam()) {
 
+
+
     # Preprocessing
     if (filter) {
 
-        if (is.null(filter_columns) || is.null(filter_thresholds))
-            stop("Please provide names of columns to filter and specify
-                thresholds to use.")
+        if (is.null(filter_thresholds))
+            stop("Please specify thresholds to use for filtering columns. ",
+                 "By default, filters are applied to the columns passed to ",
+                 "summarize_columns. Specific columns to filter can be ",
+                 "passed to filter_columns.",
+                 "Provide one threshold per column, in the same order.")
 
         peaks <- filterPeaks(peaks,
                             columns = filter_columns,
@@ -144,9 +149,6 @@ callSummary <- function(query, peaks, metadata, mark,
     }
 
     if (normalize) {
-
-        if (is.null(normalize_columns))
-        stop("Please provide names of columns to normalize genome-wide.")
 
         peaks <- normalizePeaks(peaks,
                                 columns = normalize_columns,

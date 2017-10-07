@@ -48,17 +48,11 @@ test_that("The summary strategy wrapper properly executes the analysis", {
                     heatmap = FALSE),
                 output, tolerance = 1e-2)
 
-
-    expect_error(call(mark = "H3K4me3",
-                    summarize_columns = c("pValue", "qValue", "signalValue"),
-                    heatmap = FALSE),
-                "provide names of columns to normalize")
-
-    expect_error(call(mark = "H3K4me3", normalize = FALSE,
-                    filter = TRUE,
-                    summarize_columns = c("pValue", "qValue", "signalValue"),
-                    heatmap = FALSE),
-                 "provide names of columns to filter")
+    # Testing that normalize_cols gets summarize_cols by default
+    expect_equal(call(mark = "H3K4me3",
+                      summarize_columns = c("pValue", "qValue", "signalValue"),
+                      heatmap = FALSE),
+                 output, tolerance = 1e-2)
 
     expect_error(call(mark = "H3K4me3", normalize = FALSE,
                         filter = TRUE,
