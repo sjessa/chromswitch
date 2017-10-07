@@ -33,7 +33,7 @@ localPeaks <- function(region, peaks, samples) {
     new("localPeaks",
         region = region,
         peaks = peaks,
-        samples = samples)
+        samples = as.character(samples))
 
 }
 

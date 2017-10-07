@@ -43,3 +43,21 @@ test_that("isEmpty finds empty localPeaks", {
                  FALSE)
 
 })
+
+
+test_that("localPeaks construction", {
+
+    # Factor samples are ok
+    x <- c("a", "b", "c")
+    f <- as.factor(x)
+    out <- localPeaks(region = GRanges(seqnames = "chr1:100-200"),
+               peaks = H3K4me3,
+               samples = x)
+
+    expect_equal(localPeaks(region = GRanges(
+                            seqnames = "chr1:100-200"),
+                            peaks = H3K4me3,
+                            samples = f), out)
+
+})
+
