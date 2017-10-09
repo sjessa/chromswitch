@@ -43,7 +43,8 @@
 #' peaks. Provide one per column specified in \code{filter_columns}, in the same
 #' order. If \code{filter} is FALSE, not used.
 #' @param normalize (Optional) logical value, normalize peak statistics
-#' genome-wide for each sample? Default: TRUE. The normalization step is
+#' genome-wide for each sample? Default: TRUE if \code{summarize_columns} is
+#' specified, FALSE, otherwise. The normalization step is
 #' described in \code{\link{normalizePeaks}}.
 #' @param normalize_columns If \code{normalize} is TRUE, a character vector
 #' corresponding to names of columns in the peak metadata to normalize
@@ -147,6 +148,8 @@ callSummary <- function(query, metadata, peaks, mark,
                             columns = filter_columns,
                             thresholds = filter_thresholds)
     }
+
+    if(is.null(summarize_columns)) normalize <- FALSE
 
     if (normalize) {
 

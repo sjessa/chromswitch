@@ -14,7 +14,7 @@ cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
 returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}}
 
 \item{metadata}{A dataframe with a column "Sample" which stores
-the sample identifiers, and at least one column, "Condition", which stores
+the sample identifiers, and a column "Condition", which stores
 the biological condition labels of the samples}
 
 \item{region}{GRanges object specifying the query region}

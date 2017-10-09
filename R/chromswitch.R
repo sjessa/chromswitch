@@ -24,6 +24,9 @@ NULL
 #' @importFrom magrittr %>%
 NULL
 
+#' @importFrom rtracklayer import
+NULL
+
 #' @importFrom S4Vectors isEmpty
 NULL
 

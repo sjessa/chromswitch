@@ -18,7 +18,7 @@
 #' @param ft_mat matrix where columns are features and rows are samples as
 #' returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}
 #' @param metadata A dataframe with a column "Sample" which stores
-#' the sample identifiers, and at least one column, "Condition", which stores
+#' the sample identifiers, and a column "Condition", which stores
 #' the biological condition labels of the samples
 #' @param region GRanges object specifying the query region
 #' @param heatmap (Optional) Logical value indicating whether to plot
