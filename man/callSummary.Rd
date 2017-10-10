@@ -41,7 +41,8 @@ peaks. Provide one per column specified in \code{filter_columns}, in the same
 order. If \code{filter} is FALSE, not used.}
 
 \item{normalize}{(Optional) logical value, normalize peak statistics
-genome-wide for each sample? Default: TRUE. The normalization step is
+genome-wide for each sample? Default: TRUE if \code{summarize_columns} is
+specified, FALSE, otherwise. The normalization step is
 described in \code{\link{normalizePeaks}}.}
 
 \item{summarize_columns}{Character vector of column names on which to compute

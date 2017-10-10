@@ -26,11 +26,14 @@ MACS2 (\url{http://liulab.dfci.harvard.edu/MACS/}). This is BED6+4 format.
 }
 \examples{
 
+samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
 bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 package = "chromswitch")
+Conditions <- c(rep("Brain", 3), rep("Other", 3))
 
 metadata <- data.frame(Sample = samples,
     H3K4me3 = bedfiles,
+    Condition = Conditions,
     stringsAsFactors = FALSE)
 
 readNarrowPeak(bedfiles, metadata)
