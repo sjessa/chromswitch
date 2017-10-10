@@ -18,7 +18,7 @@
 #' @param ft_mat matrix where columns are features and rows are samples as
 #' returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}
 #' @param metadata A dataframe with a column "Sample" which stores
-#' the sample identifiers, and at least one column, "Condition", which stores
+#' the sample identifiers, and a column "Condition", which stores
 #' the biological condition labels of the samples
 #' @param region GRanges object specifying the query region
 #' @param heatmap (Optional) Logical value indicating whether to plot
@@ -29,7 +29,8 @@
 #' PDF of heatmaps should be saved
 #' @param optimal_clusters (Optional) Logical value indicate whether to cluster
 #' samples into two groups, or to find the optimal clustering solution by
-#' choosing the set of clusters which maximizes the Average Silhouette width
+#' choosing the set of clusters which maximizes the Average Silhouette width.
+#' Default: TRUE
 #' @param n_features (Optional) Logical value indicating whether to include
 #' a column "n_features" in the output storing the number of features in the
 #' feature matrix constructed for the region, which may be useful for
@@ -56,12 +57,12 @@
 #'
 #' @examples
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+#' bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
 #' Conditions <- c(rep("Brain", 3), rep("Other", 3))
 #'
 #' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = outfiles,
+#'     H3K4me3 = bedfiles,
 #'     Condition = Conditions,
 #'     stringsAsFactors = FALSE)
 #'
@@ -91,7 +92,7 @@
 #' @export
 cluster <- function(ft_mat, metadata, region,
                     heatmap = FALSE, title = NULL, outdir = NULL,
-                    optimal_clusters = FALSE,
+                    optimal_clusters = TRUE,
                     n_features = FALSE,
                     estimate_state = FALSE,
                     method = NULL,

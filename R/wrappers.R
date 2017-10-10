@@ -25,11 +25,11 @@
 #' @param query GRanges list containing one or more genomic regions of interest
 #' in which to call a switch. The output dataframe will contain one row per
 #' region in \code{query}.
-#' @param peaks List of GRanges objects storing peak calls for each sample,
-#' where element names correspond to sample IDs
 #' @param metadata A dataframe with at least two columns: "Sample" which stores
 #' the sample IDs, "Condition", which stores the biological condition labels
 #' of the samples
+#' @param peaks List of GRanges objects storing peak calls for each sample,
+#' where element names correspond to sample IDs
 #' @param mark Character specifying the histone mark or ChIP-target,
 #' for example, "H3K4me3"
 #' @param filter (Optional) logical value, filter peaks based on thresholds on
@@ -43,7 +43,8 @@
 #' peaks. Provide one per column specified in \code{filter_columns}, in the same
 #' order. If \code{filter} is FALSE, not used.
 #' @param normalize (Optional) logical value, normalize peak statistics
-#' genome-wide for each sample? Default: TRUE. The normalization step is
+#' genome-wide for each sample? Default: TRUE if \code{summarize_columns} is
+#' specified, FALSE, otherwise. The normalization step is
 #' described in \code{\link{normalizePeaks}}.
 #' @param normalize_columns If \code{normalize} is TRUE, a character vector
 #' corresponding to names of columns in the peak metadata to normalize
@@ -61,7 +62,7 @@
 #' @param n (Optional) Logical value, during feature matrix construction,
 #' compute the number of peaks in the region? Default: FALSE
 #' @param heatmap (Optional) Logical value, plot the heatmap corresponding to
-#' the hierarchical clustering result? Default: TRUE
+#' the hierarchical clustering result? Default: FALSE
 #' @param titles (Optional)  if \code{heatmap} is TRUE, a character vector
 #' of the same length as \code{query}, specifying the title to use when plotting
 #' each heatmap (e.g. a gene name), also reused as the
@@ -71,7 +72,8 @@
 #' where heatmaps should be saved
 #' @param optimal_clusters (Optional) Logical value indicate whether to cluster
 #' samples into two groups, or to find the optimal clustering solution by
-#' choosing the set of clusters which maximizes the Average Silhouette width
+#' choosing the set of clusters which maximizes the Average Silhouette width.
+#' Default: TRUE
 #' @param estimate_state (Optional) Logical value indicating whether to include
 #' a column "state" in the output specifying the estimated chromatin state of
 #' a test condition. The state will be on of "ON", "OFF", or NA, where the
@@ -94,12 +96,12 @@
 #' @examples
 #'
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+#' bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
 #' Conditions <- c(rep("Brain", 3), rep("Other", 3))
 #'
 #' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = outfiles,
+#'     H3K4me3 = bedfiles,
 #'     Condition = Conditions,
 #'     stringsAsFactors = FALSE)
 #'
@@ -108,8 +110,8 @@
 #'                                 end = c(54929104, 54877536)))
 #'
 #' callSummary(query = regions,
-#'                 peaks = H3K4me3,
 #'                 metadata = metadata,
+#'                 peaks = H3K4me3,
 #'                 normalize_columns = c("qValue", "pValue", "signalValue"),
 #'                 mark = "H3K4me3",
 #'                 summarize_columns = c("pValue", "qValue", "signalValue"),
@@ -117,35 +119,39 @@
 #'                 BPPARAM = BiocParallel::SerialParam())
 #'
 #' @export
-callSummary <- function(query, peaks, metadata, mark,
-                            filter = FALSE, filter_columns = NULL,
+callSummary <- function(query, metadata, peaks, mark,
+                            filter = FALSE, filter_columns = summarize_columns,
                             filter_thresholds = NULL, normalize = TRUE,
-                            normalize_columns = NULL, tail = 0.005,
-                            summarize_columns,
+                            summarize_columns = NULL,
+                            normalize_columns = summarize_columns, tail = 0.005,
                             length = FALSE, fraction = TRUE, n = FALSE,
-                            heatmap = TRUE, titles = NULL, outdir = NULL,
-                            optimal_clusters = FALSE,
+                            heatmap = FALSE, titles = NULL, outdir = NULL,
+                            optimal_clusters = TRUE,
                             estimate_state = FALSE,
                             signal_col = NULL,
                             test_condition = NULL,
                             BPPARAM = bpparam()) {
 
+
+
     # Preprocessing
     if (filter) {
 
-        if (is.null(filter_columns) || is.null(filter_thresholds))
-            stop("Please provide names of columns to filter and specify
-                thresholds to use.")
+        if (is.null(filter_thresholds))
+            stop("Please specify thresholds to use for filtering columns. ",
+                 "By default, filters are applied to the columns passed to ",
+                 "summarize_columns. Specific columns to filter can be ",
+                 "passed to filter_columns.",
+                 "Provide one threshold per column, in the same order.")
 
         peaks <- filterPeaks(peaks,
                             columns = filter_columns,
                             thresholds = filter_thresholds)
     }
 
-    if (normalize) {
+    if(is.null(summarize_columns)) normalize <- FALSE
 
-        if (is.null(normalize_columns))
-        stop("Please provide names of columns to normalize genome-wide.")
+    if (normalize) {
 
         peaks <- normalizePeaks(peaks,
                                 columns = normalize_columns,
@@ -229,11 +235,11 @@ callSummary <- function(query, peaks, metadata, mark,
 #' @param query GRanges list containing one or more genomic regions of interest
 #' in which to call a switch. The output dataframe will contain one row per
 #' region in \code{query}.
-#' @param peaks List of GRanges objects storing peak calls for each sample,
-#' where element names correspond to sample IDs
 #' @param metadata A dataframe with at least two columns: "Sample" which stores
 #' the sample IDs, "Condition", which stores the biological condition labels
 #' of the samples
+#' @param peaks List of GRanges objects storing peak calls for each sample,
+#' where element names correspond to sample IDs
 #' @param filter (Optional) logical value, filter peaks based on thresholds on
 #' peak statistics? Default: FALSE. The filter step is described in
 #' \code{\link{filterPeaks}}.
@@ -259,7 +265,7 @@ callSummary <- function(query, peaks, metadata, mark,
 #' understanding the behaviour of the binary strategy for constructing
 #' feature matrices. Default: FALSE
 #' @param heatmap (Optional) Logical value, plot the heatmap corresponding to
-#' the hierarchical clustering result? Default: TRUE
+#' the hierarchical clustering result? Default: FALSE
 #' @param titles (Optional)  if \code{heatmap} is TRUE, a character vector
 #' of the same length as \code{query}, specifying the title to use when plotting
 #' each heatmap (e.g. a gene name), also reused as the
@@ -269,7 +275,8 @@ callSummary <- function(query, peaks, metadata, mark,
 #' where heatmaps should be saved
 #' @param optimal_clusters (Optional) Logical value indicate whether to cluster
 #' samples into two groups, or to find the optimal clustering solution by
-#' choosing the set of clusters which maximizes the Average Silhouette width
+#' choosing the set of clusters which maximizes the Average Silhouette width.
+#' Default: TRUE.
 #' @param estimate_state (Optional) Logical value indicating whether to include
 #' a column "state" in the output specifying the estimated chromatin state of
 #' a test condition. The state will be on of "ON", "OFF", or NA, where the
@@ -289,12 +296,12 @@ callSummary <- function(query, peaks, metadata, mark,
 #' @examples
 #'
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+#' bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 #' package = "chromswitch")
 #' Conditions <- c(rep("Brain", 3), rep("Other", 3))
 #'
 #' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = outfiles,
+#'     H3K4me3 = bedfiles,
 #'     Condition = Conditions,
 #'     stringsAsFactors = FALSE)
 #'
@@ -302,16 +309,16 @@ callSummary <- function(query, peaks, metadata, mark,
 #'     ranges = IRanges(start = c(54924104, 54874318),
 #'                                 end = c(54929104, 54877536)))
 #'
-#' callBinary(query = regions, peaks = H3K4me3, metadata = metadata,
+#' callBinary(query = regions, metadata = metadata, peaks = H3K4me3,
 #'            BPPARAM = BiocParallel::SerialParam())
 #'
 #' @export
-callBinary <- function(query, peaks, metadata,
+callBinary <- function(query, metadata, peaks,
                             filter = FALSE, filter_columns = NULL,
                             filter_thresholds = NULL, reduce = TRUE,
                             gap = 300, p = 0.4, n_features = FALSE,
                             heatmap = FALSE, titles = NULL, outdir = NULL,
-                            optimal_clusters = FALSE, estimate_state = FALSE,
+                            optimal_clusters = TRUE, estimate_state = FALSE,
                             test_condition = NULL,
                             BPPARAM = bpparam()) {
 

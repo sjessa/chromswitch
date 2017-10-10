@@ -25,6 +25,7 @@ Imports:
     mclust (>= 5.3),
     methods,
     NMF (>= 0.20.6),
+    rtracklayer (>= 1.36.4),
     S4Vectors (>= 0.14.4),
     stats,
     tidyr (>= 0.6.3)
@@ -36,7 +37,6 @@ Suggests: BiocStyle,
     devtools (>= 1.13.3),
     knitr,
     rmarkdown,
-    rtracklayer (>= 1.36.4),
     testthat
 RoxygenNote: 6.0.1
 URL: https://github.com/sjessa/chromswitch

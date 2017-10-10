@@ -7,7 +7,7 @@
 #' can be viewed at
 #' \url{https://github.com/selinj/chromswitch/tree/master/data-raw}.
 #'
-#' @format A list with six entries, named according to fake IDs for the samples.
+#' @format A list with six entries, named according to IDs of the samples.
 #' Each element contains a GRanges object with peak calls and associated
 #' statistics which are computed by MACS2. This is the format expected by the
 #' \code{peaks} argument in functions in chromswitch.

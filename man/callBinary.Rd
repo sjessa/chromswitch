@@ -4,10 +4,10 @@
 \alias{callBinary}
 \title{callBinary}
 \usage{
-callBinary(query, peaks, metadata, filter = FALSE, filter_columns = NULL,
+callBinary(query, metadata, peaks, filter = FALSE, filter_columns = NULL,
   filter_thresholds = NULL, reduce = TRUE, gap = 300, p = 0.4,
   n_features = FALSE, heatmap = FALSE, titles = NULL, outdir = NULL,
-  optimal_clusters = FALSE, estimate_state = FALSE, test_condition = NULL,
+  optimal_clusters = TRUE, estimate_state = FALSE, test_condition = NULL,
   BPPARAM = bpparam())
 }
 \arguments{
@@ -15,12 +15,12 @@ callBinary(query, peaks, metadata, filter = FALSE, filter_columns = NULL,
 in which to call a switch. The output dataframe will contain one row per
 region in \code{query}.}
 
-\item{peaks}{List of GRanges objects storing peak calls for each sample,
-where element names correspond to sample IDs}
-
 \item{metadata}{A dataframe with at least two columns: "Sample" which stores
 the sample IDs, "Condition", which stores the biological condition labels
 of the samples}
+
+\item{peaks}{List of GRanges objects storing peak calls for each sample,
+where element names correspond to sample IDs}
 
 \item{filter}{(Optional) logical value, filter peaks based on thresholds on
 peak statistics? Default: FALSE. The filter step is described in
@@ -54,7 +54,7 @@ understanding the behaviour of the binary strategy for constructing
 feature matrices. Default: FALSE}
 
 \item{heatmap}{(Optional) Logical value, plot the heatmap corresponding to
-the hierarchical clustering result? Default: TRUE}
+the hierarchical clustering result? Default: FALSE}
 
 \item{titles}{(Optional)  if \code{heatmap} is TRUE, a character vector
 of the same length as \code{query}, specifying the title to use when plotting
@@ -67,7 +67,8 @@ where heatmaps should be saved}
 
 \item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
 samples into two groups, or to find the optimal clustering solution by
-choosing the set of clusters which maximizes the Average Silhouette width}
+choosing the set of clusters which maximizes the Average Silhouette width.
+Default: TRUE.}
 
 \item{estimate_state}{(Optional) Logical value indicating whether to include
 a column "state" in the output specifying the estimated chromatin state of
@@ -105,12 +106,12 @@ feature matrix.
 \examples{
 
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 package = "chromswitch")
 Conditions <- c(rep("Brain", 3), rep("Other", 3))
 
 metadata <- data.frame(Sample = samples,
-    H3K4me3 = outfiles,
+    H3K4me3 = bedfiles,
     Condition = Conditions,
     stringsAsFactors = FALSE)
 
@@ -118,7 +119,7 @@ regions <- GRanges(seqnames = c("chr19", "chr19"),
     ranges = IRanges(start = c(54924104, 54874318),
                                 end = c(54929104, 54877536)))
 
-callBinary(query = regions, peaks = H3K4me3, metadata = metadata,
+callBinary(query = regions, metadata = metadata, peaks = H3K4me3,
            BPPARAM = BiocParallel::SerialParam())
 
 }

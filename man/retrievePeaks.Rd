@@ -28,11 +28,11 @@ peaks in the region in order to call a chromatin state switch.
 \examples{
 
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 package = "chromswitch")
 
 metadata <- data.frame(Sample = samples,
-    H3K4me3 = outfiles,
+    H3K4me3 = bedfiles,
     stringsAsFactors = FALSE)
 
 retrievePeaks(H3K4me3,

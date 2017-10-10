@@ -58,10 +58,11 @@ coordToGRanges <- function(coord) {
 #'
 #' @param gr GRanges object specifying region to convert to a string
 #'
-#' gr <- GRanges(seqnames = "chr1",
+#' @examples gr <- GRanges(seqnames = "chr1",
 #'               ranges = IRanges(start = 1000, end = 2000))
 #'
 #' GRangesToCoord(gr)
+#'
 #' @export
 #' @return String
 GRangesToCoord <- function(gr) {

@@ -4,25 +4,25 @@
 \alias{callSummary}
 \title{callSummary}
 \usage{
-callSummary(query, peaks, metadata, mark, filter = FALSE,
-  filter_columns = NULL, filter_thresholds = NULL, normalize = TRUE,
-  normalize_columns = NULL, tail = 0.005, summarize_columns,
-  length = FALSE, fraction = TRUE, n = FALSE, heatmap = TRUE,
-  titles = NULL, outdir = NULL, optimal_clusters = FALSE,
-  estimate_state = FALSE, signal_col = NULL, test_condition = NULL,
-  BPPARAM = bpparam())
+callSummary(query, metadata, peaks, mark, filter = FALSE,
+  filter_columns = summarize_columns, filter_thresholds = NULL,
+  normalize = TRUE, summarize_columns = NULL,
+  normalize_columns = summarize_columns, tail = 0.005, length = FALSE,
+  fraction = TRUE, n = FALSE, heatmap = FALSE, titles = NULL,
+  outdir = NULL, optimal_clusters = TRUE, estimate_state = FALSE,
+  signal_col = NULL, test_condition = NULL, BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
 in which to call a switch. The output dataframe will contain one row per
 region in \code{query}.}
 
-\item{peaks}{List of GRanges objects storing peak calls for each sample,
-where element names correspond to sample IDs}
-
 \item{metadata}{A dataframe with at least two columns: "Sample" which stores
 the sample IDs, "Condition", which stores the biological condition labels
 of the samples}
+
+\item{peaks}{List of GRanges objects storing peak calls for each sample,
+where element names correspond to sample IDs}
 
 \item{mark}{Character specifying the histone mark or ChIP-target,
 for example, "H3K4me3"}
@@ -41,8 +41,13 @@ peaks. Provide one per column specified in \code{filter_columns}, in the same
 order. If \code{filter} is FALSE, not used.}
 
 \item{normalize}{(Optional) logical value, normalize peak statistics
-genome-wide for each sample? Default: TRUE. The normalization step is
+genome-wide for each sample? Default: TRUE if \code{summarize_columns} is
+specified, FALSE, otherwise. The normalization step is
 described in \code{\link{normalizePeaks}}.}
+
+\item{summarize_columns}{Character vector of column names on which to compute
+summary statistics during feature matrix construction. These statistics
+become the features of the matrix.}
 
 \item{normalize_columns}{If \code{normalize} is TRUE, a character vector
 corresponding to names of columns in the peak metadata to normalize
@@ -51,10 +56,6 @@ genome-wide for each sample. If \code{normalize} is FALSE, not used.}
 \item{tail}{(Optional) if \code{normalize} is TRUE, specifies the fraction
 of extreme values in each tail to bound during normalization. More details at
 \code{\link{normalizePeaks}}.}
-
-\item{summarize_columns}{Character vector of column names on which to compute
-summary statistics during feature matrix construction. These statistics
-become the features of the matrix.}
 
 \item{length}{(Optional) Logical value, during feature matrix construction,
 compute the mean, median, and max of peak length? Default: FALSE}
@@ -66,7 +67,7 @@ compute the fraction of the region overlapped by peaks? Default: TRUE}
 compute the number of peaks in the region? Default: FALSE}
 
 \item{heatmap}{(Optional) Logical value, plot the heatmap corresponding to
-the hierarchical clustering result? Default: TRUE}
+the hierarchical clustering result? Default: FALSE}
 
 \item{titles}{(Optional)  if \code{heatmap} is TRUE, a character vector
 of the same length as \code{query}, specifying the title to use when plotting
@@ -79,7 +80,8 @@ where heatmaps should be saved}
 
 \item{optimal_clusters}{(Optional) Logical value indicate whether to cluster
 samples into two groups, or to find the optimal clustering solution by
-choosing the set of clusters which maximizes the Average Silhouette width}
+choosing the set of clusters which maximizes the Average Silhouette width.
+Default: TRUE}
 
 \item{estimate_state}{(Optional) Logical value indicating whether to include
 a column "state" in the output specifying the estimated chromatin state of
@@ -122,12 +124,12 @@ example, a p value and fold change.
 \examples{
 
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-outfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
 package = "chromswitch")
 Conditions <- c(rep("Brain", 3), rep("Other", 3))
 
 metadata <- data.frame(Sample = samples,
-    H3K4me3 = outfiles,
+    H3K4me3 = bedfiles,
     Condition = Conditions,
     stringsAsFactors = FALSE)
 
@@ -136,8 +138,8 @@ regions <- GRanges(seqnames = c("chr19", "chr19"),
                                 end = c(54929104, 54877536)))
 
 callSummary(query = regions,
-                peaks = H3K4me3,
                 metadata = metadata,
+                peaks = H3K4me3,
                 normalize_columns = c("qValue", "pValue", "signalValue"),
                 mark = "H3K4me3",
                 summarize_columns = c("pValue", "qValue", "signalValue"),
