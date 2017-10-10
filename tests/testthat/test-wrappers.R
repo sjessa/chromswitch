@@ -20,6 +20,20 @@ test_that("The summary strategy wrapper properly executes the analysis", {
 
     mcols(regions)$name <- c("test1", "test2")
 
+    output_0 <- data.frame(
+        region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        name = c("test1", "test2"),
+        k = c(2, 2),
+        Average_Silhouette = c(0.9000673, 0.6636754),
+        Consensus = c(1, -0.07207207),
+        E068 = as.integer(c(1, 1)),
+        E071 = as.integer(c(1, 2)),
+        E074 = as.integer(c(1, 1)),
+        E101 = as.integer(c(2, 2)),
+        E102 = as.integer(c(2, 1)),
+        E110 = as.integer(c(2, 1)), stringsAsFactors = FALSE
+    )
+
     output <- data.frame(
         region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
@@ -42,6 +56,9 @@ test_that("The summary strategy wrapper properly executes the analysis", {
 
     }
 
+    # No summarize_cols, no normalize_cols
+    expect_equal(call(mark = "H3K4me3"), output_0, tolerance = 1e-2)
+
     expect_equal(call(normalize_columns = c("qValue", "pValue", "signalValue"),
                     mark = "H3K4me3",
                     summarize_columns = c("pValue", "qValue", "signalValue"),
@@ -61,6 +78,14 @@ test_that("The summary strategy wrapper properly executes the analysis", {
                         summarize_columns = c("pValue", "qValue", "signalValue"),
                         heatmap = FALSE),
                  "one threshold per column")
+
+    expect_error(call(mark = "H3K4me3", normalize = FALSE,
+                      filter = TRUE,
+                      filter_columns = "pValue",
+                      filter_thresholds = NULL,
+                      summarize_columns = c("pValue", "qValue", "signalValue"),
+                      heatmap = FALSE),
+                 "specify thresholds")
 
     expect_error(call(mark = "H3K4me3", normalize = FALSE,
                       filter = TRUE,
