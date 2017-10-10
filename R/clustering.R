@@ -115,6 +115,7 @@ cluster <- function(ft_mat, metadata, region,
             c("dodgerblue4", "white", "red"))(n = 100)
         hclust.fun <- function(i) hclust(i, method = "complete")
 
+        metadata$Condition <- as.character(metadata$Condition)
         conditions <- unique(metadata$Condition)
         conditions_colours <- metadata$Condition
 
