@@ -36,6 +36,8 @@
 #' readNarrowPeak(bedfiles, metadata)
 readNarrowPeak <- function(paths, metadata) {
 
+    paths <- as.character(paths)
+
     extra_cols <- c("name" = "character",
                     "score" = "integer",
                     "strand" = "character",

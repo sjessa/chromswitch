@@ -60,57 +60,75 @@ devtools::install_github("sjessa/chromswitch")
 library(chromswitch)
 ```
 
-```{r message=FALSE, warning=FALSE}
+We will use the package `r Biocpkg("rtracklayer")` to import data from BED files:
+```{r message = FALSE, warning = FALSE}
 library(rtracklayer)
-library(magrittr) # TODO
-library(dplyr) # TODO
 ```
 
 We'll start with a toy dataset containing MACS2 narrow peak calls for H3K4me3
 ChIP-seq in 3 brain tissues and 3 other adult tissues from the Roadmap
-Epigenomics Project, restricted to a short region on chromosome 19. This data
-is packaged with chromswitch in the object `H3K4me3`. In the code below, we prepare a corresponding metadata file,
-save a couple regions of interest, and run chromswitch on our dataset,
+Epigenomics Project, restricted to a short region on chromosome 19. In the code below, we import the input to chromswitch and run chromswitch on our dataset,
 testing both strategies for feature matrix construction. We can then call chromatin state switches by thresholding on the value of
 the Consensus score, which sores the similarity between the cluster assignments
 and the biological condition labels.
 
 Chromswitch essentially requires 3 inputs:
 
-1. Genomic query region: a GRanges object
-2. Metadata dataframe
-3. Peaks/epigenomic features
-```{r quickstart}
+1. **Genomic query region(s)**: a `GRanges` object storing one or more regions of
+interest
+2. **Metadata dataframe**: a dataframe with at least two columns: *Sample* which stores
+sample IDs (these can be any strings), and *Condition*, which stores the
+biological condition labels of the samples (the conditions must be strings with only two different values in the column, *e.g.* 'Fetal'/'Adult' or 'WT'/'Mut'). Additional columns are not used.
+3. **Peaks or epigenomic features**: a list of `GRanges` objects, each of which stores
+peaks or features for one sample, with elements named according to the sample IDs as
+specified in the metadata
 
-# Define query regions
-query <- GRanges(seqnames = c("chr19", "chr19"),
-                                  ranges = IRanges(
-                                      start = c(54924104,54874318),
-                                      end = c(54929104, 54877536)))
-# Prepare metadata
-samples    <- c("E068", "E071", "E074", "E101", "E102", "E110")
-infiles   <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
-                        package = "chromswitch")
-conditions <- c(rep("Brain", 3), rep("Other", 3))
-metadata   <- data.frame(Sample = samples,
-                         Condition = conditions,
-                         stringsAsFactors = FALSE)
+Each of these inputs can be imported from TSV or BED files, as shown below. Learn more about `GRanges` objects by checking out `r Biocpkg("GenomicRanges")`.
 
+Here we use the `import()` function from `r Biocpkg("rtracklayer")` to import
+query regions stored in a BED file.
+```{r qs_query}
+# Path to BED file in chromswitch installation
+query_path <- system.file("extdata/query.bed", package = "chromswitch")
 
+# Read in BED file, creating a GRanges object
+query <- rtracklayer::import(con = query_path, format = "BED")
+query
+```
+
+```{r qs_meta}
+# Path to TSV in chromswitch
+meta_path <- system.file("extdata/metadata.tsv", package = "chromswitch")
+
+# Read in the table from a 2-column TSV file
+metadata <- read.delim(meta_path, sep = "\t", header = TRUE)
+metadata
+```
+
+Here we assume that peaks are in the [ENCODE narrowPeak format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12).
+
+*Note:* If the metadata file has an additional column containing the path for each sample, then that column can be passed to this function,
+*e.g.* `readNarrowPeak(paths = metadata$path, metadata = metadata)`.
+```{r qs_pks}
+# Paths to the BED files containing peak calls for each sample
+peak_paths <- system.file("extdata", paste0(metadata$Sample, ".H3K4me3.bed"),
+                     package = "chromswitch")
+
+# Import BED files containing MACS2 narrow peak calls in using 
+#  a helper function from chromswitch
+peaks <- readNarrowPeak(paths = peak_paths,  # Paths to files,
+                        metadata = metadata) # Metadata dataframe
 ```
 
 Run chromswitch using the summary strategy:
-```{r quickstart_1}
-callSummary(query = query,     # Input 1: Query region
-            peaks = H3K4me3,     # Input 2: Peaks
-            metadata = metadata, # Input 3: Metadata dataframe
-            normalize_columns = c("qValue", "pValue", "signalValue"),
-            mark = "H3K4me3",
-            summarize_columns = c("pValue", "qValue", "signalValue"),
-            heatmap = FALSE)
+```{r quickstart_1, warning = FALSE}
+callSummary(query = query,       # Input 1: Query regions
+            metadata = metadata, # Input 2: Metadata dataframe
+            peaks = peaks,       # Input 3: Peaks
+            mark = "H3K4me3")    # Arbitrary string describing the data type
 ```
 
-Chromswitch outputs the Average_Silhouette (a measure of cluster quality), the score predicting a chromatin state switch (Consensus), and the cluster assignment for each sample.
+Chromswitch outputs a measure of cluster quality (*Average_Silhouette*), the score predicting a chromatin state switch (*Consensus*), and the cluster assignment for each sample.
 
 Looking at the Consensus score in each case, which represents the similarity
 between the cluster assignments and the biological groups of the samples,
@@ -118,10 +136,10 @@ here we see a good agreement in the first region, indicating a switch, and
 poor agreement in the second, indicating the absence of a switch. This score takes on values between -1 and 1, where 1 represents a perfect agreement between cluster assignments and the biological conditions of the sample
 
 Run chromswitch using the binary strategy:
-```{r quickstart_2}
-callBinary(query = query,
-           peaks = H3K4me3,
-           metadata = metadata)
+```{r quickstart_2, warning = FALSE}
+callBinary(query = query,       # Input 1: Query regions
+           metadata = metadata, # Input 2: Metadata dataframe
+           peaks = peaks)       # Input 3: Peaks
 ```
 
 The output has the same format for both strategies. In this case, both strategies predict a switch for the first region, and a non-switch for the second region. 
@@ -189,74 +207,100 @@ and here, one range describes one peak. The data packaged with chromswitch is de
 
 ## Input
 
-To run chromswitch, we essentially need three pieces of information:
+Chromswitch essentially requires 3 inputs:
 
-1. One or more genomic regions which will serve as query regions (note that
-chromswitch acts at the level of individual regions and so will return results for each region independently)
-2. Metadata which describes the samples and their conditions
-3. A set of epigenomic features (peaks or chromatin state segmentations,
-for example) for each sample
+1. **Genomic query region(s)**: the genomic windows in which chromswitch will be applied
+(indpendently to each region) to call chromatin state switches.
+2. **Metadata dataframe**: specifying the sample IDs and biological conditions,
+used to score the similarity between the clusters of samples inferred by
+chromswitch, and the biological conditions of the samples.
+3. **Epigenomic features**: for example, ChIP-seq peaks for a histone mark, DNase-seq peaks, or previously-learned chromatin state segmentations such as from ChromHMM.
+
+The specification for the inputs and examples of how to import them are described below.
 
 ### Query regions
 
+Chromswitch expects query regions in the form of a `GRanges` object storing one or more regions of interest. GRanges objects are containers for genomic regions, implemented
+in `r Biocpkg("GenomicRanges")`. An introduction to these objects can be obtained by running `??GenomicRanges::GRanges_and_GRangesList_slides` in the console.
+
 We will apply chromswitch to 5kbp windows surrounding chromatin state
-switches in three genes on chromosome 19. The `makeGRangesFromDataFrame` function from `r Biocpkg("GenomicRanges")` is
-handy for converting a list of query regions in a dataframe into a `GRanges`
-object (remember the `keep.extra.columns = TRUE` argument to preserve any
-additional data associated with the regions).
+switches in three genes on chromosome 19. Here, we will read in the query regions
+from a BED file using the `import()` function from `r Biocpkg("rtracklayer")`. 
 
 ```{r regions}
-query <- data.frame(
-    gene = c("CACNG8", "TTYH1", "LENG8"),
-    TSS = c(54466290, 54926605, 54960065), stringsAsFactors = FALSE) %>% 
-    dplyr::mutate(chromosome = "chr19",
-           start = TSS - 2500,
-           end = TSS + 2500) %>%
-    dplyr::select(-TSS) %>% 
-    makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+# Path to BED file in chromswitch installation
+query_path <- system.file("extdata/query.bed", package = "chromswitch")
 
+# Read in BED file, creating a GRanges object
+query <- rtracklayer::import(con = query_path, format = "BED")
 query
 ```
 
+If your query regions are stored in another tabular format, this table can be read
+in using `read.delim()` and passed to the `makeGRangesFromDataFrame()` function from `r Biocpkg("GenomicRanges")`, which converts query regions stored in a dataframe with at least 3 columns, *chr*, *start*, and *end*, into a `GRanges`
+object (remember the `keep.extra.columns = TRUE` argument to preserve any
+additional data associated with the regions, such as gene symbols). Any metadata
+columns in the `GRanges` object passed to the `query` argument will be included
+in the chromswitch output (but not used for the analysis).
+
 ### Metadata
 
-In the code below, we prepare a minimal metadata
-dataframe. The metadata dataframe needs at least two
-columns: "Sample" which stores the sample IDs, "Condition", which stores the
-biological condition labels of the samples. This dataframe can be passed to the `metadata`
-argument of any chromswitch functions that require it.
+Chromswitch accepts metadata in the form of a dataframe with at least two columns: *Sample* which stores
+sample IDs (these can be any strings), and *Condition*, which stores the
+biological condition labels of the samples (these must be strings, with only two
+possible values in the column). Additional columns are not used. 
+
+In the code below, we read in the metadata from a TSV file.
+The resulting dataframe can be passed to the `metadata` argument of any chromswitch
+functions that require it.
 
 ```{r meta}
-samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-conditions <- c(rep("Brain", 3), rep("Other", 3))
+# Path to TSV in chromswitch
+meta_path <- system.file("extdata/metadata.tsv", package = "chromswitch")
 
-meta <- data.frame(Sample = samples , Condition = conditions,
-                   # Ensure the columns are characters, not factors
-                   stringsAsFactors = FALSE)
-
-meta
+# Read in the table from a 2-column TSV file
+metadata <- read.delim(meta_path, sep = "\t", header = TRUE)
+metadata
 ```
 
 ### Epigenomic features
 
-To import BED files containing peak calls,
-we can use `r Biocpkg("rtracklayer")` to read the data
-into `GRanges` objects, which can be analyzed with chromswitch. This
-will produce the `pk_k4me3` object, which is identical to the `H3K4me3` object packaged
-with chromswitch.
+Chromswitch expects epigenomic features in the form of a named list of `GRanges` objects,
+each of which stores
+peaks or features for one sample, with elements named according to the sample IDs as
+specified in the metadata. The peaks should be in the same order (with respect
+to samples) as in the metadata.
+
+The nature of these features are flexible: for example, they can include peak calls
+from a ChIP-seq or DNase-seq experiment, or assignments of a certain state obtained
+from a previously learned chromatin state segmentation such as from ChromHMM.
+These features may be attached to certain metrics quantifying enrichment,
+significance, or probabilities, and the format of the data
+will control how we import it. Here we focus on narrow peaks for H3K4me3 ChIP-seq, but demonstrate three ways of importing data into
+`GRanges` objects, each suitable for different formats.
+
+To import BED files containing peak MACS2 narow peak calls, we can use a helper
+function implemented in chromswitch, which processes peaks which follow
+exactly the [ENCODE narrowPeak format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12).
 
 ```{r paths}
-paths <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+# Paths to the BED files containing peak calls for each sample
+peak_paths <- system.file("extdata", paste0(metadata$Sample, ".H3K4me3.bed"),
                      package = "chromswitch")
-paths
+
+# Import BED files containing MACS2 narrow peak calls in using 
+#  a helper function from chromswitch
+peaks <- readNarrowPeak(paths = peak_paths,  # Paths to files,
+                        metadata = metadata)
 ```
 
-Typically, statistics quantifying enrichment and significance are associated
-with peaks returned by standard peak-calling tools - we will need to provide
-names and types for all additional columns included in the BED files. These
-columns must be the same for all samples, and they must follow the three
-required columns (`chromosome`, `start`, and `end`) in the order they're
-specified. More information about importing BED files can be obtained by
+To read in features in other formats where the first three columns are *chr*, 
+*start*, and *end*, use `r Biocpkg("rtracklayer")` and specify the identity and
+type of the other columns. For example, we can read in the narrow peak calls
+manually. 
+The same process can be applied to BED files containing epigenomic features
+other than peaks (for example, chromatin state segmentations); the `extraCols`
+argument to `rtracklayer::import` should be modified to fit the data. More information about importing BED files can be obtained by
 running `??rtracklayer::BEDFile` in the console to access the `rtracklayer`
 documentation.
 
@@ -270,17 +314,34 @@ extra_cols <- c("name" = "character",
                 "peak" = "numeric")
 
 # Obtain a list of GRanges objects containing peak calls
-pk_k4me3 <- lapply(paths, rtracklayer::import, format = "bed",
+peaks <- lapply(peak_paths, rtracklayer::import, format = "bed",
                    extraCols = extra_cols)
 
 # Ensure the list is named by sample
-names(pk_k4me3) <- meta$Sample
-str(pk_k4me3$E068)
+names(peaks) <- metadata$Sample
 ```
 
-The same process can be applied to BED files containing epigenomic features
-other than peaks (for example, chromatin state segmentations); the `extraCols`
-argument to `rtracklayer::import` should be modified to fit the data.
+Alternatively, if your epigenomic features are stored in another tabular format,
+read in the files using `read.delim()` and convert them to `GRanges` objects
+afterwards. We demonstrate on the same narrow peak calls:
+
+```{r manual}
+# Read in all files into dataframes
+df <- lapply(peak_paths, read.delim, sep = "\t",
+             header = FALSE,
+             col.names = c("chr", "start", "end", "name", "score", 
+                           "strand", "signalValue", "pValue",
+                           "qValue", "peak"))
+
+# Convert the dataframes into GRanges objects, retaining
+# additional columns besides chr, start, end
+peaks <- lapply(df, makeGRangesFromDataFrame, keep.extra.columns = TRUE)
+
+# Ensure the list is named by sample
+names(peaks) <- metadata$Sample
+```
+
+All three methods described above produce an identical `peaks` object.
 
 ## Applying the summary strategy to detect brain-specific switches
 
@@ -299,17 +360,12 @@ Note that the column names passed to arguments in the wrappers (*e.g.*
 `normalize_columns`, `summarize_columns`, *etc.*) must match exactly the column
 names in the BED files.
 
-```{r summary_basic}
+```{r summary_basic, warning = FALSE}
 
-out <- callSummary(query = query,
-                peaks = pk_k4me3,
-                metadata = meta,
-                mark = "H3K4me3",
-                normalize = TRUE,
-                normalize_columns = c("qValue", "signalValue"),
-                summarize_columns = c("qValue", "signalValue"),
-                optimal_clusters = TRUE,
-                heatmap = FALSE)
+out <- callSummary(query = query, # Input 1: Query regions
+            metadata = metadata,  # Input 2: Metadata dataframe
+            peaks = peaks,        # Input 3: Peaks
+            mark = "H3K4me3")     # Arbitrary string describing the data type
 
 out
 
@@ -319,21 +375,24 @@ We can threshold on the consensus score to subset the query regions to those
 containing putative chromatin state switches:
 
 ```{r threshold}
-
-out %>% 
-    dplyr::filter(Consensus >= 0.75)
+out[out$Consensus >= 0.75, ]
 ```
 
 Let's explore some more options for detecting chromatin state switches
 with chromswitch. The options are briefly described in the comments,
 but you can obtain additional explanation of arguments and explore others
-not covered here by running `??chromswitch::callSummary`.
-```{r summary2}
+not covered here by running `??chromswitch::callSummary`. Note that wherever
+column names are passed to chromswitch functions, these *must* match the columns
+in the peaks/features data exactly (this is case sensitive).
+```{r summary2, warning = FALSE}
 
-out2 <- callSummary(# Standard arguments of the function
+out2 <- callSummary(
+                # Standard arguments of the function
                 query = query,
-                peaks = pk_k4me3,
-                metadata = meta,
+                metadata = metadata,
+                peaks = peaks,
+                
+                # Arbitrary string describing data type
                 mark = "H3K4me3",
 
                 # For quality control, filter peaks based on associated stats
@@ -345,9 +404,10 @@ out2 <- callSummary(# Standard arguments of the function
 
                 # Normalization options
                 normalize = TRUE,
+                # By default, set to equal summarize_columns, below
                 normalize_columns = c("qValue", "signalValue"),
 
-                # Options for feature matrix construction
+                # Columns to use for for feature matrix construction
                 summarize_columns = c("qValue", "signalValue"),
 
                 # In addition to summarizing peak statistics,
@@ -358,7 +418,7 @@ out2 <- callSummary(# Standard arguments of the function
                 fraction = TRUE,
                 n = FALSE,
                 
-                # Set this option to TRUE to return the optimal number
+                # TRUE by default, return the optimal number
                 # of clusters, otherwise require k = 2
                 optimal_clusters = TRUE,
                 
@@ -367,11 +427,12 @@ out2 <- callSummary(# Standard arguments of the function
                 heatmap = FALSE,
                 
                 # Chromswitch uses BiocParallel as a backend for
-                # parallel computations
+                # parallel computations. Analysis is parallelized at the
+                # level of query regions.
                 BPPARAM = BiocParallel::SerialParam())
 
-
 out2
+
 ```
 
 The summary approach can be applied to epigenomic data where there
@@ -401,16 +462,30 @@ that chromswitch identifies for these samples in the query region, and
 this option controls whether to include an additional column recording 
 the number of features in the output.
 
-```{r binary_basic}
-out3 <- callBinary(query = query,
-                peaks = pk_k4me3,
-                metadata = meta,
+Additional parameters can be explored by running `??chromswitch::callBinary`
+in the console.
+
+```{r binary_basic, warning = FALSE}
+out3 <- callBinary(
+                # Standard arguments of the function
+                query = query,
+                metadata = metadata,
+                peaks = peaks,
+                
+                # Logical, controls whether to
+                # reduce gaps between peaks to eliminate noise
                 reduce = TRUE,
+                # Peaks in the same sample which are within this many bp
+                # of each other will be merged
                 gap = 300,
+                
+                # The fraction of reciprocal overlap required to define
+                # two peaks as non unique, used to construct a binary ft matrix
                 p = 0.4,
-                n_features = TRUE,
-                optimal_clusters = TRUE,
-                heatmap = FALSE)
+                
+                # Include in output the number of features obtained in 
+                # each query region
+                n_features = TRUE)
 
 out3
 ```
@@ -418,8 +493,7 @@ out3
 Again, threshold the output to obtain putative switches: 
 ```{r threshold2}
 
-out3 %>% 
-    dplyr::filter(Consensus >= 0.75)
+out3[out3$Consensus >= 0.75, ]
 
 ```
 
@@ -446,12 +520,11 @@ cluster assignments and the biological conditions of the sample
 * The cluster assignments for each sample, one sample per column
 
 
-
 ## Saving chromswitch heatmaps
 
 If chromswitch performs hierarchical clustering on a feature matrix with more
 than one feature, both wrapper functions, `callSummary()` and `callBinary()`
-as well as `cluster()`) can optionally
+as well as `cluster()` can optionally
 produce a heatmap with the resulting dendrogram as a PDF. Whether this 
 heatmap is produced or not is passed as a logical value to the argument `heatmap`.
 The title of the heatmap and prefix of the file name can be passed as a string
@@ -464,6 +537,20 @@ step of the method. In this section, we repeat the analysis we performed in
 the previous sections, except that instead of using the wrapper functions,
 `callBinary()` and `callSummary()`, we perform each step individually, and 
 allocate some more discussion to options and parameters at each step.
+
+This section leverages the modularity of chromswitch, so the pipe operator `%>%`
+from `r CRANpkg("magrittr")` is helpful here.
+
+```{r pipe}
+library(magrittr)
+```
+
+We will also inspect some of the intermediate objects returned by chromswitch
+functions, so we load the data manipulation package, `r CRANpkg("dplyr")`.
+
+```{r dplyr, warning = FALSE, message = FALSE}
+library(dplyr)
+```
 
 ## Filter peaks
 After preparing the metadata dataframe (`meta`) and importing data into GenomicRanges
@@ -539,7 +626,7 @@ ttyh1 <- query[2]
 ttyh1
 
 ttyh1_pk <- retrievePeaks(peaks = H3K4me3_norm,
-                          metadata = meta,
+                          metadata = metadata,
                           region = ttyh1)
 
 ttyh1_pk
@@ -586,7 +673,7 @@ goodness based on cluster compactness and separation.
 
 cluster(ft_mat = summary_mat,
         region = ttyh1,
-        metadata = meta,
+        metadata = metadata,
         heatmap = TRUE,
         title = "TTYH1 - summary",
         optimal_clusters = TRUE)
@@ -664,7 +751,7 @@ the biological groups in our analysis.
 ```{r cluster2}
 
 cluster(ft_mat = binary_mat,
-        metadata = meta,
+        metadata = metadata,
         region = ttyh1,
         optimal_clusters = TRUE)
 
