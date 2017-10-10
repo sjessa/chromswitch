@@ -29,6 +29,11 @@ vignette: >
 ---
 
 
+```{r echo = FALSE}
+library(BiocParallel)
+register(bpstart(SerialParam()))
+```
+
 # Overview of this vignette
 
 This vignette is organized hierarchically in terms of level of detail:
