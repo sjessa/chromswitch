@@ -114,7 +114,7 @@ Here we assume that peaks are in the [ENCODE narrowPeak format](https://genome.u
 peak_paths <- system.file("extdata", paste0(metadata$Sample, ".H3K4me3.bed"),
                      package = "chromswitch")
 
-# Import BED files containing MACS2 narrow peak calls in using 
+# Import BED files containing MACS2 narrow peak calls using 
 #  a helper function from chromswitch
 peaks <- readNarrowPeak(paths = peak_paths,  # Paths to files,
                         metadata = metadata) # Metadata dataframe
@@ -143,6 +143,10 @@ callBinary(query = query,       # Input 1: Query regions
 ```
 
 The output has the same format for both strategies. In this case, both strategies predict a switch for the first region, and a non-switch for the second region. 
+
+Both of these wrapper functions have additional parameters which allow for greater
+sensitivity and finer control in the analysis. These are explored in the
+rest of the vignette.
 
 # Overview of the method
 
@@ -279,7 +283,7 @@ significance, or probabilities, and the format of the data
 will control how we import it. Here we focus on narrow peaks for H3K4me3 ChIP-seq, but demonstrate three ways of importing data into
 `GRanges` objects, each suitable for different formats.
 
-To import BED files containing peak MACS2 narow peak calls, we can use a helper
+**Option 1**: To import BED files containing peak MACS2 narow peak calls, we can use a helper
 function implemented in chromswitch, which processes peaks which follow
 exactly the [ENCODE narrowPeak format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12).
 
@@ -288,13 +292,13 @@ exactly the [ENCODE narrowPeak format](https://genome.ucsc.edu/FAQ/FAQformat.htm
 peak_paths <- system.file("extdata", paste0(metadata$Sample, ".H3K4me3.bed"),
                      package = "chromswitch")
 
-# Import BED files containing MACS2 narrow peak calls in using 
+# Import BED files containing MACS2 narrow peak calls using 
 #  a helper function from chromswitch
 peaks <- readNarrowPeak(paths = peak_paths,  # Paths to files,
                         metadata = metadata)
 ```
 
-To read in features in other formats where the first three columns are *chr*, 
+**Option 2**: To read in features in other formats where the first three columns are *chr*, 
 *start*, and *end*, use `r Biocpkg("rtracklayer")` and specify the identity and
 type of the other columns. For example, we can read in the narrow peak calls
 manually. 
@@ -321,7 +325,7 @@ peaks <- lapply(peak_paths, rtracklayer::import, format = "bed",
 names(peaks) <- metadata$Sample
 ```
 
-Alternatively, if your epigenomic features are stored in another tabular format,
+**Option 3**: Alternatively, if your epigenomic features are stored in another tabular format,
 read in the files using `read.delim()` and convert them to `GRanges` objects
 afterwards. We demonstrate on the same narrow peak calls:
 
