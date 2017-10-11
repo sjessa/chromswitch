@@ -673,7 +673,7 @@ summary_mat
 ### Cluster
 Finally, we can cluster over samples using this matrix, and call a chromatin
 state switch by assessing the agreement between the inferred cluster assignments
-and the known biological condition labels of the samples. Since hiearchical
+and the known biological condition labels of the samples. Since hierarchical
 clustering results in a dendrogram, we choose the partition of the samples which
 maximizes the average Silhouette width, which is an internal measure of cluster
 goodness based on cluster compactness and separation.
@@ -732,12 +732,12 @@ ttyh1_pk_red <- reducePeaks(localpeaks = ttyh1_pk,
 ```
 
 ### Construct feature matrix
-In this appraoch, we convert the data in the query region into a binary representation
+In this approach, we convert the data in the query region into a binary representation
 by modelling the presence or absence of each unique peak. In this function,
 first the unique peaks are obtained by collapsing down the *union* of all peaks
 supplied in the region, and then we look for each unique peak in each sample
 to construct the binary matrix. This involves using the second tuning parameter,
-`p`, which sepcifies how much reciprocal overlap two peaks must have in order
+`p`, which specifies how much reciprocal overlap two peaks must have in order
 to be considered the same peak.
 
 ```{r binarizePeaks}
