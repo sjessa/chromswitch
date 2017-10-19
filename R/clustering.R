@@ -124,6 +124,9 @@ cluster <- function(ft_mat, metadata, region,
 
         if (is.null(title)) title <- GRangesToCoord(region)
 
+        if(!is.null(outdir) && !dir.exists(outdir))
+            dir.create(outdir, showWarnings = FALSE)
+
         outfile <- ifelse(!is.null(outdir),
                         paste0(outdir, "/", title, ".pdf"),
                         paste0(title, ".pdf"))

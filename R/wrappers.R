@@ -43,9 +43,8 @@
 #' peaks. Provide one per column specified in \code{filter_columns}, in the same
 #' order. If \code{filter} is FALSE, not used.
 #' @param normalize (Optional) logical value, normalize peak statistics
-#' genome-wide for each sample? Default: TRUE if \code{summarize_columns} is
-#' specified, FALSE, otherwise. The normalization step is
-#' described in \code{\link{normalizePeaks}}.
+#' genome-wide for each sample? Default: TRUE if \code{summarize_columns} or
+#' \code{normalize_columns} is specified, FALSE, otherwise.
 #' @param normalize_columns If \code{normalize} is TRUE, a character vector
 #' corresponding to names of columns in the peak metadata to normalize
 #' genome-wide for each sample. If \code{normalize} is FALSE, not used.
@@ -55,8 +54,6 @@
 #' @param summarize_columns Character vector of column names on which to compute
 #' summary statistics during feature matrix construction. These statistics
 #' become the features of the matrix.
-#' @param length (Optional) Logical value, during feature matrix construction,
-#' compute the mean, median, and max of peak length? Default: FALSE
 #' @param fraction (Optional) Logical value, during feature matrix construction,
 #' compute the fraction of the region overlapped by peaks? Default: TRUE
 #' @param n (Optional) Logical value, during feature matrix construction,
@@ -121,17 +118,17 @@
 #' @export
 callSummary <- function(query, metadata, peaks, mark,
                             filter = FALSE, filter_columns = summarize_columns,
-                            filter_thresholds = NULL, normalize = TRUE,
+                            filter_thresholds = NULL,
                             summarize_columns = NULL,
                             normalize_columns = summarize_columns, tail = 0.005,
-                            length = FALSE, fraction = TRUE, n = FALSE,
+                            normalize = ifelse(is.null(normalize_columns) && is.null(summarize_columns), FALSE, TRUE),
+                            fraction = TRUE, n = FALSE,
                             heatmap = FALSE, titles = NULL, outdir = NULL,
                             optimal_clusters = TRUE,
                             estimate_state = FALSE,
                             signal_col = NULL,
                             test_condition = NULL,
                             BPPARAM = bpparam()) {
-
 
 
     # Preprocessing
@@ -149,13 +146,16 @@ callSummary <- function(query, metadata, peaks, mark,
                             thresholds = filter_thresholds)
     }
 
-    if(is.null(summarize_columns)) normalize <- FALSE
-
     if (normalize) {
 
         peaks <- normalizePeaks(peaks,
                                 columns = normalize_columns,
                                 tail = tail)
+    }
+
+    if(is.null(summarize_columns) && fraction == FALSE && n == FALSE) {
+        stop("No columns specified, and none of fraction, or
+             n set to TRUE, therefore cannot construct a feature matrix.")
     }
 
     # Check titles
@@ -169,7 +169,7 @@ callSummary <- function(query, metadata, peaks, mark,
 
     # Construct feature matrices for each query region
     matrices  <- bplapply(lpks, summarizePeaks, mark,
-                        summarize_columns, length, fraction, n,
+                        summarize_columns, fraction, n,
                         BPPARAM = BPPARAM)
 
     # Convert the queries into a GRangesList in order to be able to Map over
