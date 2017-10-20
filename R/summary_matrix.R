@@ -57,13 +57,12 @@ peakOverlap <- function(region, peaks) {
 # @param mark String specifying the name of the mark for which peaks are given
 # @param cols Character vector of column names on which to compute summary
 # statistics
-# @param length Logical: compute the mean, median, and max of peak length?
 # @param fraction Loogical: compute the fraction of the region overlapped by
 # peaks?
 # @param n Logical: compute the number of peaks in the region?
 #
 # @return data.frame
-summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
+summarizeSamplePeaks <- function(peaks, region, mark, cols =  NULL,
                                 fraction = TRUE, n = FALSE) {
 
     cols_are_numeric <- mcols(peaks) %>%
@@ -81,15 +80,15 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
     if (length(peaks) > 0) {
 
         stats <- mcols(peaks) %>%
-            as.data.frame %>%
-            dplyr::summarise_at(.vars = c("length", cols),
-                                # Summary stats to calculate
-                                dplyr::funs(mean, median, max)) %>%
-            # Compute fraction of the region which is overlapped by peaks
-            dplyr::mutate(fraction_region_in_peaks = peakOverlap(region,
-                                                                peaks)) %>%
-            # Compute number of peaks in region
-            dplyr::mutate(n_peaks = length(peaks))
+                as.data.frame %>%
+                dplyr::summarise_at(.vars = c("length", cols),
+                                    # Summary stats to calculate
+                                    dplyr::funs(mean, median, max)) %>%
+                # Compute fraction of the region which is overlapped by peaks
+                dplyr::mutate(fraction_region_in_peaks = peakOverlap(region,
+                                                                     peaks)) %>%
+                # Compute number of peaks in region
+                dplyr::mutate(n_peaks = length(peaks))
 
     } else if (length(peaks) == 0) {
 
@@ -109,10 +108,14 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
     }
 
     # Optional additional summary statistics
-    if (!length)   stats <- stats %>% dplyr::select(-dplyr::matches("length"))
     if (!n)        stats <- stats %>% dplyr::select_("-n_peaks")
     if (!fraction) stats <- stats %>%
             dplyr::select_("-fraction_region_in_peaks")
+
+    stats <- stats %>% dplyr::select(-dplyr::matches("length"))
+    if(is.null(cols)) stats <- stats %>%
+        dplyr::select(-dplyr::one_of(c("mean", "median", "max")))
+
 
     names(stats) <- paste0(mark, "_", names(stats))
 
@@ -132,7 +135,6 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
 #' object is given
 #' @param cols Character vector of column names on which to compute summary
 #' statistics
-#' @param length Logical: compute the mean, median, and max of peak length?
 #' @param fraction Loogical: compute the fraction of the region overlapped by
 #' peaks?
 #' @param n Logical: compute the number of peaks in the region?
@@ -156,13 +158,17 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols, length = FALSE,
 #' summarizePeaks(lpk, mark = "H3K4me3", cols = c("qValue", "signalValue"))
 #'
 #' @export
-summarizePeaks <- function(localpeaks, mark, cols, length = FALSE,
+summarizePeaks <- function(localpeaks, mark, cols,
                             fraction = TRUE, n = FALSE) {
 
+    if(is.null(cols) && fraction == FALSE && n == FALSE) {
+        stop("No columns specified, and none of length, fraction, or
+             n set to TRUE, therefore cannot construct a feature matrix.")
+    }
 
     ft_matrix <- peaks(localpeaks) %>%
         lapply(summarizeSamplePeaks,
-                region(localpeaks), mark, cols, length, fraction, n) %>%
+                region(localpeaks), mark, cols, fraction, n) %>%
         dplyr::bind_rows()
 
     rownames(ft_matrix) <- samples(localpeaks)

@@ -4,8 +4,7 @@
 \alias{summarizePeaks}
 \title{summarizePeaks}
 \usage{
-summarizePeaks(localpeaks, mark, cols, length = FALSE, fraction = TRUE,
-  n = FALSE)
+summarizePeaks(localpeaks, mark, cols, fraction = TRUE, n = FALSE)
 }
 \arguments{
 \item{localpeaks}{localPeaks object}
@@ -15,8 +14,6 @@ object is given}
 
 \item{cols}{Character vector of column names on which to compute summary
 statistics}
-
-\item{length}{Logical: compute the mean, median, and max of peak length?}
 
 \item{fraction}{Loogical: compute the fraction of the region overlapped by
 peaks?}

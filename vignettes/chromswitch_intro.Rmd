@@ -72,23 +72,26 @@ library(rtracklayer)
 
 We'll start with a toy dataset containing MACS2 narrow peak calls for H3K4me3
 ChIP-seq in 3 brain tissues and 3 other adult tissues from the Roadmap
-Epigenomics Project, restricted to a short region on chromosome 19. In the code below, we import the input to chromswitch and run chromswitch on our dataset,
-testing both strategies for feature matrix construction. We can then call chromatin state switches by thresholding on the value of
-the Consensus score, which sores the similarity between the cluster assignments
+Epigenomics Project, restricted to a short region on chromosome 19. In the code below, we import the input to chromswitch and run chromswitch on our dataset. This
+involves constructing a feature matrix, and we will describe two ways of
+doing so. We can then call chromatin state switches by thresholding on the value of
+the Consensus score, which scores the similarity between the cluster assignments
 and the biological condition labels.
 
 Chromswitch essentially requires 3 inputs:
 
 1. **Genomic query region(s)**: a `GRanges` object storing one or more regions of
 interest
-2. **Metadata dataframe**: a dataframe with at least two columns: *Sample* which stores
+2. **Reference metadata dataframe**: a dataframe with at least two columns: *Sample* which stores
 sample IDs (these can be any strings), and *Condition*, which stores the
 biological condition labels of the samples (the conditions must be strings with only two different values in the column, *e.g.* 'Fetal'/'Adult' or 'WT'/'Mut'). Additional columns are not used.
-3. **Peaks or epigenomic features**: a list of `GRanges` objects, each of which stores
+3. **Reference peaks or epigenomic features**: a list of `GRanges` objects, each of which stores
 peaks or features for one sample, with elements named according to the sample IDs as
 specified in the metadata
 
-Each of these inputs can be imported from TSV or BED files, as shown below. Learn more about `GRanges` objects by checking out `r Biocpkg("GenomicRanges")`.
+The latter two inputs define the dataset on which the query is performed.
+
+Each of these inputs can be imported from TSV or BED files. Learn more about `GRanges` objects by checking out `r Biocpkg("GenomicRanges")`.
 
 Here we use the `import()` function from `r Biocpkg("rtracklayer")` to import
 query regions stored in a BED file.
@@ -125,6 +128,8 @@ peaks <- readNarrowPeak(paths = peak_paths,  # Paths to files,
                         metadata = metadata) # Metadata dataframe
 ```
 
+## Using the summary strategy
+
 Run chromswitch using the summary strategy:
 ```{r quickstart_1, warning = FALSE}
 callSummary(query = query,       # Input 1: Query regions
@@ -139,6 +144,8 @@ Looking at the Consensus score in each case, which represents the similarity
 between the cluster assignments and the biological groups of the samples,
 here we see a good agreement in the first region, indicating a switch, and
 poor agreement in the second, indicating the absence of a switch. This score takes on values between -1 and 1, where 1 represents a perfect agreement between cluster assignments and the biological conditions of the sample
+
+## Using the binary strategy
 
 Run chromswitch using the binary strategy:
 ```{r quickstart_2, warning = FALSE}
@@ -155,9 +162,11 @@ rest of the vignette.
 
 # Overview of the method
 
-Our method for detecting chromatin state switches using epigenomic data
-involves three steps, which is reflected in its implementation in the
-chromswitch package and the functions available to users. As input,
+Our method for detecting chromatin state switches involves three steps.
+These are illustrated in the figure below, which is a schematic for the analysis
+performed on one query region, based on the reference metadata and peaks or features.
+
+As input,
 chromswitch requires epigenetic features represented by their genomic
 coordinates and optionally, some associated statistics. Possible examples
 include ChIP-seq or DNase-seq peaks, or previously-learned chromatin state
@@ -167,7 +176,7 @@ is the same for other types of epigenetic features given as intervals.
 In the pre-processing phase, the user can set thresholds on any statistics
 associated with peaks and filter out peaks below these thresholds
 (`filterPeaks()`). These statistics can then be normalized genome-wide for each
-sample (`normalizePeaks()`). More detailed discussion of the normalization process
+sample (`normalizePeaks()`), which is strongly recommended. More detailed discussion of the normalization process
 can be found in the documentation of that function.
 Both these steps are optional. We then retrieve all the peaks in each sample
 which overlap the query region (`retrievePeaks()`).
@@ -177,8 +186,7 @@ sample-by-feature matrix using one of two strategies. In the summary strategy
 (`summarizePeaks()`), we compute a set of summary statistics from the peaks 
 in each sample in the query region. These can include the mean, median, and max
 of the statistics associated with the peaks in the input, as well as the 
-fraction of the region overlapped by peaks, the number of peaks, and their
-average length. Genome-wide normalization of the data is therefore mainly
+fraction of the region overlapped by peak and the number of peaks. Genome-wide normalization of the data is therefore extremely
 important if choosing this strategy.
 
 In the binary strategy (`binarizePeaks()`) we
@@ -301,6 +309,9 @@ peak_paths <- system.file("extdata", paste0(metadata$Sample, ".H3K4me3.bed"),
 #  a helper function from chromswitch
 peaks <- readNarrowPeak(paths = peak_paths,  # Paths to files,
                         metadata = metadata)
+
+# Ensure the list is named by sample
+names(peaks) <- metadata$Sample
 ```
 
 **Option 2**: To read in features in other formats where the first three columns are *chr*, 
@@ -354,13 +365,13 @@ All three methods described above produce an identical `peaks` object.
 
 ## Applying the summary strategy to detect brain-specific switches
 
-We'll first run a basic analysis using the summary strategy
+We will first run a basic analysis using the summary strategy
 for constructing 
-feature matrices, summarizing on the `qValue` and `signalValue` statistics only.
-This means that for each sample, the features used to the cluster samples in the
-region will be the mean, median, and maximum of these two statistics across
-peaks. We will apply genome-wide normalization to the same columns we will use
-in the feature matrices. All the computations described in the method are 
+feature matrices, using the default features under the summary matrix
+construction strategy: the number of peaks in the region, and the fraction
+of the region overlapped by peaks. Note that whne the number of peaks is large
+($n >> 1$), the output, particularly the heatmap, may be difficult to interpret.
+All the computations described in the method are 
 wrapped in one command; in later sections we'll explore running each 
 step of the method (preprocessing, feature matrix construction, clustering)
 individually.
@@ -387,6 +398,14 @@ containing putative chromatin state switches:
 out[out$Consensus >= 0.75, ]
 ```
 
+Now, we'll construct the feature matrix by summarizing on the `qValue` and
+`signalValue` statistics. This means that for each sample, the features used to
+the cluster samples in the
+region will be the mean, median, and maximum of these two statistics across
+peaks. We will apply genome-wide normalization to the same columns we will use
+in the feature matrices. Normalization is an optional step, but
+strongly recommended.
+
 Let's explore some more options for detecting chromatin state switches
 with chromswitch. The options are briefly described in the comments,
 but you can obtain additional explanation of arguments and explore others
@@ -412,7 +431,7 @@ out2 <- callSummary(
                 filter_thresholds = c(10, 4),
 
                 # Normalization options
-                normalize = TRUE,
+                normalize = TRUE, # Strongly recommended
                 # By default, set to equal summarize_columns, below
                 normalize_columns = c("qValue", "signalValue"),
 
@@ -420,10 +439,9 @@ out2 <- callSummary(
                 summarize_columns = c("qValue", "signalValue"),
 
                 # In addition to summarizing peak statistics,
-                # we can also optionally summarize peak length, and compute the
+                # we can also optionally compute the
                 # fraction of the region overlapped by peaks
                 # and the number of peaks
-                length = FALSE,
                 fraction = TRUE,
                 n = FALSE,
                 
@@ -447,7 +465,7 @@ out2
 The summary approach can be applied to epigenomic data where there
 are no statistics associated with the features (peaks, states, *etc.*). In this
 case, set `summarize_columns = NULL`, `filter = FALSE`, `normalize = FALSE`,
-and ensure that one or more of `length`, `n`, and `fraction` are set to `TRUE`.
+and ensure that either `n` or `fraction` (or both) are set to `TRUE`.
 
 ## Applying the binary strategy to detect brain-specific switches
 
@@ -600,6 +618,11 @@ of outliers in each tail to bound can be specified by the user in the `tail`
 parameter, which expects a fraction in [0, 1] (for example, `tail = 0.005` results
 in bounding the upper and lower 0.5% of the data, the default).
 
+This normalization is optional, but is strongly recommended. The effect of *not*
+normalizing is that the hierarchical clustering algorithm will be influenced
+by small changes between samples, which may lead to false positive chromatin
+state switch calls.
+
 ```{r normalize}
 # Summary of the two statistics we will use downstream in raw data in one sample
 H3K4me3_filt %>% lapply(as.data.frame) %>%
@@ -647,10 +670,10 @@ We can now construct a sample-by-feature matrix from the filtered and normalized
 data in the query region.
 To do so, we need to select some summary statistics to be the features
 in the matrix. If there are any values associated with the peaks or data,
-specifying these in the `cols` parameter to `summarizePeaks()` results in taking the mean, median, and maximum of each statistic as a separate feature. There are also three
+specifying these in the `cols` parameter to `summarizePeaks()` results in taking the mean, median, and maximum of each statistic as a separate feature. There are also two
 measures which can be calculated from genomic ranges alone: the number of peaks
-overlapping the query region (argument `n`), the fraction of the region
-overlapped by peaks (argument `fraction`), and the take the mean, median, and max of the length of peaks (argument `length`). These parameters take logical
+overlapping the query region (argument `n`), and the fraction of the region
+overlapped by peaks (argument `fraction`). These parameters take logical
 values specifying whether or not they should be included.
 
 Here, we take the mean, median, and max of the *q* value and fold

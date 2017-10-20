@@ -15,7 +15,8 @@ test_that("summarizePeaks generates summary-stats feature matrices", {
         signalValue = as.integer(c(10, 3)),
         pValue = as.integer(c(20, 20)),
         qValue = as.integer(c(20, 19)),
-        peak = as.integer(c(930, 220)), stringsAsFactors = FALSE),
+        peak = as.integer(c(930, 220)),
+        length = c(251, 201), stringsAsFactors = FALSE),
         keep.extra.columns = TRUE)
 
     lpk <- localPeaks(region = region,

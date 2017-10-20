@@ -24,14 +24,14 @@ test_that("The summary strategy wrapper properly executes the analysis", {
         region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
         k = c(2, 2),
-        Average_Silhouette = c(0.9000673, 0.6636754),
+        Average_Silhouette = c(0.9822687, 0.5615044),
         Consensus = c(1, -0.07207207),
         E068 = as.integer(c(1, 1)),
-        E071 = as.integer(c(1, 2)),
-        E074 = as.integer(c(1, 1)),
-        E101 = as.integer(c(2, 2)),
+        E071 = as.integer(c(1, 1)),
+        E074 = as.integer(c(1, 2)),
+        E101 = as.integer(c(2, 1)),
         E102 = as.integer(c(2, 1)),
-        E110 = as.integer(c(2, 1)), stringsAsFactors = FALSE
+        E110 = as.integer(c(2, 2)), stringsAsFactors = FALSE
     )
 
     output <- data.frame(
@@ -88,12 +88,23 @@ test_that("The summary strategy wrapper properly executes the analysis", {
                  "specify thresholds")
 
     expect_error(call(mark = "H3K4me3", normalize = FALSE,
+                      filter = FALSE,
+                      summarize_columns = NULL,
+                      fraction = FALSE, n = FALSE),
+                 "cannot construct")
+
+    expect_error(call(mark = "H3K4me3", normalize = FALSE,
                       filter = TRUE,
                       filter_columns = "pValue",
                       filter_thresholds = NULL,
                       summarize_columns = c("pValue", "qValue", "signalValue"),
                       heatmap = FALSE),
                  "specify thresholds")
+
+    # expect_error(call(mark = "H3K4me3", normalize = TRUE,
+    #                   summarize_columns = NULL,
+    #                   heatmap = FALSE),
+    #              "no columns provided")
 
     output_nonorm <- data.frame(
         region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
@@ -123,6 +134,15 @@ test_that("The summary strategy wrapper properly executes the analysis", {
 
     file.remove(paste0(GRangesToCoord(regions[1]), ".pdf"))
     file.remove(paste0(GRangesToCoord(regions[2]), ".pdf"))
+
+    expect_equal(call(normalize = FALSE,
+                      mark = "H3K4me3",
+                      summarize_columns = c("pValue", "qValue", "signalValue"),
+                      heatmap = TRUE,
+                      outdir = "outdir"),
+                   output_nonorm, tolerance = 1e-2)
+
+    unlink("outdir", recursive = TRUE)
 
     expect_error(call(normalize = FALSE,
                         mark = "H3K4me3",
