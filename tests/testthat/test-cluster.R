@@ -230,7 +230,7 @@ test_that("Clustering function assigns number of features", {
                        ranges = IRanges(start = 100, end = 300))
 
     pks2 <- GRanges(seqnames = c(), ranges = IRanges(start = c(), end = c()))
-    lp2 <- localPeaks(region2, list(A = pks2, B = pks2, C = pks2, D = pks2),
+    lp2 <- LocalPeaks(region2, list(A = pks2, B = pks2, C = pks2, D = pks2),
                       c("A", "B", "C", "D"))
 
     meta <- data.frame(Sample = c("A", "B", "C", "D"),

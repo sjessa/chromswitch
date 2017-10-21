@@ -31,7 +31,7 @@ test_that("retrievePeaks finds peaks in the query region", {
                       ranges = IRanges(start = 100, end = 300))
 
     expect_equal(retrievePeaks(pks, metadata, region),
-                 localPeaks(region, pks_in_region, c("A", "B")))
+                 LocalPeaks(region, pks_in_region, c("A", "B")))
 
     region2 <- GRanges(seqnames = "chr2",
                       ranges = IRanges(start = 100, end = 300))
@@ -55,7 +55,7 @@ test_that("reducePeaks reduces nearby peaks within a gap", {
     region <- GRanges(seqnames = "chr1",
                       ranges = IRanges(start = 100, end = 1000))
 
-    lpk <- localPeaks(region, pks, c("A", "B"))
+    lpk <- LocalPeaks(region, pks, c("A", "B"))
 
     pks_red <- list(A = GRanges(seqnames = rep("chr1", 2),
                             ranges = IRanges(start = c(100, 500),
@@ -64,7 +64,7 @@ test_that("reducePeaks reduces nearby peaks within a gap", {
                             ranges = IRanges(start = c(100, 500),
                                              end = c(250, 600))))
 
-    expect_equal(reducePeaks(lpk, 80), localPeaks(region, pks_red, c("A", "B")))
+    expect_equal(reducePeaks(lpk, 80), LocalPeaks(region, pks_red, c("A", "B")))
     expect_equal(reducePeaks(lpk, 5), lpk)
     expect_error(reducePeaks(lpk, -100), "must be a positive integer")
     expect_error(reducePeaks(lpk, 0), "must be a positive integer")

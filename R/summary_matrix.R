@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
 #
 # Feature matrix construction functions for the summary strategy:
-# Functions which take in a localPeaks object or a sample-by-feature matrix,
+# Functions which take in a LocalPeaks object or a sample-by-feature matrix,
 # and return a feature matrix, and their helpers
 #
 # ---------------------------------------------------------------------------- #
@@ -130,8 +130,8 @@ summarizeSamplePeaks <- function(peaks, region, mark, cols =  NULL,
 #' feature matrix where each row is a vector of summary statistics computed from
 #' peaks in the region.
 #'
-#' @param localpeaks localPeaks object
-#' @param mark String specifying the name of the mark for which the localPeaks
+#' @param localpeaks LocalPeaks object
+#' @param mark String specifying the name of the mark for which the LocalPeaks
 #' object is given
 #' @param cols Character vector of column names on which to compute summary
 #' statistics

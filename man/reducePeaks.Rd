@@ -7,18 +7,18 @@
 reducePeaks(localpeaks, gap)
 }
 \arguments{
-\item{localpeaks}{localPeaks object}
+\item{localpeaks}{LocalPeaks object}
 
 \item{gap}{Numeric value, specifying the threshold distance for merging.
 Peaks in the same sample which are within this many bp of each other will
 be merged.}
 }
 \value{
-The localPeaks object that was provided as input, with nearby peaks
+The LocalPeaks object that was provided as input, with nearby peaks
 merged
 }
 \description{
-Given a localPeaks object, merge peaks which are in the same sample and are
+Given a LocalPeaks object, merge peaks which are in the same sample and are
 separated by no more than \code{gap} base pairs. When two non-overlapping
 peaks are merged, a new peak is created which starts at the starting position
 of the first peak and ends at the ending position of the second peak,

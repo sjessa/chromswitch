@@ -69,7 +69,7 @@ test_that("Binaryfeature matrix construction works", {
 
     pks <- list(a = a, b = b, c = c, d = d)
 
-    lp <- localPeaks(region = GRanges(seqnames = "chr1",
+    lp <- LocalPeaks(region = GRanges(seqnames = "chr1",
                                     ranges = IRanges(start = 1, 3000)),
                     peaks = pks,
                     samples = c("a", "b", "c", "d"))
@@ -90,7 +90,7 @@ test_that("Binaryfeature matrix construction works", {
                       ranges = IRanges(start = 100, end = 300))
 
     pks2 <- GRanges(seqnames = c(), ranges = IRanges(start = c(), end = c()))
-    lp2 <- localPeaks(region2, list(A = pks2, B = pks2), c("A", "B"))
+    lp2 <- LocalPeaks(region2, list(A = pks2, B = pks2), c("A", "B"))
 
     expect_warning(binarizePeaks(lp2, 0.5), "No peaks found")
     expect_equal(suppressWarnings(binarizePeaks(lp2, 0.5)),

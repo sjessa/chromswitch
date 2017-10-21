@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------- #
 #
 # Feature matrix construction functions for the binary strategy:
-# Functions which take in a localPeaks object or a sample-by-feature matrix,
+# Functions which take in a LocalPeaks object or a sample-by-feature matrix,
 # and return a feature matrix, and their helpers
 #
 # ---------------------------------------------------------------------------- #
@@ -119,7 +119,7 @@ getSamplePeakProfile <- function(peaks, windows, p) {
 #' feature matrix where each row is a binary vector which models the presence
 #' or absence of unqiue peaks in the region.
 #'
-#' @param localpeaks localPeaks object storing peaks for all samples in the
+#' @param localpeaks LocalPeaks object storing peaks for all samples in the
 #' query region
 #' @param p Numeric value in [0, 1] giving the fraction of reciprocal overlap
 #' to require.

@@ -7,9 +7,9 @@
 summarizePeaks(localpeaks, mark, cols, fraction = TRUE, n = FALSE)
 }
 \arguments{
-\item{localpeaks}{localPeaks object}
+\item{localpeaks}{LocalPeaks object}
 
-\item{mark}{String specifying the name of the mark for which the localPeaks
+\item{mark}{String specifying the name of the mark for which the LocalPeaks
 object is given}
 
 \item{cols}{Character vector of column names on which to compute summary

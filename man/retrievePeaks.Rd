@@ -17,7 +17,7 @@ or ChIP-seq target, storing paths to the BED files containing peak calls}
 the query region}
 }
 \value{
-localPeaks object as described in \code{\linkS4class{localPeaks}}
+LocalPeaks object as described in \code{\linkS4class{LocalPeaks}}
 }
 \description{
 Given a peak calls for a set of samples, for each sample, get the peaks which

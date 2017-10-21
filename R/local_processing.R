@@ -1,8 +1,8 @@
 # ---------------------------------------------------------------------------- #
 #
 # Local processing functions:
-# Functions which take in global sets of peak calls or localPeaks objects,
-# performing some manipulation on the local peaks, returning localPeaks objects
+# Functions which take in global sets of peak calls or LocalPeaks objects,
+# performing some manipulation on the local peaks, returning LocalPeaks objects
 #
 # ---------------------------------------------------------------------------- #
 
@@ -22,7 +22,7 @@ retrieveSamplePeaks <- function(peaks, region) {
     # Retrieve peaks and associated metadata columns in query region
     olaps       <- as.data.frame(GenomicRanges::findOverlaps(region, peaks))
     idx         <- olaps$subjectHits
-    local_peaks <- peaks[idx, ] # Not a localPeaks object, just the peaks
+    local_peaks <- peaks[idx, ] # Not a LocalPeaks object, just the peaks
 
     # Add peak length as a metadata column using the GR width accessor
     mcols(local_peaks) <- c(mcols(local_peaks),
@@ -47,7 +47,7 @@ retrieveSamplePeaks <- function(peaks, region) {
 #' @param region GRanges object specifying one genomic region,
 #' the query region
 #'
-#' @return localPeaks object as described in \code{\linkS4class{localPeaks}}
+#' @return LocalPeaks object as described in \code{\linkS4class{LocalPeaks}}
 #'
 #' @examples
 #'
@@ -68,7 +68,7 @@ retrieveSamplePeaks <- function(peaks, region) {
 retrievePeaks <- function(peaks, metadata, region) {
 
     local_peaks <- lapply(peaks, retrieveSamplePeaks, region)
-    localPeaks(region  = region,
+    LocalPeaks(region  = region,
                 peaks   = local_peaks,
                 samples = metadata$Sample)
 
@@ -77,18 +77,18 @@ retrievePeaks <- function(peaks, metadata, region) {
 
 #' reducePeaks
 #'
-#' Given a localPeaks object, merge peaks which are in the same sample and are
+#' Given a LocalPeaks object, merge peaks which are in the same sample and are
 #' separated by no more than \code{gap} base pairs. When two non-overlapping
 #' peaks are merged, a new peak is created which starts at the starting position
 #' of the first peak and ends at the ending position of the second peak,
 #' spanning the range of both peaks and the gap between them.
 #'
-#' @param localpeaks localPeaks object
+#' @param localpeaks LocalPeaks object
 #' @param gap Numeric value, specifying the threshold distance for merging.
 #' Peaks in the same sample which are within this many bp of each other will
 #' be merged.
 #'
-#' @return The localPeaks object that was provided as input, with nearby peaks
+#' @return The LocalPeaks object that was provided as input, with nearby peaks
 #' merged
 #'
 #' @examples

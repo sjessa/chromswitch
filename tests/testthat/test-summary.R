@@ -19,7 +19,7 @@ test_that("summarizePeaks generates summary-stats feature matrices", {
         length = c(251, 201), stringsAsFactors = FALSE),
         keep.extra.columns = TRUE)
 
-    lpk <- localPeaks(region = region,
+    lpk <- LocalPeaks(region = region,
                 peaks = list(A = gr, B = gr),
                 samples = c("A", "B"))
 

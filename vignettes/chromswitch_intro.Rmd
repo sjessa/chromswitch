@@ -644,8 +644,8 @@ H3K4me3_norm %>% lapply(as.data.frame) %>%
 ### Retrieve peaks in the query region
 Next, we'll retrieve the peaks in the query region. Here we'll consider the 
 5 kbp window around the transcription start site of *TTYH1*, which is a known
-brain-specific gene. This returns an object of the `localPeaks` class.
-A `localPeaks` object is a container for the peaks for a set
+brain-specific gene. This returns an object of the `LocalPeaks` class.
+A `LocalPeaks` object is a container for the peaks for a set
 of samples in a specific genomic region of interest, as well as the genomic region
 itself, and the sample IDs. These components are needed to convert sets of peaks
 into rectangular feature-by-sample matrices which we can then use for downstream
@@ -745,7 +745,7 @@ between two peaks below which they should be joined.
 *Example of a transformation on peaks to join nearby peaks which are likely due
 to the same biological event, implemented in chromswitch as `reducePeaks()`.*
 
-The `reducePeaks()` function takes a `localPeaks` object as input, so we can
+The `reducePeaks()` function takes a `LocalPeaks` object as input, so we can
 use the peaks in the *TTYH1* window that we've already obtained.
 ```{r reduce}
 

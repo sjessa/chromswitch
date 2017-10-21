@@ -1,13 +1,13 @@
 # ---------------------------------------------------------------------------- #
 #
-# localPeaks object
-# Defines an S4 class "localPeaks", accessor generics and methods,
-# and other associated methods for working with localPeaks objects
+# LocalPeaks object
+# Defines an S4 class "LocalPeaks", accessor generics and methods,
+# and other associated methods for working with LocalPeaks objects
 #
 # ---------------------------------------------------------------------------- #
 
 
-setClass("localPeaks",
+setClass("LocalPeaks",
 
         # Define slot contents
         slots = c(
@@ -17,9 +17,9 @@ setClass("localPeaks",
 )
 
 
-# localPeaks object
+# LocalPeaks object
 #
-# This function is a constructor for a localPeaks object.
+# This function is a constructor for a LocalPeaks object.
 #
 # @param region A GRanges object specifying one genomic region,
 # the query region
@@ -27,10 +27,10 @@ setClass("localPeaks",
 # for each sample for one mark in \code{region}.
 # @param samples Character vector with sample identifiers.
 #
-# @return localPeaks object
-localPeaks <- function(region, peaks, samples) {
+# @return LocalPeaks object
+LocalPeaks <- function(region, peaks, samples) {
 
-    new("localPeaks",
+    new("LocalPeaks",
         region = region,
         peaks = peaks,
         samples = as.character(samples))
@@ -38,23 +38,23 @@ localPeaks <- function(region, peaks, samples) {
 }
 
 
-#' region
-#'
-#' Generic function
-#'
-#' @param x Object
-#'
-#' @return A region associated with the object
-setGeneric("region", function(x) {standardGeneric("region")})
+# region
+#
+# Generic function
+#
+# @param x Object
+#
+# @return A region associated with the object
+setGeneric("region", function(x) standardGeneric("region"))
 
 
 #' region
 #'
-#' Accessor for \code{region} slot of a \code{\linkS4class{localPeaks}} object.
+#' Accessor for \code{region} slot of a \code{\linkS4class{LocalPeaks}} object.
 #'
-#' @param x localPeaks object
+#' @param x LocalPeaks object
 #'
-#' @return GRanges object with query region associated with the localPeaks
+#' @return GRanges object with query region associated with the LocalPeaks
 #' object
 #'
 #' @examples
@@ -76,25 +76,25 @@ setGeneric("region", function(x) {standardGeneric("region")})
 #'
 #' @export
 #' @aliases region-method
-setMethod("region", signature(x = "localPeaks"),
+setMethod("region", signature(x = "LocalPeaks"),
           function(x) x@region)
 
 
-#' peaks
-#'
-#' Generic function
-#'
-#' @param x Object
-#'
-#' @return A set of peaks associated with the object
-setGeneric("peaks", function(x) {standardGeneric("peaks")})
+# peaks
+#
+# Generic function
+#
+# @param x Object
+#
+# @return A set of peaks associated with the object
+setGeneric("peaks", function(x) standardGeneric("peaks"))
 
 
 #' peaks
 #'
-#' Accessor for \code{peaks} slot of a \code{\linkS4class{localPeaks}} object.
+#' Accessor for \code{peaks} slot of a \code{\linkS4class{LocalPeaks}} object.
 #'
-#' @param x localPeaks object
+#' @param x LocalPeaks object
 #'
 #' @return List of lists of GRanges objects. Each outer list stores peaks
 #' for each sample for one mark in the region given by \code{region(lpks)}.
@@ -117,17 +117,17 @@ setGeneric("peaks", function(x) {standardGeneric("peaks")})
 #'
 #' @export
 #' @aliases peaks-method
-setMethod("peaks", signature(x = "localPeaks"),
+setMethod("peaks", signature(x = "LocalPeaks"),
           function(x) x@peaks)
 
 
 #' samples
 #'
-#' Accessor for \code{samples} slot of a \code{\linkS4class{localPeaks}} object.
+#' Accessor for \code{samples} slot of a \code{\linkS4class{LocalPeaks}} object.
 #'
-#' @param object localPeaks object
+#' @param object LocalPeaks object
 #'
-#' @return Character vector with sample IDs for the localPeaks object
+#' @return Character vector with sample IDs for the LocalPeaks object
 #'
 #' @examples
 #' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
@@ -147,14 +147,14 @@ setMethod("peaks", signature(x = "localPeaks"),
 #'
 #' @export
 #' @aliases samples-method
-setMethod("samples", signature(object = "localPeaks"),
+setMethod("samples", signature(object = "LocalPeaks"),
           function(object) object@samples)
 
 
 # isEmpty
 #
-# Returns TRUE if the localPeaks object has no peaks in
+# Returns TRUE if the LocalPeaks object has no peaks in
 # any of the samples in \code{object@peaks}, i.e. if no peaks were found in
 # the query region.
-setMethod("isEmpty", signature(x = "localPeaks"),
+setMethod("isEmpty", signature(x = "LocalPeaks"),
         function(x) {sum(unlist(lapply(peaks(x), length))) == 0})

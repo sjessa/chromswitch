@@ -162,7 +162,7 @@ callSummary <- function(query, metadata, peaks, mark,
     if ((!is.null(titles)) && length(query) != length(titles))
         stop("Please provide one title per query region.")
 
-    # Retrieve peaks: get a localPeaks object for each query region
+    # Retrieve peaks: get a LocalPeaks object for each query region
     lpks      <- bplapply(query, function(region)
                         retrievePeaks(peaks, metadata, region),
                         BPPARAM = BPPARAM)
@@ -334,7 +334,7 @@ callBinary <- function(query, metadata, peaks,
                             thresholds = filter_thresholds)
     }
 
-    # Retrieve peaks: get a localPeaks object for each query region
+    # Retrieve peaks: get a LocalPeaks object for each query region
     lpks <- bplapply(query, function(region)
         retrievePeaks(peaks, metadata, region), BPPARAM = BPPARAM)
 

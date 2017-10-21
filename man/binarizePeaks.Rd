@@ -7,7 +7,7 @@
 binarizePeaks(localpeaks, p)
 }
 \arguments{
-\item{localpeaks}{localPeaks object storing peaks for all samples in the
+\item{localpeaks}{LocalPeaks object storing peaks for all samples in the
 query region}
 
 \item{p}{Numeric value in [0, 1] giving the fraction of reciprocal overlap
