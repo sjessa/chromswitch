@@ -704,7 +704,7 @@ goodness based on cluster compactness and separation.
 ```{r cluster}
 
 cluster(ft_mat = summary_mat,
-        region = ttyh1,
+        query = ttyh1,
         metadata = metadata,
         heatmap = TRUE,
         title = "TTYH1 - summary",
@@ -784,7 +784,7 @@ the biological groups in our analysis.
 
 cluster(ft_mat = binary_mat,
         metadata = metadata,
-        region = ttyh1,
+        query = ttyh1,
         optimal_clusters = TRUE)
 
 ```
