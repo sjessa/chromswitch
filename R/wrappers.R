@@ -178,8 +178,8 @@ callSummary <- function(query, metadata, peaks, mark,
     # Cluster the feature matrices
     if (!isTRUE(heatmap)) {
 
-        results <- Map(f = function(ft_mat, region)
-            cluster(ft_mat, metadata, region,
+        results <- Map(f = function(ft_mat, query)
+            cluster(ft_mat, metadata, query,
                     heatmap = FALSE,
                     title = NULL,
                     outdir = NULL,
@@ -196,8 +196,8 @@ callSummary <- function(query, metadata, peaks, mark,
 
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
-        results <- bpmapply(FUN = function(ft_mat, region, title)
-            cluster(ft_mat, metadata, region,
+        results <- bpmapply(FUN = function(ft_mat, query, title)
+            cluster(ft_mat, metadata, query,
                     heatmap = heatmap,
                     title = title,
                     outdir = outdir,
@@ -353,8 +353,8 @@ callBinary <- function(query, metadata, peaks,
     # Cluster the feature matrices
     if (!isTRUE(heatmap)) {
 
-        results <- bpmapply(FUN = function(ft_mat, region)
-            cluster(ft_mat, metadata, region,
+        results <- bpmapply(FUN = function(ft_mat, query)
+            cluster(ft_mat, metadata, query,
                     heatmap = FALSE,
                     title = NULL,
                     outdir = NULL,
@@ -370,8 +370,8 @@ callBinary <- function(query, metadata, peaks,
 
         if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
 
-        results <- bpmapply(FUN = function(ft_mat, region, title)
-            cluster(ft_mat, metadata, region,
+        results <- bpmapply(FUN = function(ft_mat, query, title)
+            cluster(ft_mat, metadata, query,
                     heatmap = TRUE,
                     title = title,
                     outdir = outdir,

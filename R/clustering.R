@@ -20,7 +20,7 @@
 #' @param metadata A dataframe with a column "Sample" which stores
 #' the sample identifiers, and a column "Condition", which stores
 #' the biological condition labels of the samples
-#' @param region GRanges object specifying the query region
+#' @param query GRanges object specifying the query region
 #' @param heatmap (Optional) Logical value indicating whether to plot
 #' the heatmap for hierarchical clustering. Default: FALSE
 #' @param title (Optional) If \code{heatmap} is TRUE, specify the title of the
@@ -90,7 +90,7 @@
 #' the cluster validity statistics, and the cluster assignments for each sample
 #'
 #' @export
-cluster <- function(ft_mat, metadata, region,
+cluster <- function(ft_mat, metadata, query,
                     heatmap = FALSE, title = NULL, outdir = NULL,
                     optimal_clusters = TRUE,
                     n_features = FALSE,
@@ -100,7 +100,7 @@ cluster <- function(ft_mat, metadata, region,
                     signal_col = NULL,
                     mark = NULL) {
 
-    if (is(region, "GRangesList")) region <- unlist(region)
+    if (is(query, "GRangesList")) query <- unlist(query)
 
     # If only one feature, can't draw a heatmap
     if (ncol(ft_mat) == 1) heatmap = FALSE
@@ -122,7 +122,7 @@ cluster <- function(ft_mat, metadata, region,
         conditions_colours[conditions_colours == conditions[1]] <-"mediumorchid"
         conditions_colours[conditions_colours == conditions[2]] <- "limegreen"
 
-        if (is.null(title)) title <- GRangesToCoord(region)
+        if (is.null(title)) title <- GRangesToCoord(query)
 
         if(!is.null(outdir) && !dir.exists(outdir))
             dir.create(outdir, showWarnings = FALSE)
@@ -189,11 +189,11 @@ cluster <- function(ft_mat, metadata, region,
         as.data.frame(stringsAsFactors = FALSE)
     names(clusters_df) <- names(clusters)
 
-    coord <- GRangesToCoord(region)
+    coord <- GRangesToCoord(query)
 
-    meta_cols <- mcols(region)
+    meta_cols <- mcols(query)
 
-    region_df <- data.frame(region = coord,
+    query_df <- data.frame(query = coord,
                             meta_cols,
                             stringsAsFactors = FALSE)
 
@@ -255,7 +255,7 @@ cluster <- function(ft_mat, metadata, region,
                 dplyr::bind_cols()
             ft_mat2$olap <- rowSums(ft_mat2)
             ft_mat2 <- ft_mat2 %>% dplyr::mutate(
-                frac = olap / (width(region) + 1))
+                frac = olap / (width(query) + 1))
             rownames(ft_mat2) <- rownames(ft_mat)
 
             col <- "frac"
@@ -270,7 +270,7 @@ cluster <- function(ft_mat, metadata, region,
             dplyr::summarize_at(col, mean, na.rm = TRUE) %>%
             dplyr::arrange_(paste0("desc(", col, ")"))
 
-        # 3. Guess the state of the test condition in the region
+        # 3. Guess the state of the test condition in the query
         stats$state <- estimateState(clust_ft_mat)
     }
 
@@ -278,7 +278,7 @@ cluster <- function(ft_mat, metadata, region,
                                                 0,
                                                 ncol(ft_mat))
 
-    results <- dplyr::bind_cols(region_df, stats, clusters_df)
+    results <- dplyr::bind_cols(query_df, stats, clusters_df)
 
     return(as.data.frame(results))
 

@@ -56,37 +56,37 @@ test_that("The clustering function returns the correct set of clusters", {
 
     rownames(ft_mat) <- metadata$Sample
 
-    region = GenomicRanges::GRanges(seqnames = "chr19",
+    query = GenomicRanges::GRanges(seqnames = "chr19",
                                     ranges = IRanges::IRanges(start = 54924104,
                                                               end = 54929104))
 
     cluster_out <- data.frame(
-        region = GRangesToCoord(region),
+        query = GRangesToCoord(query),
         k = 3,
         Average_Silhouette = 0.8231449,
         Consensus = 0.4292562,
         E068 = 1, E071 = 1, E074 = 2,
         E101 = 2, E102 = 3, E110 = 3, stringsAsFactors = FALSE)
 
-    expect_equal(cluster(ft_mat, metadata, region, optimal_clusters = TRUE),
+    expect_equal(cluster(ft_mat, metadata, query, optimal_clusters = TRUE),
                  cluster_out, tolerance = 1e-6)
 
     cluster_out_not_optimal <- data.frame(
-        region = GRangesToCoord(region),
+        query = GRangesToCoord(query),
         k = 2,
         Average_Silhouette = 0.6145993,
         Consensus = 0.427389,
         E068 = 1, E071 = 1, E074 = 2,
         E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
-    expect_equal(cluster(ft_mat, metadata, region, optimal_clusters = FALSE),
+    expect_equal(cluster(ft_mat, metadata, query, optimal_clusters = FALSE),
                  cluster_out_not_optimal, tolerance = 1e-6)
 
     ft_mat <- data.frame(no_peak = c(rep(TRUE, length(metadata$Sample))))
     rownames(ft_mat) <- metadata$Sample
 
     cluster_out2 <- data.frame(
-        region = GRangesToCoord(region),
+        query = GRangesToCoord(query),
         k = 2,
         Average_Silhouette = 0,
         Consensus = 0.1560355,
@@ -117,39 +117,39 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
 
     rownames(ft_mat) <- metadata$Sample
 
-    region = GenomicRanges::GRanges(seqnames = "chr19",
+    query = GenomicRanges::GRanges(seqnames = "chr19",
                                     ranges = IRanges::IRanges(start = 54924104,
                                                             end = 54929104))
 
     cluster_out <- data.frame(
-        region = GRangesToCoord(region),
+        query = GRangesToCoord(query),
         k = 2,
         Average_Silhouette = 0.6883056,
         Consensus = 1,
         E068 = 1, E071 = 1, E074 = 1,
         E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
-    expect_equal(cluster(ft_mat, metadata, region),
+    expect_equal(cluster(ft_mat, metadata, query),
                 cluster_out)
 
-    expect_equal(cluster(ft_mat, metadata, region, heatmap = TRUE),
+    expect_equal(cluster(ft_mat, metadata, query, heatmap = TRUE),
                  cluster_out)
 
-    expect_equal(cluster(ft_mat, metadata, region, heatmap = TRUE,
+    expect_equal(cluster(ft_mat, metadata, query, heatmap = TRUE,
                         outdir = "."),
                  cluster_out)
 
     # Clean up
-    file.remove(paste0(GRangesToCoord(region), ".pdf"))
+    file.remove(paste0(GRangesToCoord(query), ".pdf"))
 
-    region2 <- GenomicRanges::GRanges(seqnames = "chr19",
+    query2 <- GenomicRanges::GRanges(seqnames = "chr19",
                                     ranges = IRanges::IRanges(start = 54924104,
                                                               end = 54929104))
 
-    mcols(region2)$name <- "Test"
+    mcols(query2)$name <- "Test"
 
     cluster_out2 <- data.frame(
-        region = GRangesToCoord(region),
+        query = GRangesToCoord(query),
         name = "Test",
         k = 2,
         Average_Silhouette = 0.6883056,
@@ -157,11 +157,11 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         E068 = 1, E071 = 1, E074 = 1,
         E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
-    expect_equal(cluster(ft_mat, metadata, region2, heatmap = FALSE),
+    expect_equal(cluster(ft_mat, metadata, query2, heatmap = FALSE),
                  cluster_out2)
 
     cluster_out3 <- data.frame(
-        region = GRangesToCoord(region),
+        query = GRangesToCoord(query),
         k = 2,
         Average_Silhouette = 0.6883056,
         Consensus = 1,
@@ -170,7 +170,7 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         E068 = 1, E071 = 1, E074 = 1,
         E101 = 2, E102 = 2, E110 = 2, stringsAsFactors = FALSE)
 
-    expect_equal(cluster(ft_mat, metadata, region,
+    expect_equal(cluster(ft_mat, metadata, query,
                          n_features = TRUE,
                          estimate_state = TRUE,
                          method = "summary",
@@ -179,7 +179,7 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
                          test_condition = "Brain"),
                  cluster_out3)
 
-    expect_equal(cluster(ft_mat, metadata, region,
+    expect_equal(cluster(ft_mat, metadata, query,
                          n_features = TRUE,
                          estimate_state = TRUE,
                          method = "summary",
@@ -188,17 +188,17 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
                          test_condition = "Brain"),
                  cluster_out3)
 
-    expect_error(cluster(ft_mat, metadata, region,
+    expect_error(cluster(ft_mat, metadata, query,
                          n_features = TRUE,
                          estimate_state = TRUE,
                          method = "summary"), "condition")
 
-    expect_error(cluster(ft_mat, metadata, region,
+    expect_error(cluster(ft_mat, metadata, query,
                          n_features = TRUE,
                          estimate_state = TRUE, method = "summary",
                          test_condition = "Brain"), "signal value")
 
-    expect_error(cluster(ft_mat, metadata, region,
+    expect_error(cluster(ft_mat, metadata, query,
                          n_features = TRUE,
                          estimate_state = TRUE,
                          method = "summary",
@@ -214,7 +214,7 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
         lapply(coordToGRanges)
     attr(ft_mat2, "features") <- Reduce("c", gr)
 
-    expect_equal(dplyr::select(cluster(ft_mat2, metadata, region2,
+    expect_equal(dplyr::select(cluster(ft_mat2, metadata, query2,
                                        estimate_state = TRUE,
                                        method = "binary",
                                        test_condition = "Brain",
@@ -226,11 +226,11 @@ test_that("Hierarchical clustering finds clusters from feature matrix", {
 
 test_that("Clustering function assigns number of features", {
 
-    region2 <- GRanges(seqnames = "chr1",
+    query2 <- GRanges(seqnames = "chr1",
                        ranges = IRanges(start = 100, end = 300))
 
     pks2 <- GRanges(seqnames = c(), ranges = IRanges(start = c(), end = c()))
-    lp2 <- LocalPeaks(region2, list(A = pks2, B = pks2, C = pks2, D = pks2),
+    lp2 <- LocalPeaks(query2, list(A = pks2, B = pks2, C = pks2, D = pks2),
                       c("A", "B", "C", "D"))
 
     meta <- data.frame(Sample = c("A", "B", "C", "D"),
@@ -238,7 +238,7 @@ test_that("Clustering function assigns number of features", {
 
     ft_mat <- suppressWarnings(binarizePeaks(lp2, 0.5))
 
-    expect_equal(dplyr::select(suppressWarnings(cluster(ft_mat, meta, region2,
+    expect_equal(dplyr::select(suppressWarnings(cluster(ft_mat, meta, query2,
                                                  n_features = TRUE)),
                         "n_features"),
                  data.frame(n_features = 0, stringsAsFactors = FALSE))

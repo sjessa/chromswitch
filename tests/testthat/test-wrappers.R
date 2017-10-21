@@ -21,7 +21,7 @@ test_that("The summary strategy wrapper properly executes the analysis", {
     mcols(regions)$name <- c("test1", "test2")
 
     output_0 <- data.frame(
-        region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.9822687, 0.5615044),
@@ -35,7 +35,7 @@ test_that("The summary strategy wrapper properly executes the analysis", {
     )
 
     output <- data.frame(
-        region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.911, 0.457),
@@ -107,7 +107,7 @@ test_that("The summary strategy wrapper properly executes the analysis", {
     #              "no columns provided")
 
     output_nonorm <- data.frame(
-        region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.6949372, 0.4614938),
@@ -150,7 +150,7 @@ test_that("The summary strategy wrapper properly executes the analysis", {
                         titles = "test"), "one title per query")
 
     output_state <- data.frame(
-        region = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
+        query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
         k = c(2, 2),
         Average_Silhouette = c(0.911, 0.457),
@@ -199,7 +199,7 @@ test_that("The binary strategy classifies regions correctly", {
                     ranges = IRanges::IRanges(start = c(54924104, 54892830),
                                                 end = c(54929104, 54897288)))
 
-    output <- data.frame(region = c("chr19:54924104-54929104",
+    output <- data.frame(query = c("chr19:54924104-54929104",
                                     "chr19:54892830-54897288"),
                         k = c(2, 2),
                         Average_Silhouette = c(1, 0),
@@ -218,7 +218,7 @@ test_that("The binary strategy classifies regions correctly", {
                                                     reduce = TRUE)),
                 output, tolerance = 1e-4)
 
-    output2 <- data.frame(region = c("chr19:54924104-54929104",
+    output2 <- data.frame(query = c("chr19:54924104-54929104",
                                     "chr19:54892830-54897288"),
                          k = c(2, 2),
                          Average_Silhouette = c(0.8333333, 0),
@@ -246,7 +246,7 @@ test_that("The binary strategy classifies regions correctly", {
                                    filter = TRUE),
                  "provide names of columns to filter")
 
-    output3 <- data.frame(region = "chr19:54924104-54929104",
+    output3 <- data.frame(query = "chr19:54924104-54929104",
                           k = 2,
                           Average_Silhouette = 0.4065566,
                           Consensus = 0.1560355,

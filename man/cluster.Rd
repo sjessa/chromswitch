@@ -4,7 +4,7 @@
 \alias{cluster}
 \title{cluster}
 \usage{
-cluster(ft_mat, metadata, region, heatmap = FALSE, title = NULL,
+cluster(ft_mat, metadata, query, heatmap = FALSE, title = NULL,
   outdir = NULL, optimal_clusters = TRUE, n_features = FALSE,
   estimate_state = FALSE, method = NULL, test_condition = NULL,
   signal_col = NULL, mark = NULL)
@@ -17,7 +17,7 @@ returned by \code{\link{summarizePeaks}} or \code{\link{binarizePeaks}}}
 the sample identifiers, and a column "Condition", which stores
 the biological condition labels of the samples}
 
-\item{region}{GRanges object specifying the query region}
+\item{query}{GRanges object specifying the query region}
 
 \item{heatmap}{(Optional) Logical value indicating whether to plot
 the heatmap for hierarchical clustering. Default: FALSE}
