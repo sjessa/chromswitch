@@ -48,34 +48,34 @@ LocalPeaks <- function(region, peaks, samples) {
 setGeneric("region", function(x) standardGeneric("region"))
 
 
-#' region
-#'
-#' Accessor for \code{region} slot of a \code{\linkS4class{LocalPeaks}} object.
-#'
-#' @param x LocalPeaks object
-#'
-#' @return GRanges object with query region associated with the LocalPeaks
-#' object
-#'
-#' @examples
-#'
-#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
-#' package = "chromswitch")
-#'
-#' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = bedfiles,
-#'     stringsAsFactors = FALSE)
-#'
-#' lpk <- retrievePeaks(H3K4me3,
-#'     metadata = metadata,
-#'     region = GRanges(seqnames = "chr19",
-#'     ranges = IRanges(start = 54924104, end = 54929104)))
-#'
-#' region(lpk)
-#'
+# region
+#
+# Accessor for \code{region} slot of a \code{\linkS4class{LocalPeaks}} object.
+#
+# @param x LocalPeaks object
+#
+# @return GRanges object with query region associated with the LocalPeaks
+# object
+#
+# @examples
+#
+# samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
+# bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+# package = "chromswitch")
+#
+# metadata <- data.frame(Sample = samples,
+#     H3K4me3 = bedfiles,
+#     stringsAsFactors = FALSE)
+#
+# lpk <- retrievePeaks(H3K4me3,
+#     metadata = metadata,
+#     region = GRanges(seqnames = "chr19",
+#     ranges = IRanges(start = 54924104, end = 54929104)))
+#
+# region(lpk)
+#
+# @aliases region-method
 #' @export
-#' @aliases region-method
 setMethod("region", signature(x = "LocalPeaks"),
           function(x) x@region)
 
@@ -90,63 +90,63 @@ setMethod("region", signature(x = "LocalPeaks"),
 setGeneric("peaks", function(x) standardGeneric("peaks"))
 
 
-#' peaks
-#'
-#' Accessor for \code{peaks} slot of a \code{\linkS4class{LocalPeaks}} object.
-#'
-#' @param x LocalPeaks object
-#'
-#' @return List of lists of GRanges objects. Each outer list stores peaks
-#' for each sample for one mark in the region given by \code{region(lpks)}.
-#'
-#' @examples
-#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
-#' package = "chromswitch")
-#'
-#' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = bedfiles,
-#'     stringsAsFactors = FALSE)
-#'
-#' lpk <- retrievePeaks(H3K4me3,
-#'     metadata = metadata,
-#'     region = GRanges(seqnames = "chr19",
-#'     ranges = IRanges(start = 54924104, end = 54929104)))
-#'
-#' peaks(lpk)
-#'
+# peaks
+#
+# Accessor for \code{peaks} slot of a \code{\linkS4class{LocalPeaks}} object.
+#
+# @param x LocalPeaks object
+#
+# @return List of lists of GRanges objects. Each outer list stores peaks
+# for each sample for one mark in the region given by \code{region(lpks)}.
+#
+# @examples
+# samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
+# bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+# package = "chromswitch")
+#
+# metadata <- data.frame(Sample = samples,
+#     H3K4me3 = bedfiles,
+#     stringsAsFactors = FALSE)
+#
+# lpk <- retrievePeaks(H3K4me3,
+#     metadata = metadata,
+#     region = GRanges(seqnames = "chr19",
+#     ranges = IRanges(start = 54924104, end = 54929104)))
+#
+# peaks(lpk)
+#
+# @aliases peaks-method
 #' @export
-#' @aliases peaks-method
 setMethod("peaks", signature(x = "LocalPeaks"),
           function(x) x@peaks)
 
 
-#' samples
-#'
-#' Accessor for \code{samples} slot of a \code{\linkS4class{LocalPeaks}} object.
-#'
-#' @param object LocalPeaks object
-#'
-#' @return Character vector with sample IDs for the LocalPeaks object
-#'
-#' @examples
-#' samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
-#' bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
-#' package = "chromswitch")
-#'
-#' metadata <- data.frame(Sample = samples,
-#'     H3K4me3 = bedfiles,
-#'     stringsAsFactors = FALSE)
-#'
-#' lpk <- retrievePeaks(H3K4me3,
-#'     metadata = metadata,
-#'     region = GRanges(seqnames = "chr19",
-#'     ranges = IRanges(start = 54924104, end = 54929104)))
-#'
-#' samples(lpk)
-#'
+# samples
+#
+# Accessor for \code{samples} slot of a \code{\linkS4class{LocalPeaks}} object.
+#
+# @param object LocalPeaks object
+#
+# @return Character vector with sample IDs for the LocalPeaks object
+#
+# @examples
+# samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
+# bedfiles <- system.file("extdata", paste0(samples, ".H3K4me3.bed"),
+# package = "chromswitch")
+#
+# metadata <- data.frame(Sample = samples,
+#     H3K4me3 = bedfiles,
+#     stringsAsFactors = FALSE)
+#
+# lpk <- retrievePeaks(H3K4me3,
+#     metadata = metadata,
+#     region = GRanges(seqnames = "chr19",
+#     ranges = IRanges(start = 54924104, end = 54929104)))
+#
+# samples(lpk)
+#
+# @aliases samples-method
 #' @export
-#' @aliases samples-method
 setMethod("samples", signature(object = "LocalPeaks"),
           function(object) object@samples)
 

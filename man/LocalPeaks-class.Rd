@@ -7,9 +7,16 @@
 \alias{region}
 \alias{samples}
 \alias{peaks}
+\alias{region-method}
+\alias{samples-method}
+\alias{peaks-method}
+\alias{peaks,LocalPeaks-method}
+\alias{region,LocalPeaks-method}
+\alias{samples,LocalPeaks-method}
 \alias{\S4method{region}{LocalPeaks}}
 \alias{\S4method{samples}{LocalPeaks}}
 \alias{\S4method{peaks}{LocalPeaks}}
+
 
 \title{LocalPeaks}
 
@@ -53,12 +60,9 @@ for each sample for one mark in \code{region}.}
 
 \describe{
 
-\item{\code{\link[=region-method]{region}}:}{Access region
-slot of \code{LocalPeaks} object.}
-\item{\code{\link[=samples-method]{samples}}:}{Access samples
-slot of \code{LocalPeaks} object.}
-\item{\code{\link[=peaks-method]{peaks}}:}{Access peaks
-slot of \code{LocalPeaks} object.}
+\item{\code{region}:}{Access region slot of \code{LocalPeaks} object.}
+\item{\code{samples}:}{Access samples slot of \code{LocalPeaks} object.}
+\item{\code{peaks}:}{Access peaks slot of \code{LocalPeaks} object.}
 
 }}
 
