@@ -29,7 +29,7 @@ vignette: >
 ---
 
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning = FALSE, message = FALSE}
 library(BiocParallel)
 register(bpstart(SerialParam()))
 ```
@@ -58,10 +58,8 @@ show the intermediate results from chromswitch available to the user.
 
 # Quickstart
 
-Install `r Githubpkg("sjessa/chromswitch")` from GitHub
-using `r CRANpkg("devtools")`:
+Load `r Biocpkg("chromswitch")`:
 ```{r setup, warning = FALSE, message = FALSE}
-devtools::install_github("sjessa/chromswitch")
 library(chromswitch)
 ```
 

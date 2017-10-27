@@ -1,6 +1,6 @@
 Package: chromswitch
 Title: An R package to detect chromatin state switches from epigenomic data
-Version: 0.99.13
+Version: 0.99.14
 Date: 2017-09-20
 Authors@R: c(person("Selin", "Jessa", email = "selinjessa@gmail.com", role = c("aut", "cre")),
              person(c("Claudia", "L."), "Kleinman", role = "aut"))  
