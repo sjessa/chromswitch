@@ -163,7 +163,7 @@ callSummary <- function(query, metadata, peaks, mark,
         stop("Please provide one title per query region.")
 
     # Retrieve peaks: get a LocalPeaks object for each query region
-    lpks      <- bplapply(query, function(region)
+    lpks      <- bplapply(as(query, "GRangesList"), function(region)
                         retrievePeaks(peaks, metadata, region),
                         BPPARAM = BPPARAM)
 
@@ -173,7 +173,7 @@ callSummary <- function(query, metadata, peaks, mark,
                         BPPARAM = BPPARAM)
 
     # Convert the queries into a GRangesList in order to be able to Map over
-    queries <- lapply(query, GRangesList)
+    queries <- as(query, "GRangesList")
 
     # Cluster the feature matrices
     if (!isTRUE(heatmap)) {
@@ -194,7 +194,7 @@ callSummary <- function(query, metadata, peaks, mark,
 
     } else if (isTRUE(heatmap)) {
 
-        if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
+        if (is.null(titles)) titles <- unlist(lapply(queries, GRangesToCoord))
 
         results <- bpmapply(FUN = function(ft_mat, query, title)
             cluster(ft_mat, metadata, query,
@@ -335,7 +335,7 @@ callBinary <- function(query, metadata, peaks,
     }
 
     # Retrieve peaks: get a LocalPeaks object for each query region
-    lpks <- bplapply(query, function(region)
+    lpks <- bplapply(as(query, "GRangesList"), function(region)
         retrievePeaks(peaks, metadata, region), BPPARAM = BPPARAM)
 
     if (reduce) {
@@ -348,7 +348,7 @@ callBinary <- function(query, metadata, peaks,
     matrices  <- bplapply(lpks, binarizePeaks, p, BPPARAM = BPPARAM)
 
     # Convert the queries into a GRangesList in order to be able to Map over
-    queries <- lapply(query, GRangesList)
+    queries <- as(query, "GRangesList")
 
     # Cluster the feature matrices
     if (!isTRUE(heatmap)) {
@@ -368,7 +368,7 @@ callBinary <- function(query, metadata, peaks,
 
     } else if (isTRUE(heatmap)) {
 
-        if (is.null(titles)) titles <- unlist(lapply(query, GRangesToCoord))
+        if (is.null(titles)) titles <- unlist(lapply(queries, GRangesToCoord))
 
         results <- bpmapply(FUN = function(ft_mat, query, title)
             cluster(ft_mat, metadata, query,

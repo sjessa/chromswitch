@@ -39,7 +39,7 @@ pReciprocalOverlap <- function(a, b, p) {
 
     }
 
-    any(unlist(lapply(b, isOlap, a, p)))
+    any(unlist(lapply(as(b, "GRangesList"), isOlap, a, p)))
 
 }
 
@@ -68,7 +68,8 @@ getUniquePeaks <- function(loc_union, p) {
 
         # Check if the current peak has a p reciprocal overlap with
         # any peaks in the list of unique peaks
-        pOlap <- lapply(unique_peaks, pReciprocalOverlap, loc_union[i], p) %>%
+        pOlap <- lapply(as(unique_peaks, "GRangesList"),
+                        pReciprocalOverlap, loc_union[i], p) %>%
             unlist() %>%
             any()
 
@@ -103,7 +104,8 @@ getUniquePeaks <- function(loc_union, p) {
 # (window) indicating whether any peaks overlap the window
 getSamplePeakProfile <- function(peaks, windows, p) {
 
-    overlaps <- lapply(windows, pReciprocalOverlap, peaks, p) %>%
+    overlaps <-
+        lapply(as(windows, "GRangesList"), pReciprocalOverlap, peaks, p) %>%
         unlist() %>%
         t() %>%
         data.frame()
@@ -175,7 +177,8 @@ binarizePeaks <- function(localpeaks, p) {
     # Convert from logical to numeric
     ft_matrix <- ft_matrix * 1
 
-    uniq_pks_coords <- uniq_pks %>% lapply(GRangesToCoord) %>% unlist()
+    uniq_pks_coords <- as(uniq_pks, "GRangesList") %>%
+                       lapply(GRangesToCoord) %>% unlist()
     colnames(ft_matrix) <- uniq_pks_coords
     rownames(ft_matrix) <- samples(localpeaks)
 
