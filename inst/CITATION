@@ -1,0 +1,12 @@
+citEntry(entry="article",
+         title = "chromswitch: a flexible method to detect chromatin state switches",
+         author = personList( as.person("Selin Jessa"),
+                              as.person("Claudia L. Kleinman")),
+         year = 2018,
+         journal = "Bioinformatics",
+         doi = "10.1093/bioinformatics/bty075",
+         textVersion = 
+         paste0("Selin Jessa, Claudia L Kleinman (2018). ", 
+               "chromswitch: a flexible method to detect chromatin state switches, ",
+                "Bioinformatics, https://doi.org/10.1093/bioinformatics/bty075")
+)

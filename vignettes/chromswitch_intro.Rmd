@@ -120,8 +120,7 @@ Here we assume that peaks are in the [ENCODE narrowPeak format](https://genome.u
 peak_paths <- system.file("extdata", paste0(metadata$Sample, ".H3K4me3.bed"),
                      package = "chromswitch")
 
-# Import BED files containing MACS2 narrow peak calls using 
-#  a helper function from chromswitch
+# Import BED files containing MACS2 narrow peak calls using rtracklayer
 peaks <- readNarrowPeak(paths = peak_paths,  # Paths to files,
                         metadata = metadata) # Metadata dataframe
 ```
