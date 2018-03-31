@@ -38,10 +38,7 @@ readNarrowPeak <- function(paths, metadata) {
 
     paths <- as.character(paths)
 
-    extra_cols <- c(# "name" = "character",
-                    # "score" = "integer",
-                    # "strand" = "character",
-                    "signalValue" = "numeric",
+    extra_cols <- c("signalValue" = "numeric",
                     "pValue" = "numeric",
                     "qValue" = "numeric",
                     "peak" = "numeric")

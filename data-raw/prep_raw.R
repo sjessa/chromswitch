@@ -30,9 +30,7 @@ metadata <- data.frame(Sample = samples,
                        H3K4me3 = outfiles,
                        stringsAsFactors = FALSE)
 
-H3K4me3 <- chromswitch::loadBed(metadata, "H3K4me3",
-                     metadata_cols = c("name", "score","strand",
-                     "signalValue", "pValue", "qValue", "peak"))
+H3K4me3 <- chromswitch::readNarrowPeak(outfiles, metadata)
 
 devtools::use_data(H3K4me3, overwrite = TRUE)
 
