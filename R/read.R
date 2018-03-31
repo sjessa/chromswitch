@@ -38,15 +38,15 @@ readNarrowPeak <- function(paths, metadata) {
 
     paths <- as.character(paths)
 
-    # extra_cols <- c("name" = "character",
-    #                 "score" = "integer",
-    #                 "strand" = "character",
-    #                 "signalValue" = "numeric",
-    #                 "pValue" = "numeric",
-    #                 "qValue" = "numeric",
-    #                 "peak" = "numeric")
+    extra_cols <- c(# "name" = "character",
+                    # "score" = "integer",
+                    # "strand" = "character",
+                    "signalValue" = "numeric",
+                    "pValue" = "numeric",
+                    "qValue" = "numeric",
+                    "peak" = "numeric")
 
-    pk <- lapply(paths, rtracklayer::import, format = "NarrowPeakFile")
+    pk <- lapply(paths, rtracklayer::import, format = "bed", extraCols = extra_cols)
     names(pk) <- metadata$Sample
 
     return(pk)
