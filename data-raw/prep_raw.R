@@ -13,8 +13,8 @@ raw <- list.files(pattern = "*chr19.nPk.bed",
 
 # Filter chr19 peaks for a few Roadmap brain & other samples to a smaller region
 tidy <- raw %>%
-    map(filter, start >= 54358955) %>%
-    map(filter, end <= 55074918)
+    map(dplyr::filter, start >= 54358955) %>%
+    map(dplyr::filter, end <= 55074918)
 
 # Write to BED
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
