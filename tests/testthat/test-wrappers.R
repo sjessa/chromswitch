@@ -23,8 +23,8 @@ test_that("The summary strategy wrapper properly executes the analysis", {
     output_0 <- data.frame(
         query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
-        k = c(2, 2),
-        Average_Silhouette = c(0.9822687, 0.5615044),
+        k = as.integer(c(2, 2)),
+        Average_Silhouette = c(0.9822562, 0.5608182),
         Consensus = c(1, -0.07207207),
         E068 = as.integer(c(1, 1)),
         E071 = as.integer(c(1, 1)),
@@ -37,7 +37,7 @@ test_that("The summary strategy wrapper properly executes the analysis", {
     output <- data.frame(
         query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
-        k = c(2, 2),
+        k = as.integer(c(2, 2)),
         Average_Silhouette = c(0.911, 0.379),
         Consensus = c(1, 0.156),
         E068 = as.integer(c(1, 1)),
@@ -109,7 +109,7 @@ test_that("The summary strategy wrapper properly executes the analysis", {
     output_nonorm <- data.frame(
         query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
-        k = c(2, 2),
+        k = as.integer(c(2, 2)),
         Average_Silhouette = c(0.6949372, 0.4614938),
         Consensus = c(1, 0.01743241),
         E068 = as.integer(c(1, 1)),
@@ -152,7 +152,7 @@ test_that("The summary strategy wrapper properly executes the analysis", {
     output_state <- data.frame(
         query = c("chr19:54924104-54929104", "chr19:54874318-54877536"),
         name = c("test1", "test2"),
-        k = c(2, 2),
+        k = as.integer(c(2, 2)),
         Average_Silhouette = c(0.911, 0.379),
         Consensus = c(1, 0.156),
         state = c("ON", NA),
