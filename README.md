@@ -7,25 +7,27 @@
 switches between samples in two biological conditions in a specific genomic
 region of interest given peaks or chromatin state calls from ChIP-seq data.
 
-# Quickstart
+# Method
 
-`chromswitch` is currently available from the development version of Bioconductor (3.6). To use Bioconductor 3.6, you will need  [BiocInstaller](https://bioconductor.org/packages/release/bioc/html/BiocInstaller.html):
+The `chromswitch` paper is now published _Bioinformatics_:
 
-```
+> Selin Jessa, Claudia L Kleinman (2018). chromswitch: a flexible method to detect chromatin state switches, Bioinformatics, [https://doi.org/10.1093/bioinformatics/bty075](https://doi.org/10.1093/bioinformatics/bty075)
+
+For details on the method, see the [Supplementary Methods](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/bioinformatics/PAP/10.1093_bioinformatics_bty075/2/bty075_supp.pdf?Expires=1523314027&Signature=MOHlKYzBdR7bNc64a2G-k5eg2TofADoXEVwFUF94ymNUy0U1CuhnvuY1G2PatkwY7toY2svdhLdnivFQZajRfVrEZrMTVaaFV9qEowwIV3OJUmyUbBX2sFR9Hm17yvkFBwhJYjr-Hjek~Q3wXbGVZ7shO8kTJwgiSCaFFI0gbO3qz3PB80tq1NQllArBuZ01qTjxh1eKHUldljsjAOG2jDYHOVHMHQOZwyyiNkhhwvtE~RbdmpmV4y-AqkHiJB4sy~hIT3PyqD67LyEJMndVoNgCa76MaqUVjhH-l6I53f4kQCNtc7tfD2Q8vshU0whtXZUdNAvHIMPTxVNazsiEjA__&Key-Pair-Id=APKAIUCZBIA4LVPAVW3Q).
+
+
+# Installation
+
+`chromswitch` is available from Bioconductor at [bioconductor.org/packages/chromswitch](https://bioconductor.org/packages/release/bioc/html/chromswitch.html). To install the package from the R console:
+
+```r
+## try http:// if https:// URLs are not supported
 source("https://bioconductor.org/biocLite.R")
-biocLite("BiocInstaller")
+biocLite("chromswitch")
 ````
 
-Then, install `chromswitch` (dependencies should be installed automatically):
 
-```
-library(BiocInstaller)
-useDevel() # This will install Bioconductor 3.6
-biocLite("chromswitch")
-library(chromswitch)
-```
-
-For an introduction to the package, check out the [vignette](https://bioconductor.org/packages/devel/bioc/vignettes/chromswitch/inst/doc/chromswitch_intro.html), or open it from the R console:
+For an introduction to the package, check out the [vignette](https://bioconductor.org/packages/release/bioc/vignettes/chromswitch/inst/doc/chromswitch_intro.html), or open it from the R console:
 
 ```
 browseVignettes("chromswitch")
