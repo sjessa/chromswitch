@@ -13,8 +13,8 @@ raw <- list.files(pattern = "*chr19.nPk.bed",
 
 # Filter chr19 peaks for a few Roadmap brain & other samples to a smaller region
 tidy <- raw %>%
-    map(filter, start >= 54358955) %>%
-    map(filter, end <= 55074918)
+    map(dplyr::filter, start >= 54358955) %>%
+    map(dplyr::filter, end <= 55074918)
 
 # Write to BED
 samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
@@ -30,9 +30,7 @@ metadata <- data.frame(Sample = samples,
                        H3K4me3 = outfiles,
                        stringsAsFactors = FALSE)
 
-H3K4me3 <- chromswitch::loadBed(metadata, "H3K4me3",
-                     metadata_cols = c("name", "score","strand",
-                     "signalValue", "pValue", "qValue", "peak"))
+H3K4me3 <- chromswitch::readNarrowPeak(outfiles, metadata)
 
 devtools::use_data(H3K4me3, overwrite = TRUE)
 

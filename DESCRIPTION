@@ -1,6 +1,6 @@
 Package: chromswitch
 Title: An R package to detect chromatin state switches from epigenomic data
-Version: 1.1.2
+Version: 1.1.3
 Date: 2017-09-20
 Authors@R: c(person("Selin", "Jessa", email = "selinjessa@gmail.com", role = c("aut", "cre")),
              person(c("Claudia", "L."), "Kleinman", role = "aut"))  
@@ -13,7 +13,6 @@ Imports:
     cluster (>= 2.0.6),
     Biobase (>= 2.36.2),
     BiocParallel (>= 1.8.2),
-    DescTools (>= 0.99.19),
     dplyr (>= 0.5.0),
     gplots(>= 3.0.1),
     graphics,
@@ -22,7 +21,6 @@ Imports:
     lazyeval (>= 0.2.0),
     matrixStats (>= 0.52),
     magrittr (>= 1.5),
-    mclust (>= 5.3),
     methods,
     NMF (>= 0.20.6),
     rtracklayer (>= 1.36.4),
@@ -34,9 +32,11 @@ Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
 Suggests: BiocStyle,
+    DescTools (>= 0.99.19),
     devtools (>= 1.13.3),
     knitr,
     rmarkdown,
+    mclust (>= 5.3),
     testthat
 RoxygenNote: 6.0.1
 URL: https://github.com/sjessa/chromswitch
