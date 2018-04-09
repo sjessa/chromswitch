@@ -322,10 +322,7 @@ running `??rtracklayer::BEDFile` in the console to access the `rtracklayer`
 documentation.
 
 ```{r read}
-extra_cols <- c("name" = "character",
-                "score" = "integer",
-                "strand" = "character",
-                "signalValue" = "numeric",
+extra_cols <- c("signalValue" = "numeric",
                 "pValue" = "numeric",
                 "qValue" = "numeric",
                 "peak" = "numeric")

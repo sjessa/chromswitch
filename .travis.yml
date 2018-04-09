@@ -16,4 +16,4 @@ bioc_packages:
 after_success:
   - Rscript -e 'covr::coveralls()'
   - find . -name testthat.Rout | xargs cat
-  - R CMD BiocCheck --no-check-vignettes chromswitch*.tar.gz
+  - R CMD BiocCheck chromswitch*.tar.gz
