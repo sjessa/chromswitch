@@ -33,7 +33,7 @@ test_that("The clustering function returns the correct set of clusters", {
                             Average_Silhouette = c(0.6206429, 1.0, 2/3, 1/3)),
                  tolerance = 1e-3)
 
-    best_k <- dplyr::tibble(k = as.integer(3), Average_Silhouette = 1)
+    best_k <- data.frame(k = as.integer(3), Average_Silhouette = 1)
     expect_equal(getK(ft_mat, optimal_clusters = TRUE), best_k)
 
     samples <- c("E068", "E071", "E074", "E101", "E102", "E110")
