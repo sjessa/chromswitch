@@ -34,6 +34,7 @@ VignetteBuilder: knitr
 Suggests: BiocStyle,
     DescTools (>= 0.99.19),
     devtools (>= 1.13.3),
+    GenomeInfoDb (>= 1.16.0),
     knitr,
     rmarkdown,
     mclust (>= 5.3),
