@@ -21,10 +21,9 @@ For details on the method, see the [Supplementary Methods](https://oup.silvercha
 `chromswitch` is available from Bioconductor at [bioconductor.org/packages/chromswitch](https://bioconductor.org/packages/release/bioc/html/chromswitch.html). To install the package from the R console:
 
 ```r
-## try http:// if https:// URLs are not supported
-source("https://bioconductor.org/biocLite.R")
-biocLite("chromswitch")
-````
+install.packages("BiocManager")
+BiocManager::install("chromswitch")
+```
 
 
 For an introduction to the package, check out the [vignette](https://bioconductor.org/packages/release/bioc/vignettes/chromswitch/inst/doc/chromswitch_intro.html), or open it from the R console:
