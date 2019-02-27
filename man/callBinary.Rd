@@ -4,11 +4,11 @@
 \alias{callBinary}
 \title{callBinary}
 \usage{
-callBinary(query, metadata, peaks, filter = FALSE, filter_columns = NULL,
-  filter_thresholds = NULL, reduce = TRUE, gap = 300, p = 0.4,
-  n_features = FALSE, heatmap = FALSE, titles = NULL, outdir = NULL,
-  optimal_clusters = TRUE, estimate_state = FALSE, test_condition = NULL,
-  BPPARAM = bpparam())
+callBinary(query, metadata, peaks, filter = FALSE,
+  filter_columns = NULL, filter_thresholds = NULL, reduce = TRUE,
+  gap = 300, p = 0.4, n_features = FALSE, heatmap = FALSE,
+  titles = NULL, outdir = NULL, optimal_clusters = TRUE,
+  estimate_state = FALSE, test_condition = NULL, BPPARAM = bpparam())
 }
 \arguments{
 \item{query}{GRanges list containing one or more genomic regions of interest
