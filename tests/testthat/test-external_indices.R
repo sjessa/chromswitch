@@ -9,10 +9,12 @@ test_that("External cluster validity indices are correct", {
 
     clusters <- c(A = 1, B = 1, C = 0, D = 0)
 
-    expect_equal(as.data.frame(contingencyTable(clusters, metadata)),
-                data.frame(Var1 = c("1", "2", "1", "2"),
-                Var2 = c("0", "0", "1", "1"),
-                Freq = c(0, 2, 2, 0)))
+    expect_equal(data.frame(contingencyTable(clusters, metadata),
+                            stringsAsFactors = FALSE),
+                 data.frame(Var1 = c("1", "2", "1", "2"),
+                            Var2 = c("0", "0", "1", "1"),
+                            Freq = c(0, 2, 2, 0),
+                            stringsAsFactors = FALSE))
 
 
     clusters <- c(0, 0, 2, 1, 1, 0, 1)
