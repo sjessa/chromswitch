@@ -7,6 +7,8 @@
 switches between samples in two biological conditions in a specific genomic
 region of interest given peaks or chromatin state calls from ChIP-seq data.
 
+NOTE: chromswitch is now deprecated: https://bioconductor.org/packages/3.17/bioc/html/chromswitch.html
+
 # Method
 
 The `chromswitch` paper is now published _Bioinformatics_:
@@ -18,7 +20,9 @@ For details on the method, see the [Supplementary Methods](https://oup.silvercha
 
 # Installation
 
-`chromswitch` is available from Bioconductor at [bioconductor.org/packages/chromswitch](https://bioconductor.org/packages/release/bioc/html/chromswitch.html). To install the package from the R console:
+~`chromswitch` is available from Bioconductor at [bioconductor.org/packages/chromswitch](https://bioconductor.org/packages/release/bioc/html/chromswitch.html). To install the package from the R console:~
+
+The chromswitch BioConductor package is now deprecated.
 
 ```r
 install.packages("BiocManager")
